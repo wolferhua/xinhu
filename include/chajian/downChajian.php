@@ -123,6 +123,8 @@ class downChajian extends Chajian{
 				'filename'	=> $this->replacefile($upses['oldfilename']),
 				'web'		=> $this->rock->web,
 				'ip'		=> $this->rock->ip,
+				'mknum'		=> $this->rock->get('sysmodenum'),
+				//'mid'		=> $this->rock->get('sysmid','0'),
 				'fileext'	=> substr($upses['fileext'],0,10),
 				'filesize'	=> (int)$this->rock->get('filesize', $upses['filesize']),
 				'filesizecn'=> $upses['filesizecn'],

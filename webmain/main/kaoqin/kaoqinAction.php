@@ -484,7 +484,7 @@ class kaoqinClassAction extends Action
 			if(ISMORECOM)$s.=" and `companyid`=".m('admin')->getcompanyid()."";
 		}
 		if(isempt($receid)){
-			if(!isempt($key))$s.=" and (`name` like '%$key%' or `ranking` like '%$key%' or `deptname` like '%$key%')";
+			if(!isempt($key))$s.=" and (`name` like '%$key%' or `ranking` like '%$key%' or `deptallname` like '%$key%')";
 		}else{
 			$ofval = m('admin')->gjoin($receid,'', 'all');
 			if(!$ofval)$ofval='0';
@@ -830,7 +830,7 @@ class kaoqinClassAction extends Action
 	{
 		$zta 	= m('flow:userinfo');
 		$dt 	= $this->post('month');
-		$kqkind	= $this->option->getmnum('kqkind');
+		$kqkind	= $this->option->getdata('kqkind', "and `name`<>'增加调休'");
 		$kq 	= m('kaoqin');
 		
 		foreach($rows as $k=>$rs){
@@ -866,11 +866,13 @@ class kaoqinClassAction extends Action
 		$this->optqjkind 	= $qjkind;
 		$where 	= 'and `uid`='.$uid.'';
 		$this->optkind		= '';
+		$this->optkinds		= '增加'.$qjkind.'';
 		if($qjkind=='调休'){
 			$this->optkind = '加班';
-			$where .= " and ((`qjkind`='$qjkind' and `status` in(0,1)) or (`kind`='$this->optkind' and `status`=1 and `jiatype`=0))";
+			$whera  = "((`kind`='$this->optkind' and `jiatype`=0) or (`kind`='$this->optkinds'))";
+			$where .= " and ((`qjkind`='$qjkind' and `status` in(0,1)) or (`status`=1 and $whera))";
 		}else{
-			$this->optkind = '增加'.$qjkind.'';
+			$this->optkind = $this->optkinds;
 			$where .= " and ((`qjkind`='$qjkind' and `status` in(0,1)) or (`kind`='$this->optkind' and `status`=1))";
 		}
 		return array(
@@ -892,10 +894,10 @@ class kaoqinClassAction extends Action
 				$rows[$k]['etime'] = $rs['enddt']; //截止时间
 				if($rs['enddt']<$this->rock->now)$rows[$k]['ishui'] = 1;
 			}else{
-				if($rs['kind']==$this->optkind)$rows[$k]['etime'] = '';
+				if($rs['kind']==$this->optkind || $rs['kind']==$this->optkinds)$rows[$k]['etime'] = '';
 			}
 		}
-		$kqkind	= $this->option->getmnum('kqkind');
+		$kqkind	= $this->option->getdata('kqkind',"and `name`<>'增加调休'");
 		if($rows){
 			$rows[] = array(
 				'deptname' => '合计',

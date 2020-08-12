@@ -18,8 +18,11 @@ function initbodys(){
 			if(a.zflx==0){
 				form('title').value='转发：'+a.title+'';
 				form('content').value=a.content;
-				if(ismobile==1)form('content').value=a.content.replace(/<br>/g,"\n");
-				if(ismobile==0)c.editorobj['content'].html(a.content);
+				if(c.editorobj['content']){
+					c.editorobj['content'].html(a.content);
+				}else{
+					form('content').value=a.content.replace(/<br>/g,"\n");
+				}
 				js.downupshow(a.filers,'fileidview');
 				if(ismobile==1 && form('fileid'))f.fileobj.oldids=form('fileid').value;
 			}
@@ -30,8 +33,11 @@ function initbodys(){
 				form('recename').value = a.sendname;
 				form('receid').value = a.sendid;
 				if(a.type==1){
-					if(ismobile==1)form('content').value=a.content.replace(/<br>/g,"\n");
-					if(ismobile==0)c.editorobj['content'].html(a.content);
+					if(c.editorobj['content']){
+						c.editorobj['content'].html(a.content);
+					}else{
+						form('content').value=a.content.replace(/<br>/g,"\n");
+					}
 				}
 			}
 		},'get,json');

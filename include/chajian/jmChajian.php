@@ -23,7 +23,7 @@ class jmChajian extends Chajian{
 	public function setRandkey($str)
 	{
 		$this->jmsstr = $str;
-		if(strlen($this->jmsstr)<26)$this->jmsstr = $this->keystr;
+		if(strlen($this->jmsstr)!=26)$this->jmsstr = $this->keystr;
 		$this->getrocktoken();
 	}
 	

@@ -416,4 +416,22 @@ class uploadClassAction extends apiAction
 		$id 		= (int)$this->get('id',0);
 		return c('rockedit')->sendedit($id, $this->admintoken);
 	}
+	
+	/**
+	*	获取文件信息
+	*/
+	public function afileinfoAction()
+	{
+		$allfid = c('check')->onlynumber($this->get('allfid'));
+		$filearr= array();
+		if($allfid){
+			$fobj 	= m('file');
+			$frows 	 = $fobj->getall('`id` in('.$allfid.')','filename,id,filesizecn,fileext,optname,thumbpath,thumbplat');
+			foreach($frows as $k1=>$rs1){
+				$rs1['thumbpath'] = $fobj->getthumbpath($rs1);
+				$filearr['f'.$rs1['id'].'']	= $rs1;
+			}
+		}
+		return $filearr;
+	}
 }

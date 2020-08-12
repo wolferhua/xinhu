@@ -1147,3 +1147,10 @@ js.tabsclicks=function(o1){
 	ho.show();
 	this.ontabsclicks(ind, tid, o, ho);
 }
+js.changdu=function(o){
+	var max = $(o).attr('maxlength');
+	if(max>0){
+		var zlen = o.value.length;
+		if(zlen>parseFloat(max))js.alert('录入数据长度'+zlen+'超过'+max+'总长度，其余会被截取掉');
+	}
+}

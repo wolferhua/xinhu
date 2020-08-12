@@ -1558,9 +1558,9 @@ class reimClassModel extends Model
 	public function chatpushtowx($dt='')
 	{
 		if($dt=='')$dt = date('Y-m-d H:i:s', time()-5*60);
-		$bowx 	= $this->installwx(0);
+		//$bowx 	= $this->installwx(0);
 		$bowxqy	= $this->installwx(1);
-		if(!$bowx && !$bowxqy)return;
+		if(!$bowxqy)return;
 		
 		$rows 	= $this->db->getall("select * from `[Q]im_history` where `optdt`>='$dt' and `stotal`>0 and `type` in('user','group') order by `uid`,`optdt` asc");
 		
@@ -1630,10 +1630,6 @@ class reimClassModel extends Model
 			//发送
 			if($uids!=''){
 				$uids = substr($uids, 1);
-
-				if($bowx){
-					m('weixin:index')->sendnews($uids, 'REIM,0', $wxarr);
-				}
 				if($bowxqy){
 					$barr = m('weixinqy:index')->sendxiao($uids, 'REIM,REIM助手,'.$devagent.'', $wxarr);
 					m('log')->todolog('企业微信提醒', $barr);

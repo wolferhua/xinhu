@@ -4,6 +4,7 @@ class sysClassAction extends runtAction
 	//数据备份
 	public function beifenAction()
 	{
+		if(getconfig('systype')=='demo')return 'success';
 		m('beifen')->start();
 		$this->todoarr	= array(
 			'title' 	=> '数据库备份',

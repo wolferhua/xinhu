@@ -11,6 +11,33 @@ class flow_emailmClassModel extends flowModel
 		return $to>0;
 	}
 	
+	//删除时
+	protected function flowdeletebill($sm)
+	{
+		m('emails')->delete('`mid`='.$this->id.'');
+	}
+	
+	protected function flowoptmenu($ors, $crs)
+	{
+		//撤回未读的
+		if($ors['num']=='chemail'){
+			$where  = '`mid`='.$this->id.' and `type`<>2 and `zt`=0';
+			$drows 	= m('emails')->getall($where);
+			m('emails')->delete($where);
+			$uids = '0';
+			foreach($drows as $k1=>$rs1)$uids.=','.$rs1['uid'].'';
+			m('todo')->deltodo($this->modenum, $this->id, $uids);
+		}
+	}
+	
+	protected function flowgetoptmenu($opt)
+	{
+		if($opt=='chemail'){
+			$to = $this->flogmodel->rows("".$this->mwhere." and `name`='撤回'");
+			if($to>0)return false;
+		}
+	}
+	
 	//立即发送提醒
 	protected function flowsubmit($na, $sm)
 	{

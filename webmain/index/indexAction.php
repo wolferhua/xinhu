@@ -3,6 +3,7 @@ class indexClassAction extends Action{
 	
 	public function defaultAction()
 	{
+		if(strlen(getconfig('randkey'))!=26)return '配置文件randkey不正确，请重新设置为：'.$this->jm->getRandkey().'';
 		$afrom 			= $this->get('afrom');
 		$this->tpltype	= 'html';
 		$my			= $this->db->getone('[Q]admin', "`id`='$this->adminid' and `status`=1",'`face`,`id`,`name`,`ranking`,`deptname`,`deptallname`,`type`,`style`,`user`');
@@ -71,6 +72,12 @@ class indexClassAction extends Action{
 			$this->smartydata['logo'] = 'images/xh829.png';
 			$this->smartydata['icon'] = 'favicon.ico';
 		}
+	}
+	
+	public function phpinfoAction()
+	{
+		$this->display = false;
+		phpinfo();
 	}
 	
 	private function menuwheres()

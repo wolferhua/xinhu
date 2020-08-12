@@ -26,6 +26,7 @@ class xinhuClassAction extends Action
 		$arr['reimpushurl']= $this->option->getval('reimpushurlsystem');
 		$arr['reimchehui']= $this->option->getval('reimchehuisystem');
 		$arr['servertype']= $this->rock->repempt($this->option->getval('reimservertype'),'1');
+		if(isempt($arr['reimhost']))$arr['servertype']='1';
 		$arr['reimappwx']= $this->rock->repempt($this->option->getval('reimappwxsystem'),'0');
 		echo json_encode($arr);
 	}

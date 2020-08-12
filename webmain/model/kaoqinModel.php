@@ -700,10 +700,10 @@ class kaoqinClassModel extends Model
 	public function getqjsytime($uid, $type, $dt='', $id=0, $jzdt='')
 	{
 		$types 	= '增加'.$type.'';
-		$wehe	= '';
+		$wehe	= "`kind`='$types'";
 		if($type=='调休'){
 			$types='加班';
-			$wehe = 'and `jiatype`=0'; //只有可调休才能用
+			$wehe = "((`kind`='$types' and `jiatype`=0) or (`kind`='增加调休'))"; //只有可调休才能用
 		}
 		if($dt=='')$dt = $this->rock->now;
 		if($jzdt=='')$jzdt = $dt; //截止时间
@@ -714,7 +714,7 @@ class kaoqinClassModel extends Model
 		
 		
 		//总
-		$zrows	= $this->db->getall("select * from `[Q]kqinfo` where `uid`='$uid' and `kind`='$types' $wehe and `status`=1 order by `stime` asc");
+		$zrows	= $this->db->getall("select * from `[Q]kqinfo` where `uid`='$uid' and `status`=1 and $wehe order by `stime` asc");
 		if(!$zrows)return 0;
 		foreach($zrows as $k1=>$rs1){
 			$jsdt = $rs1['enddt'];
@@ -728,29 +728,6 @@ class kaoqinClassModel extends Model
 		
 		
 		return $this->getqjsytimess($zrows, $yrows, $dt, $jzdt);
-		
-		//---以下是弃用的---------
-		
-		//总共的
-		$zrs	= $this->db->getone('[Q]kqinfo', "`uid`='$uid' and `kind`='$types' $wehe and `status`=1 and `stime`<='$dt' and (`enddt` is null or `enddt`>='$jzdt')","sum(totals)totals,min(stime)stime");
-		if($zrs){
-			$zto 	= floatval($zrs['totals']);
-			if(!isempt($zrs['stime']))$enddt="and `stime`>='".$zrs['stime']."'";
-		}
-		
-		//echo $this->db->nowsql;
-		//echo '<br>';
-		
-		//已使用了
-		if($zto>0){
-			$to1	= $this->db->getmou('[Q]kqinfo',"sum(totals)", "`uid`='$uid' and `kind`='请假' and `qjkind`='$type' $enddt and `status` not in(5) and `id`<>$id "); 
-			if(is_null($to1))$to1=0;
-		}
-		
-		$wjg 	= $zto - floatval($to1);
-		if($wjg<0)$wjg = 0;
-
-		return $wjg;
 	}
 	
 	private function getqjsytimess($zrows, $yrows, $dt, $jzdt)
@@ -808,6 +785,7 @@ class kaoqinClassModel extends Model
 		$str  = '';
 		if($tx>0)$str  = '可调休('.$tx.'小时)';
 		foreach($rows as $k=>$rs){
+			if($rs['kind']=='增加调休')continue;
 			$type = str_replace('增加', '', $rs['kind']);
 			$sj   = $this->getqjsytime($uid, $type, $dt, $id);
 			if($str!='')$str  .= '，';

@@ -58,4 +58,15 @@ class todoClassModel extends Model
 		if(!$this->isempt($tododt))$arr['tododt'] = $tododt;
 		$this->add($uid, $title, $mess, $arr);
 	}
+	
+	/**
+	*	删除提醒
+	*/
+	public function deltodo($num, $mid, $uid, $table='')
+	{
+		$where = "`uid` in($uid) and `modenum`='$num' and `mid`='$mid'";
+		$this->delete($where);
+		m('flow_todos')->delete($where);
+		m('im_history')->delete("`uid` in($uid) and `xgurl`='".$num."|".$mid."'");
+	}
 }

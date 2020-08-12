@@ -419,8 +419,8 @@ final class rockClass
 	{
 		$dt  = date('Y-m-d');
 		$str = str_replace(
-			array('&#39;', '&#39','[F]', '[X]', '[K]', '[A]', '[D]', '[adminid]', '[date]', '{adminid}', '{date}','[H1]','[H2]'), 
-			array('\'', '\'', '\'', '\\', ' ', 'and', '=', $this->adminid, $dt, $this->adminid, $dt,'{','}'),
+			array('&#39;', '&#39','[F]', '[X]', '[K]', '[A]', '[D]', '[adminid]', '[date]', '{adminid}', '{date}','[H1]','[H2]','&#xing;'), 
+			array('\'', '\'', '\'', '\\', ' ', 'and', '=', $this->adminid, $dt, $this->adminid, $dt,'{','}','*'),
 			$str
 		);
 		return $str;

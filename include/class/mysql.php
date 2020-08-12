@@ -718,7 +718,7 @@ abstract class mysql{
 	*	@param $pfields	上级字段 $jfield 要连接的字段名 $afid = 值
 	*/
 	private $joinarr=array();
-	public function getpval($table,$pfields,$jfield,$afid,$plit='/',$afield='id',$maxlen=5)
+	public function getpval($table,$pfields,$jfield,$afid,$plit='/',$afield='id',$maxlen=8)
 	{
 		$this->joinarr	= array();
 		$this->joinlen	= 0;

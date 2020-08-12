@@ -41,6 +41,8 @@ class gerenClassAction extends Action
 	{
 		$key	= $this->post('key');
 		$atype	= $this->post('atype');
+		$dt1	= $this->post('dt1');
+		$dt2	= $this->post('dt2');
 		$where	 = 'and optid='.$this->adminid.'';
 		if($atype=='all'){
 			$where='';
@@ -49,9 +51,11 @@ class gerenClassAction extends Action
 		if($key!=''){
 			$where.=" and (`optname` like '%$key%' or `filename` like '%$key%' or `mtype`='$key')";
 		}
+		if($dt1!='')$where.=" and `adddt`>='".$dt1." 00:00:00'";
+		if($dt2!='')$where.=" and `adddt`<='".$dt2." 23:59:59'";
 		return array(
 			'where' => $where,
-			//'fields' => '`id`,fileext,filename,filesizecn,thumbpath,filepath,adddt,optname,downci,ip,web,mtype,mid',
+			
 		);
 	}
 	public function fileafter($table, $rows)

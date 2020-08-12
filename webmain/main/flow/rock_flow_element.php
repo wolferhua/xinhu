@@ -137,11 +137,11 @@ $(document).ready(function(){
 		},
 		inputs:function(o1,lx){
 			var url='?m=flow&d=main&a=input&setid='+moders.id+'&atype=0';
-			js.open(url,970,500);
+			js.open(url,980,530);
 		},
 		zhanshi:function(o1,lx){
 			var url='?m=flow&d=main&a=inputzs&setid='+moders.id+'&atype='+lx+'';
-			js.open(url,970,500);
+			js.open(url,980,530);
 		},
 		rexuhao:function(){
 			if(modeid==0)return;

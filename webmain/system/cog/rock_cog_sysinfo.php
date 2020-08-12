@@ -16,7 +16,7 @@ $(document).ready(function(){
 
 
 <div  style="padding:50px; line-height:34px">
-	<div>以下配置信息，请到系统的配置文件下修改(webmain/webmainConfig.php)</div>
+	<div>以下配置信息，请到系统的配置文件下修改(webmain/webmainConfig.php)，<a href="?a=phpinfo" target="_blank">查看phpinfo</a></div>
 	<div class="blank1"></div>
 	<div id="veiw_{rand}"></div>
 </div>

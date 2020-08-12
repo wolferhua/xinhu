@@ -77,10 +77,13 @@ $(document).ready(function(){
 		},
 		search:function(){
 			var s=get('key_{rand}').value;
-			a.setparams({key:s},true);
+			a.setparams({key:s,dt1:get('dt1_{rand}').value,dt2:get('dt2_{rand}').value},true);
 		},
 		openlogs:function(d){
 			addtabs({name:'文件操作记录','num':'files'+d.id+'',url:'system,geren,files,fileid='+d.id+',filename='+jm.base64encode(d.filename)+''});
+		},
+		clickdt:function(o1, lx){
+			$(o1).rockdatepicker({initshow:true,view:'date',inputid:'dt'+lx+'_{rand}'});
 		}
 	};
 	
@@ -98,6 +101,24 @@ $(document).ready(function(){
 <table width="100%"><tr>
 	<td>
 		<input class="form-control" style="width:180px" id="key_{rand}"   placeholder="文件名/创建人/关联表">
+	</td>
+	<td nowrap>&nbsp;上传日期&nbsp;</td>
+	<td nowrap>
+		<div style="width:150px"  class="input-group">
+			<input placeholder="" readonly class="form-control" id="dt1_{rand}" >
+			<span class="input-group-btn">
+				<button class="btn btn-default" click="clickdt,1" type="button"><i class="icon-calendar"></i></button>
+			</span>
+		</div>
+	</td>
+	<td nowrap>&nbsp;至&nbsp;</td>
+	<td nowrap>
+		<div style="width:150px"  class="input-group">
+			<input placeholder="" readonly class="form-control" id="dt2_{rand}" >
+			<span class="input-group-btn">
+				<button class="btn btn-default" click="clickdt,2" type="button"><i class="icon-calendar"></i></button>
+			</span>
+		</div>
 	</td>
 	<td style="padding-left:10px">
 		<button class="btn btn-default" click="search" type="button">搜索</button> 

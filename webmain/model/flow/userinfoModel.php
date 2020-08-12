@@ -186,22 +186,27 @@ class flow_userinfoClassModel extends flowModel
 		foreach($rows as $k=>$rs){
 			
 			$arr 	= $rs;
+			if(!isset($rs['mobile']))return '手机号必须开启导入';
+			
 			$mobile = $rs['mobile'];
-			$state 	= $rs['state'];
-			$zt 	= 0; //默认人员状态
 			$urs 	= $this->adminmodel->getone("`mobile`='$mobile'");
+			
 			if(!$urs)return '行'.($k+1).'的手机号('.$mobile.')找不对应用户，请先添加用户';
 			$arr['id'] 			= $urs['id'];
 			$arr['ranking'] 	= $urs['ranking'];
 			$arr['deptname'] 	= $urs['deptname'];
 			
-			foreach($this->statearrs as $k1=>$rs1){
-				if($rs1['name']==$state){
-					$zt = $rs1['id'];
-					break;
+			if(isset($rs['state'])){
+				$state 	= $rs['state'];
+				$zt 	= 0; //默认人员状态
+				foreach($this->statearrs as $k1=>$rs1){
+					if($rs1['name']==$state){
+						$zt = $rs1['id'];
+						break;
+					}
 				}
+				$arr['state'] 		= $zt;
 			}
-			$arr['state'] 		= $zt;
 			
 			//更新入职日期
 			$workdate = arrvalue($arr, 'workdate');

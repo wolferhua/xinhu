@@ -227,6 +227,80 @@ PRIMARY KEY (`id`),KEY `mid` (`mid`)
 		);
 	}
 	
+	//模块多模版
+	public function modetpl_before($table)
+	{
+		$mid = (int)$this->post('mid');
+		$this->mid = $mid;
+		return array(
+			'where' => 'and `setid`='.$mid.'',
+			'order'	=> 'sort,id'
+		);
+	}
+	public function modetpl_after($table, $rows)
+	{
+		return array(
+			'flowarr'=>$this->getmodearr(' and `istpl`=1')
+		);
+	}
+	public function modetpledit_before($table)
+	{
+		$mid = (int)$this->post('mid');
+		$this->mid = $mid;
+		return array(
+			'where' => 'and `mid`='.$mid.' and `iszb`=0',
+			'order'	=> 'sort,id'
+		);
+	}
+	public function modetpledit_after($table, $rows)
+	{
+		$sid  = (int)$this->post('sid');
+		$data = false;
+		$fieldsluru = $fieldsbitian = '';
+		if($sid>0){
+			$data = m('flow_modetpl')->getone($sid);
+			$fieldsluru 	= $data['fieldsluru'];
+			$fieldsbitian 	= $data['fieldsbitian'];
+			foreach($rows as $k=>$rs){
+				if(!isempt($fieldsluru)){
+					$islu = 0;
+					if(contain(','.$fieldsluru.',',','.$rs['fields'].','))$islu=1;
+					$rows[$k]['islu'] = $islu;
+				}
+				if(!isempt($fieldsbitian)){
+					$isbt = 0;
+					if(contain(','.$fieldsbitian.',',','.$rs['fields'].','))$isbt=1;
+					$rows[$k]['isbt'] = $isbt;
+				}
+			}
+		}
+		return array(
+			'data' => $data,
+			'rows' => $rows,
+		);
+	}
+	public function modetpl_savefieldsbefore($table, $cans)
+	{
+		$tplnum = $cans['tplnum'];
+		if(c('check')->isincn($tplnum))return '编号不能包含中文';
+		$id 	= (int)$this->post('id');
+		if(m($table)->rows("`tplnum`='$tplnum' and `id`<>'$id'")>0)return '编号已经存在';
+
+	}
+	public function modetpl_savefieldsafter($table, $cans)
+	{
+		$mid = $cans['setid'];
+		$tab = m('mode')->getmou('`table`',$mid);
+		if(!isempt($tab)){
+			$fields = $this->db->getallfields(''.PREFIX.''.$tab.'');
+			$str 	= '';
+			if(!in_array('mtplid', $fields))$str.=",add `mtplid` int(11) DEFAULT '0' COMMENT '对应多模版flow_modetpl.id'";
+			if($str!=''){
+				$sql = 'alter table `'.PREFIX.''.$tab.'` '.substr($str,1).'';
+				$this->db->query($sql);
+			}
+		}
+	}
 	
 	//单据操作菜单
 	public function flowmenubefore($table)
@@ -304,21 +378,12 @@ PRIMARY KEY (`id`),KEY `mid` (`mid`)
 			'rows'		=> $rows
 		);
 	}
+
 	
-	//多模版设置
-	public function flowmodetpl_after($table, $rows)
+	
+	private function getmodearr($whe='')
 	{
-		
-		return array(
-			'flowarr'	=> $this->getmodearr(),
-			'rows'		=> $rows
-		);
-	}
-	
-	
-	private function getmodearr()
-	{
-		return m('mode')->getmodearr();
+		return m('mode')->getmodearr($whe);
 	}
 	
 	
@@ -517,7 +582,63 @@ class mode_'.$modenum.'ClassAction extends inputAction{
 		$this->backmsg('','ok', $str);
 	}
 	
-	
+	//一键布局录入页
+	public function yinruoneAjax()
+	{
+		$modeid = (int)$this->post('modeid');
+		$xgwj   = (int)$this->post('xgwj');
+		$base   = (int)$this->post('base');
+		$mrs 	= m('mode')->getone($modeid);
+		$rowsa   = m('flow_element')->getall('mid='.$modeid.' and `iszb`=0 and `islu`=1','*','sort,id');
+		$zhang  = array('textarea','htmlediter','uploadfile','uploadimg','changedeptusercheck');
+		$s = '<table width="100%" border="0"><tbody><tr>';
+		$xuo = 0;
+		$yczd = '';
+		$rows = array();
+		foreach($rowsa as $k1=>$rs1){
+			if($rs1['fieldstype']=='hidden' || $rs1['fieldstype']=='fixed'){
+				$yczd.='{'.$rs1['fields'].'}';
+			}else{
+				$rows[] = $rs1;
+			}
+		}
+		$zlen= count($rows)-1;
+		foreach($rows as $k=>$rs){
+			$xuo++;
+			$name = $rs['name'];
+			if($rs['isbt']=='1')$name='*'.$name.'';
+			if(in_array($rs['fieldstype'], $zhang) || contain($rs['attr'],'maxhang')){
+				if($xuo==2)$s.='<td height="34" align="right" class="ys1"></td><td class="ys2"></td></tr><tr>';
+				$s.='<td height="34" align="right" class="ys1">'.$name.'</td><td colspan="3" class="ys2">{'.$rs['fields'].'}'.$yczd.'</td>';
+				if($xuo==1)$xuo=2;
+			}else{
+				$s.='<td height="34" width="15%" align="right" class="ys1">'.$name.'</td><td  width="35%" class="ys2">{'.$rs['fields'].'}'.$yczd.'</td>';
+			}
+			$yczd='';
+			if($xuo==2){
+				$s.='</tr>';
+				if($k<$zlen)$s.='<tr>';
+				$xuo=0;
+			}
+			if($xuo==1 && $k==$zlen){
+				$s.='<td height="34" align="right" class="ys1"></td><td class="ys2"></td></tr>';
+			}
+		}
+		$tables	 = $mrs['tables'];
+		if(!isempt($tables)){
+			$tablesa = explode(',', $tables);
+			$tablesn = explode(',', $mrs['names']);
+			foreach($tablesa as $k=>$tab){
+				$str 	= m('input')->getsubtable($modeid, $k+1, 1);
+				$s.='<tr ><td class="ys2" style="background-color:#CCCCCC;" colspan="4"><strong>'.arrvalue($tablesn, $k).'</strong></td></tr>';
+				$s.='<tr><td class="ys0" colspan="4">'.$str.'</td></tr>';
+			}
+		}
+		if($xgwj==1)$s.='<td height="34" align="right" class="ys1">相关文件</td><td colspan="3" class="ys2">	{file_content}</td>';
+		if($base==1)$s.='<tr><td height="34"  align="right" class="ys1">申请人</td><td class="ys2" >{base_name}</td><td align="right" class="ys1" >申请人部门</td><td class="ys2" >{base_deptname}</td></tr>';
+		$s.='</tbody></table>';
+		return $s;
+	}
 	
 	
 	

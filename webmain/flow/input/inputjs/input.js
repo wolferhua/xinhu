@@ -4,10 +4,10 @@
 *	Copyright (c) 2016 rainrock
 *	Date:2016-01-01
 *	remark：本文件页面是系统公共录入页面上主要js文件，处理录入页面上交互设计，公式计算等。
-	                              xhxh
+	                               xh
 	                             xhxh
    xh       xh                 xh  xh
-  xh    xhxhxhxhxh    xhxhxh       xh xh
+  xhh   xhxhxhxhxh    xhxhxh     xhxhxxh
  xhxh    xhxhxhxh     xh  xh xhxhxhxhxhxhxh
 xh xh   xhxhxhxhxh    xhxhxh       xh
    xh                              xh
@@ -30,7 +30,14 @@ function geturlact(act,cns){
 	return url;
 }
 function initbody(){
+	modenum = moders.num;
 	js.tanstyle = 1;
+	js.importjs('webmain/flow/input/inputjs/input_two.js?'+Math.random()+'', function(){
+		for(var oi in inputtwo)c[oi]=inputtwo[oi];
+		initbody_tmp();
+	});
+}
+function initbody_tmp(){
 	$('body').keydown(function(et){
 		var code	= et.keyCode;
 		if(code==27){
@@ -44,7 +51,7 @@ function initbody(){
 			}
 		}
 	});
-	var len = arr.length,i,fid,nfid='',flx;
+	var len = arr.length,i,fid,nfid='',flx,lhtbo=[];
 	for(i=0;i<len;i++){
 		fid=arr[i].fields;
 		flx=arr[i].fieldstype;
@@ -53,16 +60,22 @@ function initbody(){
 			if(fid.indexOf('temp_')!=0 && !form(fid)){
 				nfid+='\n('+fid+'.'+arr[i].name+')';
 			}
-			if(flx=='htmlediter')c.htmlediter(arr[i].fields);
+			if(flx=='htmlediter')lhtbo.push(arr[i].fields);
 		}
 	}
-	c.initsubtable();
-	if(nfid==''){
-		c.showdata();
-	}else{
-		alert('录入页面缺少必要的字段：'+nfid+'');
+	if(nfid!=''){
+		js.alert('缺少必要的字段：'+nfid+'，请重新布局录入页');
+		return;
 	}
-	
+	c.initsubtable();
+	if(lhtbo.length>0){
+		js.importjs('mode/kindeditor/kindeditor-min.js', function(){
+			for(var i=0;i<lhtbo.length;i++)c.htmlediter(lhtbo[i]);
+			c.showdata();
+		});
+	}else{
+		c.showdata();
+	}
 	if(ismobile==1)f.fileobj = $.rockupload({
 		autoup:false,
 		fileview:'view_fileidview',
@@ -148,48 +161,8 @@ var c={
 		if(ismobile==1)js.msg('msg', msg);
 		if(fid && form(fid))form(fid).focus();
 	},
-	selectdatadata:{},
-	onselectdata:{},
-	changeuser_before:function(){},
-	onselectdatabefore:function(){},
-	onselectdataall:function(){},
-	selectdata:function(s1,ced,fid,tit,zbis){
-		if(isedit==0)return;
-		if(!tit)tit='请选择...';
-		if(s1.indexOf('[SQL]')==0){js.msg('msg','此元素类型的不支持数据源是SQL的');return;}
-		var a1 = s1.split(','),idobj=false,acttyle='act';
-		var fids = a1[1];
-		if(fids){
-			if(zbis>=1){//说明是子表
-				var gezs = this.getxuandoi(fid);
-				fids+=gezs[2];
-			}
-			idobj=form(fids);
-		}
-		var gcan,dass,i,befs
-		gcan = {'act':a1[0],'acttyle':acttyle,'sysmodenum':moders.num,'sysmid':mid};
-		dass = this.selectdatadata[fid];
-		befs = this.onselectdatabefore(fid,zbis,s1);
-		if(befs){
-			if(typeof(befs)=='string'){js.msg('msg',befs);return;}
-			if(typeof(befs)=='object'){
-				dass=[];
-				for(i in befs)gcan[i]=befs[i];
-			}
-		}
-		$.selectdata({
-			data:dass,title:tit,fid:fid,
-			url:geturlact('getselectdata', gcan),
-			checked:ced, nameobj:form(fid),idobj:idobj,
-			onloaddata:function(a){
-				c.selectdatadata[fid]=a;
-			},
-			onselect:function(seld,sna,sid){
-				c.onselectdataall(this.fid,seld,sna,sid);
-				if(c.onselectdata[this.fid])c.onselectdata[this.fid](seld,sna,sid);
-			}
-		});
-	},
+	
+	
 	changisturn:function(){
 		var txt = '提交(S)';
 		if(!get('sysisturn').checked)txt='存草稿(S)';
@@ -206,7 +179,7 @@ var c={
 			fid=fa.fields;
 			flx=fa.fieldstype;
 			nas=fa.name;
-			if(ismobile==0 && fa.islu=='1' && flx=='htmlediter'){
+			if(fa.islu=='1' && flx=='htmlediter' && this.editorobj[fid]){
 				d[fid] = this.editorobj[fid].html();
 			}
 			val=d[fid];
@@ -402,161 +375,12 @@ var c={
 			});
 		}
 	},
-	//初始上传框
-	filearr:{},
-	uploadback:function(){},
-	initinput:function(){
-		var o,o1,sna,i,tsye,uptp,tdata,farr=alldata.filearr,far;
-		var o = $('div[id^="filed_"]');
-		for(i=0;i<o.length;i++){
-			o1 = o[i];sna= $(o1).attr('tnam');tsye=$(o1).attr('tsye');tdata=$(o1).attr('tdata');
-			if(isedit==1){
-				uptp = 'image';
-				if(tsye=='file'){
-					uptp='*';
-					if(!isempt(tdata))uptp=tdata;
-					$('#'+sna+'_divadd').show();
-				}else{
-					$(o1).show();
-				}
-				$.rockupload({
-					'inputfile':''+o1.id+'_inp',
-					'initremove':false,'uptype':uptp,
-					'oparams':{sname:sna,snape:tsye},
-					'onsuccess':function(f,gstr){
-						var sna= f.sname,tsye=f.snape,d=js.decode(gstr);
-						if(tsye=='img'){
-							get('imgview_'+sna+'').src = d.filepath;
-							form(sna).value=d.filepath;
-							c.upimages(sna,d.id,false);
-						}else if(tsye=='file'){
-							$('#meng_'+c.uprnd+'').remove();
-							$('#up_'+c.uprnd+'').attr('upid_'+sna+'',d.id);
-							c.upfbo = false;
-							c.filearr['f'+d.id+''] = f;
-							c.showupid(sna);//显示ID	
-						}
-						c.uploadback(sna, f);
-					},
-					'onprogress':function(f,bl){
-						var sna= f.sname,tsye=f.snape;
-						if(tsye=='file'){
-							$('#meng_'+c.uprnd+'').html(''+bl+'%');
-						}
-					},
-					onchange:function(f){
-						var sna= f.sname,tsye=f.snape;
-						if(tsye=='file'){
-							var flx = js.filelxext(f.fileext);
-							c.uprnd = js.getrand();
-							c.upfbo = true;
-							var s='<div onclick="c.clickupfile(this,\''+sna+'\')" id="up_'+c.uprnd+'" title="'+f.filename+'('+f.filesizecn+')"  class="upload_items">';
-							if(f.isimg){
-								s+='<img class="imgs" src="'+f.imgviewurl+'">'
-							}else{
-								s+='<div class="upload_items_items"><img src="web/images/fileicons/'+flx+'.gif" alian="absmiddle"> ('+f.filesizecn+')<br>'+f.filename+'</div>';
-							}
-							s+='<div id="meng_'+c.uprnd+'" class="upload_items_meng" style="font-size:16px">0%</div></div>';
-							$('#'+sna+'_divadd').before(s);
-						}else if(tsye=='img'){
-							js.loading('上传中...');
-						}
-					}
-				});
-			}
-			var val = form(sna).value;
-			if(tsye=='img'){
-				var val1 = data[''+sna+'_view'];
-				if(!val1)val1=val;
-				if(val1)get('imgview_'+sna+'').src=val1;
-			}
-			//显示上传文件信息
-			if(tsye=='file' && farr && val){
-				var fid,f,s,vals=','+val+',';
-				for(fid in farr){
-					f = farr[fid];
-					if(!f || vals.indexOf(','+f.id+',')<0)continue;
-					this.showfileup(sna, f);
-				}
-				this.showupid(sna);
-			}
-		}
-		
-		if(ismobile==1){
-			$('div[tmp="mobilezbiao"]').css('width',''+($(window).width()-12)+'px');
-		}
-	},
-	showfileup:function(sna, f){
-		var s = '';
-		s='<div onclick="c.clickupfile(this,\''+sna+'\')" title="'+f.filename+'('+f.filesizecn+')" upid_'+sna+'="'+f.id+'" class="upload_items">';
-		if(js.isimg(f.fileext)){
-			s+='<img class="imgs" src="'+f.thumbpath+'">';
-		}else{
-			s+='<div class="upload_items_items"><img src="web/images/fileicons/'+js.filelxext(f.fileext)+'.gif" alian="absmiddle"> ('+f.filesizecn+')<br>'+f.filename+'</div>';
-		}
-		s+='</div>';
-		$('#'+sna+'_divadd').before(s);
-		this.filearr['f'+f.id+''] = f;
-	},
-	upimages:function(fid,fileid,bs){
-		if(!bs){
-			js.loading('等待上传完成...');
-			setTimeout("c.upimages('"+fid+"','"+fileid+"', true)",3000);
-		}else{
-			js.ajax(geturlact('upimagepath'),{fileid:fileid,fid:fid},function(ret){
-				js.unloading();
-				var da = ret.data;
-				if(da.path)form(da.fid).value=da.path;
-			},'get,json');
-		}
-	},
-	//多文件点击上传
-	uploadfileibefore:function(){},
-	uploadfilei:function(sna){
-		if(isedit==0)return;
-		var ts = this.uploadfileibefore(sna);
-		if(ts){js.msg('msg',ts);return;}
-		if(this.upfbo){js.msg('msg','请等待上传完成在添加');return;}
-		get('filed_'+sna+'_inp').click();
-	},
-	//上传完成
-	showupid:function(sna){
-		var os = $('div[upid_'+sna+']'),fvid='';
-		for(var i=0;i<os.length;i++){
-			fvid+=','+$(os[i]).attr('upid_'+sna+'')+'';
-		}
-		if(fvid!='')fvid=fvid.substr(1);
-		form(sna).value=fvid;
-	},
 	
 	//预览文件
 	downshow:function(id, ext,pts){
 		js.yulanfile(id, ext,pts);
 	},
 	
-	//上传文件点击
-	clickupfile:function(o1,sna, xs){
-		this.yuobj = o1;
-		var o = $(o1);
-		var fid = o.attr('upid_'+sna+'');
-		if(isempt(fid))return;
-		var f = this.filearr['f'+fid+''];if(!f)return;
-		if(isedit==0 || xs){
-			js.alertclose();
-			this.loadicons();
-			js.fileopt(fid,0);
-		}else{
-			var fileext = f.fileext,oflx=',doc,docx,ppt,pptx,xls,xlsx,',s1='';
-			if(oflx.indexOf(','+fileext+',')>-1)s1='&nbsp; <a style="color:blue" href="javascript:;" onclick="js.alertclose();js.fileopt('+fid+',2)">在线编辑</a>';
-			js.confirm('确定要<font color=red>删除文件</font>：'+o1.title+'吗？<a style="color:blue" href="javascript:;" onclick="js.alertclose();js.downshow('+fid+',\'abc\')">下载</a>&nbsp; <a style="color:blue" href="javascript:;" onclick="c.clickupfile(c.yuobj,\''+sna+'\', true)">预览</a>'+s1+'',function(jg){
-				if(jg=='yes'){
-					o.remove();
-					c.showupid(sna);
-					$.get(js.getajaxurl('delfile','upload','public',{id:fid}));
-				}
-			});
-		}
-	},
 	
 	showfilestr:function(d){
 		var flx = js.filelxext(d.fileext);
@@ -601,7 +425,7 @@ var c={
 						}
 					}else if(flx=='checkbox'){
 						form(fid).checked = (val=='1');
-					}else if(flx=='htmlediter' && ismobile==0){
+					}else if(flx=='htmlediter' && this.editorobj[fid]){
 						this.editorobj[fid].html(val);
 					}else if(flx.substr(0,6)=='change'){
 						if(form(fid))form(fid).value=val;
@@ -632,7 +456,7 @@ var c={
 			initbodys(form('id').value);
 			if(isedit==0){
 				this.formdisabled();
-				js.setmsg('无权编辑，查看<a href="http://www.rockoa.com/view_wqbj.html" target="_blank" class="blue">[帮助]</a>');
+				js.setmsg('无权编辑');
 			}else{
 				$('#AltSspan').show();
 				c.initdatelx();
@@ -667,37 +491,11 @@ var c={
 		js.changeclear(na);
 	},
 	editorobj:{},
-	htmlediteritems:function(){},
-	htmlediter:function(fid){
-		if(ismobile==1)return;
-		var items = [
-			'forecolor', 'hilitecolor', 'bold', 'italic', 'underline','removeformat','|',
-			'fontname', 'fontsize','quickformat', '|', 
-			'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist','insertunorderedlist', '|',
-			'image', 'link','unlink','|',
-			'undo','source','clearhtml','fullscreen'
-		];
-		var oethed  = this.htmlediteritems(fid);
-		if(oethed){
-			var kx = 0,i;
-			if(oethed[0]=='clear'){items=[];kx=1;oethed.push('fullscreen')}
-			for(i=kx;i<oethed.length;i++)items.push(oethed[i]);
-		}
-		var cans  = {
-			resizeType : 0,
-			allowPreviewEmoticons : false,
-			allowImageUpload : true,
-			formatUploadUrl:false,
-			allowFileManager:true,
-			uploadJson:'?m=upload&a=upimg&d=public',
-			minWidth:'300px',height:'250',
-			items : items
-		};
-		this.editorobj[fid] = KindEditor.create("[name='"+fid+"']", cans);
-	},
+	
 	subtablefields:[],
+	subtablestring:[],
 	initsubtable:function(){
-		var i,oba,j,o,nas,nle,nasa,fname,o2;
+		var i,oba,j,o,nas,nle,nasa,fname,o2,str,cell,i1;
 		this.subcount = $("input[name^='sub_totals']").length;
 		for(i=0;i<this.subcount;i++){
 			o2 = get('tablesub'+i+'');
@@ -717,6 +515,10 @@ var c={
 					fname.push(nna.substr(0,nna.length-1));
 				}
 				this.subtablefields[i]=fname;
+				cell = o2.rows[1].cells.length;
+				str='';
+				for(i1=0;i1<cell;i1++)str+='<td>'+o2.rows[1].cells[i1].innerHTML+'</td>';
+				this.subtablestring[i]=str;
 			}
 		}
 		
@@ -776,15 +578,13 @@ var c={
 	},
 	insertrow:function(xu, d, isad){
 		var o2 = get('tablesub'+xu+'');
-		if(!o2){
-			alert('表单设计有误，请重新设计多行子表');
-			return;
-		}
+		if(!o2){alert('表单设计有误，请重新设计第'+(xu+1)+'个多行子表');return;}
 		var o=$('#tablesub'+xu+'');
 		var oi = o2.rows.length-1,i,str='',oba,nas,oj,nna,ax2,d1,nass;
 		oi=1;
-		var cell = o2.rows[oi].cells.length;
-		for(i=0;i<cell;i++)str+='<td>'+o2.rows[oi].cells[i].innerHTML+'</td>';
+		//var cell = o2.rows[oi].cells.length;
+		//for(i=0;i<cell;i++)str+='<td>'+o2.rows[oi].cells[i].innerHTML+'</td>';
+		str = this.subtablestring[xu];
 		oba = o.find('tr:eq('+oi+')').find('[name]');
 		oj  = parseFloat(form('sub_totals'+xu+'').value);
 		var narrs=[],fasr=this.subtablefields[xu],wux=''+xu+'_'+oj+'';
@@ -793,7 +593,7 @@ var c={
 			oi = nas.lastIndexOf('_');
 			nass= nas.substr(0, oi-1);
 			nna=nass+''+wux+'';
-			str=str.replace(new RegExp(nas,'gi'), nna);
+			str=str.replace(new RegExp(''+nass+''+xu+'_0','gi'), nna);
 			narrs.push(nna);
 		}
 		form('sub_totals'+xu+'').value=(oj+1);
@@ -909,10 +709,7 @@ var c={
 		o.show();
 		o.prev().show();
 	},
-	uploadimgclear:function(fid){
-		get('imgview_'+fid+'').src='images/noimg.jpg';
-		form(fid).value='';
-	},
+	
 	
 	//----强大公式计算函数处理start-----
 	inputblur:function(o1,zb){
@@ -988,7 +785,7 @@ var c={
 			dds   = this.getsubdata(zb);
 			for(i=0;i<dds.length;i++){
 				gss = gongsi+'';
-				for(i1 in dds[i])gss=gss.replace('{zb'+zb+'.'+i1+'}', dds[i][i1]);
+				for(i1 in dds[i])gss=gss.replace('{zb'+zb+'.'+i1+'}', dds[i][i1] ? dds[i][i1] : 0);
 				str+= '+('+gss+')';
 			}
 		}

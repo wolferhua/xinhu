@@ -8,7 +8,7 @@ $(document).ready(function(){
 		window:false,rand:'{rand}',tablename:'flow_set',
 		url:publicsave('{mode}','{dir}'),url:publicsave('{mode}','{dir}'),
 		params:{otherfields:'optdt={now}'},aftersaveaction:'flowsetsaveafter',beforesaveaction:'flowsetsavebefore',
-		submitfields:'name,tables,type,num,table,sort,isscl,status,where,summary,summarx,pctx,mctx,wxtx,emtx,ddtx,isflow,sericnum,receid,recename,names,statusstr,isgbjl,ispl,ishz,istxset,isup,isflowlx,isgbcy,isbxs,lbztxs,iscs,zfeitime',
+		submitfields:'name,tables,type,num,table,sort,isscl,status,where,summary,summarx,pctx,mctx,wxtx,emtx,ddtx,isflow,sericnum,receid,recename,names,statusstr,isgbjl,ispl,ishz,istxset,isup,isflowlx,isgbcy,isbxs,lbztxs,iscs,zfeitime,istpl',
 		requiredfields:'name,type,num,table',
 		success:function(){
 			closenowtabs();
@@ -172,6 +172,7 @@ cont:
 				<label><input name="wxtx" value="1" type="checkbox"> 微信提醒</label>&nbsp; &nbsp; 
 				<label><input name="ddtx" value="1" type="checkbox"> 钉钉提醒</label>&nbsp; &nbsp; 
 				<label><input name="isup" value="1" type="checkbox"> 同步更新(同步流程模块时一起更新)</label>&nbsp; &nbsp; 
+				<label><input name="istpl" value="1" type="checkbox"> 支持多模版</label>&nbsp; &nbsp; 
 				<label><input name="status" value="1" checked type="checkbox"> 启用</label><br>
 				<font color=#888888>微信提醒需要有微信企业号或企业微信，钉钉提醒需要安装钉钉接口插件，否则将崩毁。</font>
 			</td>

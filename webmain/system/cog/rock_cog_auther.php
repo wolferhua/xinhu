@@ -96,7 +96,7 @@ $(document).ready(function(){
 			<td colspan="2"><h4>系统签授</h4></td>
 		</tr>
 		<tr>
-			<td colspan="2"><div style="font-size:13px;color:#888888;padding-bottom:20px">是为了防止系统盗版使用，需要把你部署的系统签名授权，绑定了域名和有效时间，签授后才能有效享有系统功能，更好的升级维护。</div></td>
+			<td colspan="2"><div style="font-size:13px;color:#888888;padding-bottom:20px">是为了防止系统盗版使用，需要把你部署的系统签名授权，绑定了域名和有效时间，签授后才能有效享有系统功能，更好的升级维护，登录<a href="<?=URLY?>" target="_blank">官网</a>用户中心→系统签授，获取签授密钥。</div></td>
 		</tr>
 		<tr>
 			<td height="40" width="70">签授情况</td>

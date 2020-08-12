@@ -37,7 +37,7 @@ class flow_userClassModel extends flowModel
 			$where.= " and instr(`deptpath`,'[$detpid]')>0";
 		}
 		return array(
-			'fields'=> '`name`,`id`,`id` as uid,`face`,`sort`,`deptallname`,deptpath,`ranking`,`tel`,`mobile`,`email`,`user`,num,workdate,sex,deptname,deptnames,superman,status,type,online,lastonline,isvcard',
+			'fields'=> '`name`,`id`,`id` as uid,`face`,`sort`,`deptallname`,deptpath,`ranking`,`tel`,`mobile`,`email`,`user`,num,workdate,sex,deptname,deptnames,superman,status,type,online,lastonline,isvcard,`companyid`',
 			'order' => 'sort',
 			'where' => $where
 		);
@@ -45,9 +45,12 @@ class flow_userClassModel extends flowModel
 	
 	
 	//替换
+	private $companyarr = array();
 	public function flowrsreplace($rs, $lx=0)
 	{
-		
+		if(!$this->companyarr){
+			$this->companyarr = $this->db->getkeyall('[Q]company','id,name');
+		}
 		if(isset($rs['mobile'])){
 			$sjhao = $rs['mobile'];
 		}
@@ -60,7 +63,7 @@ class flow_userClassModel extends flowModel
 		$type = arrvalue($rs,'type');
 		if($type=='0')$rs['type']='';
 		if($type=='1')$rs['type']='<font color=green>是</font>';
-		if(isset($rs['companyid']) && $lx==1)$rs['companyid'] = m('company')->getmou('name',"`id`='".$rs['companyid']."'");
+		if(isset($rs['companyid']))$rs['companyid'] = arrvalue($this->companyarr, $rs['companyid']);
 		
 		//判断当前用户状态
 		$online 	= arrvalue($rs,'online','0');

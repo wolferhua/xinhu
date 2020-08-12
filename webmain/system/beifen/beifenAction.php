@@ -21,7 +21,7 @@ class beifenClassAction extends Action
 				$this->db->query($sql2, false);
 			}
 		}
-		$this->option->delete('`pid`=-2'); //收信的清空
+		$this->option->delpid('-2,-102'); //收信的清空
 		m('company')->delete('id>1');
 		$sql2 = "alter table `[Q]company` AUTO_INCREMENT=1";
 		$this->db->query($sql2, false);

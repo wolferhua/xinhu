@@ -89,7 +89,7 @@ class fileClassModel extends Model
 	
 	public function isyulan($ext)
 	{
-		return contain(',txt,log,html,htm,js,php,php3,mp4,md,cs,sql,java,json,css,asp,aspx,shtml,cpp,c,vbs,jsp,xml,bat,sh,', ','.$ext.',');
+		return contain(',txt,log,html,htm,js,php,php3,mp4,md,cs,sql,java,json,css,asp,aspx,shtml,cpp,c,vbs,jsp,xml,bat,ini,conf,sh,', ','.$ext.',');
 	}
 	
 	//判断是否可预览
@@ -303,7 +303,8 @@ class fileClassModel extends Model
 			
 			if(!file_exists($filepath))exit('404 Not find files');
 			if(!contain($filename,'.'.$fileext.''))$filename .= '.'.$fileext.'';
-			$this->fileheader($filename, $fileext, $rs['filesize']);
+			$filesize = filesize($filepath);
+			$this->fileheader($filename, $fileext, $filesize);
 			if(substr($filepath,-4)=='temp'){
 				$content	= file_get_contents($filepath);
 				echo base64_decode($content);
@@ -313,7 +314,7 @@ class fileClassModel extends Model
 					return;
 				}
 				ob_clean();flush();readfile($filepath);return;
-				if($rs['filesize'] > 5*1024*1024){
+				if($filesize > 5*1024*1024){
 					header('location:'.$filepath.'');
 				}else{
 					echo file_get_contents($filepath);

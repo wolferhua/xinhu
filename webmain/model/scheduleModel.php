@@ -139,7 +139,7 @@ class scheduleClassModel extends Model
 		$this->rock->adminname 	= $dbrs['optname'];
 		$this->rock->adminid 	= $dbrs['uid'];
 		$mdb  		= m('flow')->initflow('scheduld');
-		if($mdb->rows("`schid`='".$dbrs['id']."' and `startdt` like '".$dt."%'")>0)return;//有添加过了
+		if($mdb->rows("`schid`='".$dbrs['id']."' and `startdt` like '".$dt."%'")>0)return;//有添加过
 		
 		$inarr 		= array(
 			'title' 	=> $dbrs['title'],

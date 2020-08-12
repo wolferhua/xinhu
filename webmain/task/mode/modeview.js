@@ -1,4 +1,4 @@
-var isedit = 1,qmimgstr='',isxiang=1;
+var isedit = 1,qmimgstr='',isxiang=1,alldata={},data={};
 function othercheck(){}
 
 //函数触发
@@ -17,7 +17,6 @@ function initbody(){
 	$('.menullss li').click(function(){
 		c.mencc(this);
 	});
-	c.initinput();
 	if(document.myform && form('fileid')){
 		if(typeof(FormData)=='function'){
 			f.fileobj = $.rockupload({
@@ -39,20 +38,25 @@ function initbody(){
 		}
 	}
 	js.tanstyle=1;
-	if(document.myform && typeof(initbodys)=='function')initbodys();
+	if(document.myform && get('modelujs')){
+		js.importjs('webmain/flow/input/inputjs/input_two.js?'+Math.random()+'', function(){
+			for(var oi in inputtwo)c[oi]=inputtwo[oi];
+			if(typeof(initbodys)=='function')initbodys();
+			c.initinput();
+			//检查是否有编辑器
+			var hobj = $("span[fieldstype='htmlediter']");
+			if(hobj.length>0)js.importjs('mode/kindeditor/kindeditor-min.js', function(){
+				for(var i=0;i<hobj.length;i++)c.htmlediter($(hobj[i]).attr('fieidscheck'));
+			});
+		});
+	}
 	
 	if(receiptrs){
 		var s = '<div style="position:fixed;top:40%;right:5px;padding:10px;border-radius:4px;z-index:5px;background:#555555;color:white" id="receiptrsdiv"><div>此单据需要回执确认<br>请将页面拉到最后</div><div style="margin-top:5px"><input type="button"  onclick="c.receiptque()" value="回执确认" class="webbtn btn-danger"></div></div>';
 		$('body').append(s);
 	}
 	
-	$('#contentshow img').click(function(){c.showviews(this)});
-	
-	//检查是否有编辑器
-	var hobj = $("span[fieldstype='htmlediter']");
-	if(hobj.length>0)js.importjs('mode/kindeditor/kindeditor-min.js', function(){
-		for(var i=0;i<hobj.length;i++)c.htmlediter($(hobj[i]).attr('fieidscheck'));
-	});
+	$('#contentshow img[onclick=""]').click(function(){c.showviews(this)});
 }
 function showchayue(opt, st){
 	alert('总查阅:'+st+'次\n最后查阅：'+opt+'');
@@ -245,23 +249,6 @@ var c={
 		return url;
 	},
 	editorobj:{},
-	htmlediter:function(fid){
-		var cans  = {
-			resizeType : 0,
-			allowPreviewEmoticons : false,
-			allowImageUpload : true,
-			formatUploadUrl:false,
-			allowFileManager:true,
-			uploadJson:'?m=upload&a=upimg&d=public',
-			minWidth:'300px',height:'250',
-			items : [
-				'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
-			'removeformat','|','fontname', 'fontsize','quickformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
-			'insertunorderedlist', '|','image', 'link','unlink','|','undo','source','clearhtml','fullscreen'
-			]	
-		};
-		this.editorobj[fid] = KindEditor.create("[name='"+fid+"']", cans);
-	},
 	showtx:function(msg){
 		js.setmsg(msg);
 		if(ismobile==1)js.msg('msg', msg);
@@ -387,37 +374,6 @@ var c={
 		if(!this.loacdis){
 			$('body').append('<link rel="stylesheet" type="text/css" href="web/res/fontawesome/css/font-awesome.min.css">');
 			this.loacdis= true;
-		}
-	},
-	//初始上传框
-	initinput:function(){
-		var o,o1,sna,i,tsye,tdata,uptp,far;
-		var o = $('div[id^="filed_"]');
-		if(isedit==1)o.show();
-		for(i=0;i<o.length;i++){
-			o1 = o[i];sna= $(o1).attr('tnam');tsye=$(o1).attr('tsye');tdata=$(o1).attr('tdata');
-			if(isedit==1){
-				uptp = 'image';
-				if(tsye=='file'){
-					uptp='*';
-					if(!isempt(tdata))uptp=tdata;
-				}
-				$.rockupload({
-					'inputfile':''+o1.id+'_inp',
-					'initremove':false,'uptype':uptp,
-					'oparams':{sname:sna,snape:tsye},
-					'onsuccess':function(f,gstr){
-						var sna= f.sname,tsye=f.snape,d=js.decode(gstr);
-						if(tsye=='img'){
-							get('imgview_'+sna+'').src = d.filepath;
-							form(sna).value=d.filepath;
-						}else if(tsye=='file'){
-							$('#fileview_'+sna+'').html(c.showfilestr(d));
-							form(sna).value=d.id;
-						}
-					}
-				});
-			}
 		}
 	},
 	showfilestr:function(d){
@@ -598,33 +554,6 @@ var c={
 		return $(o1).attr(art);
 	},
 	
-	selectdatadata:{},
-	onselectdata:{},
-	selectdata:function(s1,ced,fid,tit,zbis){
-		if(isedit==0)return;
-		if(!tit)tit='请选择...';
-		var a1 = s1.split(','),idobj=false;
-		var fids = a1[1];
-		if(fids){
-			if(zbis==1){
-				var gezs = this.getxuandoi(fid);
-				fids+=gezs[2];
-			}
-			idobj=form(fids);
-		}
-		$.selectdata({
-			data:this.selectdatadata[fid],title:tit,
-			fid:fid,
-			url:geturlact('getselectdata',{act:a1[0],sysmodenum:modenum,sysmid:mid}),
-			checked:ced, nameobj:form(fid),idobj:idobj,
-			onloaddata:function(a){
-				c.selectdatadata[fid]=a;
-			},
-			onselect:function(seld,sna,sid){
-				if(c.onselectdata[this.fid])c.onselectdata[this.fid](seld,sna,sid);
-			}
-		});
-	},
 	//评论
 	pinglun:function(o1){
 		js.setmsg('','','pinglun_spage');

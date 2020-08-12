@@ -110,7 +110,6 @@ class inputAction extends Action
 		}
 		
 		//人员选择保存的
-		$otherfileid = '';
 		foreach($fieldsarr as $k=>$rs){
 			if(substr($rs['fieldstype'],0,6)=='change'){
 				if(!$this->isempt($rs['data'])){
@@ -128,7 +127,7 @@ class inputAction extends Action
 			}
 			if($rs['fieldstype']=='uploadfile'){
 				$_val= arrvalue($uaarr, $rs['fields']);
-				if(!isempt($_val))$otherfileid.=','.$_val.'';
+				if(!isempt($_val))$this->otherfileid.=','.$_val.'';
 			}
 		}
 		
@@ -239,7 +238,7 @@ class inputAction extends Action
 		
 		if($id==0)$id = $this->db->insert_id();
 		m('file')->addfile($this->post('fileid'), $table, $id, $modenum);
-		if($otherfileid!='')m('file')->addfile(substr($otherfileid,1), '', $id, $modenum);
+		if($this->otherfileid!='')m('file')->addfile(substr($this->otherfileid,1), '', $id, $modenum);
 		$newrs 	= $db->getone($id);
 		$this->companyid 	= isset($newrs['companyid']) ? (int)$newrs['companyid'] : (int)arrvalue($newrs, 'comid', '0');
 		if($this->companyid==0)$this->companyid = m('admin')->getcompanyid();
@@ -248,6 +247,7 @@ class inputAction extends Action
 		if($tablessa)foreach($tablessa as $zbx=>$zbtab){
 			if($zbtab)$this->savesubtable($zbtab, $id, $zbx, $addbo);
 		}
+	
 		
 		//保存后处理
 		$this->saveafter($table,$this->getsavenarr($uaarr, $oldrs), $id, $addbo);
@@ -289,6 +289,7 @@ class inputAction extends Action
 	
 	private $subtabledata = array();
 	private $subtabledata_msg = '';
+	private $otherfileid  = '';
 	public function getsubtabledata($xu)
 	{
 		$this->subtabledata_msg = '';
@@ -309,22 +310,29 @@ class inputAction extends Action
 				$flx= $rs['fieldstype'];
 				if(substr($fid,0,5)=='temp_')continue;
 				$na = ''.$fid.''.$xu.'_'.$i.'';
-				$val= $this->post($na);
-				if($rs['isbt']==1 && isempt($val))$bos=false;
-				
-				$msy = $this->attrcheck($val,$rs['attr'], $this->checkobj);
-				if($msy){
-					$msy='第'.$iszb.'子表行'.($sort+1).'的'.$rs['name'].''.$msy.'';
-					$this->subtabledata_msg = $msy;
-					return $arr;
-				}
-				
-				$uaarr[$fid] = $val;
-				if(substr($flx,0,6)=='change' && !isempt($rs['data'])){
-					$na = ''.$rs['data'].''.$xu.'_'.$i.'';
+				if(!isset($_POST[$na]))$bos=false;
+				if($bos){
 					$val= $this->post($na);
-					$uaarr[$rs['data']] = $val;
+					if($rs['isbt']==1 && isempt($val))$bos=false;
 				}
+				if($bos){
+					$msy = $this->attrcheck($val,$rs['attr'], $this->checkobj);
+					if($msy){
+						$msy='第'.$iszb.'子表行'.($sort+1).'的'.$rs['name'].''.$msy.'';
+						$this->subtabledata_msg = $msy;
+						return $arr;
+					}
+					$uaarr[$fid] = $val;
+					if(substr($flx,0,6)=='change' && !isempt($rs['data'])){
+						$na = ''.$rs['data'].''.$xu.'_'.$i.'';
+						$val= $this->post($na);
+						$uaarr[$rs['data']] = $val;
+					}
+					if($flx=='uploadfile'){
+						if($val)$this->otherfileid.=','.$val.'';
+					}
+				}
+				if(!$bos)break;
 			}
 			if(!$bos)continue;
 			$uaarr['sort'] 	= $sort;
@@ -510,7 +518,9 @@ class inputAction extends Action
 					$zbstr 	 = m('input')->getsubtable($modeid,$k1+1,1,1, $zbshu);
 					if($zbshu>2 && $this->flow->minwidth<300)$this->flow->minwidth = $zbshu*180;
 					if($zbstr!=''){
-						$content.='<tr><td style="padding:5px;" colspan="2"><div><b>'.arrvalue($nameaas, $k1).'</b></div>';
+						$zbnam   = arrvalue($nameaas, $k1);
+						$zbstr   = str_replace('{subzbname'.$k1.'}', $zbnam, $zbstr);
+						$content.='<tr><td style="padding:5px;" colspan="2"><div><b>'.$zbnam.'</b></div>';
 						if($this->flow->minwidth>300 && $this->rock->ismobile()){
 							$content.='<div tmp="mobilezbiao" style="width:280px;overflow:auto;"><div 
 						style="min-width:'.$this->flow->minwidth.'px">'.$zbstr.'</div></div>';

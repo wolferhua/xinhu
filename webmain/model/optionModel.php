@@ -185,6 +185,10 @@ class optionClassModel extends Model
 		return $sid;
 	}
 	
+	public function delpid($pid)
+	{
+		$this->delete("`pid` in($pid)");
+	}
 	
 	public function getcnumdata($num)
 	{

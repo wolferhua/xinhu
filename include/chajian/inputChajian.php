@@ -26,7 +26,7 @@ class inputChajian extends Chajian
 	
 	public function initFields($stwhe='')
 	{
-		$fieldarr 	= m('flow_element')->getrows($stwhe,'`fields`,`fieldstype`,`name`,`dev`,`data`,`isbt`,`islu`,`attr`,`savewhere`,`iszb`,`lens`','`sort`');
+		$fieldarr 	= m('flow_element')->getrows($stwhe,'*','`sort`');
 		foreach($fieldarr as $k=>$rs){
 			$this->fieldarr[$rs['fields']] = $rs;
 		}
@@ -131,7 +131,7 @@ class inputChajian extends Chajian
 		}
 		if($type=='textarea'){
 			$iszhang= false;
-			$str = '<textarea class="textarea" style="height:80px;'.$style.'" '.$attr.''.$lenstr.' name="'.$fname.'">'.$val.'</textarea>';
+			$str = '<textarea class="textarea" onblur="js.changdu(this)" style="height:80px;'.$style.'" '.$attr.''.$lenstr.' name="'.$fname.'">'.$val.'</textarea>';
 		}
 		if($type=='rockcombo' || $type=='select' || $type=='checkboxall' || $type=='radio'){
 			$attr.=' onchange="c.inputblur(this, '.$iszb.')"';
@@ -207,14 +207,13 @@ class inputChajian extends Chajian
 			$str = '<input name="'.$fname.'" '.$chk.' '.$attr.''.$styles.' type="checkbox" value="1"> ';
 		}
 		if($type=='uploadimg'){
-			$str = '<input name="'.$fname.'" type="hidden">';
+			$str = '<input name="'.$fname.'" value="'.$val.'" type="hidden">';
 			$str.= '<img src="images/noimg.jpg" onclick="c.showviews(this)" id="imgview_'.$fname.'" height="100">';
-			$str.= '<div style="display:none" tsye="img" tnam="'.$fname.'" id="filed_'.$fname.'"><a href="javascript:;" onclick="c.uploadimgclear(\''.$fname.'\')">删</a>&nbsp;<input type="file" style="width:120px" accept="image/jpg,image/jpeg,image/png" id="filed_'.$fname.'_inp"></div>';
+			$str.= '<div style="display:" tsye="img" tnam="'.$fname.'" id="filed_'.$fname.'"><a href="javascript:;" onclick="c.uploadimgclear(\''.$fname.'\')">删</a>&nbsp;<input onclick="c.initupss(\''.$fname.'\');" type="file" style="width:120px" accept="image/jpg,image/jpeg,image/png" id="filed_'.$fname.'_inp"></div>';
 		}
 		if($type=='uploadfile'){
 			$str = '<input name="'.$fname.'" value="'.$val.'" type="hidden">';
-			//$str.= '<span id="fileview_'.$fname.'"></span>';
-			$str.= '<div style="display:inline-block" id="fileview_'.$fname.'"><div onclick="c.uploadfilei(\''.$fname.'\')" style="display:none;border:dashed 1px #cccccc" id="'.$fname.'_divadd" class="upload_items"><img class="imgs" src="images/jia.png"></div></div>';
+			$str.= '<div style="display:inline-block" id="fileview_'.$fname.'"><div onclick="c.uploadfilei(\''.$fname.'\')" style="display:;border:dashed 1px #cccccc" id="'.$fname.'_divadd" class="upload_items"><img class="imgs" src="images/jia.png"></div></div>';
 			$str.= '<div style="display:none" tsye="file" tnam="'.$fname.'" tdata="'.$data.'" id="filed_'.$fname.'"><input type="file" style="width:120px" id="filed_'.$fname.'_inp"></div>';
 		}
 		if($type=='auto'){

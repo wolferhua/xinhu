@@ -34,6 +34,14 @@ class indexClassAction extends Action{
 			$arr['showkey'] = $this->jm->base64encode($this->jm->getkeyshow());
 			$arr['menuarr'] = $this->homeicons();
 			$arr['token']	= $this->admintoken;
+			$arr['authkey'] = $this->option->getval('auther_authkey');
+			$_key 			= substr(md5(URL.getconfig('randkey')),0,20);
+			$usedt 			= $this->option->getval($_key);
+			if(isempt($usedt)){
+				$usedt	= $this->jm->base64encode(date('Y-m-d', time()+7*24*3600));
+				$this->option->setval($_key.'@-102', $usedt);
+			}
+			$arr['usedt']	= $usedt;
 		}
 		$s = $s1 = '';
 		if($loadci==0){

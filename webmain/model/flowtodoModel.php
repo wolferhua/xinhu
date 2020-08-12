@@ -50,6 +50,8 @@ class flowtodoClassModel extends Model
 			'status'    => 1,
 			'readdt'	=> $this->rock->now
 		), "$where and `status`=0");
+		//历史会话
+		m('im_history')->update('`stotal`=0',"`uid`='$uid' and `stotal`>0 and `xgurl`='".$mode."|".$mid."'");
 	}
 	
 	public function getwdtotals($uid)
