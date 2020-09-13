@@ -17,6 +17,19 @@ class flow_wordxieClassModel extends flowModel
 		return $rs;
 	}
 	
+	protected function flowgetoptmenu($num)
+	{	
+		//判断是否可协作
+		if($num=='editfile'){
+			$rs = $this->flowrsreplace($this->rs,0);
+			if($rs['xiebool']){
+				return array('officebj'=>getconfig('officebj')); //返回编辑方式
+			}else{
+				return false;
+			}
+		}
+	}
+	
 	/**
 	*	协作好了上传文件
 	*/

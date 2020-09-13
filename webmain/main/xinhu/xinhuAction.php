@@ -56,7 +56,7 @@ class xinhuClassAction extends Action
 		sleep(3);
 		$mkey 	= $this->option->getval('asyntest');
 		$msg 	= '<font color="green">队列测试成功，可以使用</font>';
-		if($mkey!=$rand)$msg 	= '<font color="red">测试失败不能使用，说明你没有安装信呼的队列服务，去<a href="'.URLY.'view_rockservice.html" target="_blank">看看帮助</a>。</font>';
+		if($mkey!=$rand)$msg 	= '<font color="red">无法运行“'.$barr['cmdurl'].'”测试失败不能使用，去<a href="'.URLY.'view_rockservice.html" target="_blank">看看帮助</a>。</font>';
 		echo $msg;
 	}
 	

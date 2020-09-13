@@ -94,7 +94,7 @@
 		},
 		loaddata:function(d){
 			this.setdownsodata(d.souarr);
-			if(modeid>101 && d.loadci==1 && !d.atypearr)js.confirm('列表页没设置好，数据无法显示，没有可切换选择卡，去看帮助设置',function(){window.open('<?=URLY?>view_columns.html')});
+			if(modeid>101 && d.loadci==1 && (!d.atypearr || d.atypearr.length==0))js.confirm('列表页没设置好，数据无法显示，没有可切换选择卡，去看帮助设置',function(){window.open('<?=URLY?>view_columns.html')});
 			if(!d.atypearr)return;
 			get('addbtn_{rand}').disabled=(d.isadd!=true);
 			get('daobtn_{rand}').disabled=(d.isdaochu!=true);

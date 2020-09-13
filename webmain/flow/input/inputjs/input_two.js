@@ -3,11 +3,7 @@
 */
 
 var inputtwo={
-	selectdatadata:{},
-	onselectdata:{},
-	changeuser_before:function(){},
-	onselectdatabefore:function(){},
-	onselectdataall:function(){},
+	selectdatadata:{}, //保存数据源
 	selectdata:function(s1,ced,fid,tit,zbis){
 		if(isedit==0)return;
 		if(!tit)tit='请选择...';
@@ -46,7 +42,7 @@ var inputtwo={
 		});
 	},
 	
-	htmlediteritems:function(){},
+	//编辑器
 	htmlediter:function(fid){
 		var items = [
 			'forecolor', 'hilitecolor', 'bold', 'italic', 'underline','removeformat','|',
@@ -74,11 +70,9 @@ var inputtwo={
 		};
 		this.editorobj[fid] = KindEditor.create("[name='"+fid+"']", cans);
 	},
-	
-	
+
 	//初始上传框
 	filearr:{},
-	uploadback:function(){},
 	initupssa:{},
 	initinput:function(){
 		if(isedit==0){
@@ -207,7 +201,6 @@ var inputtwo={
 		}
 	},
 	//多文件点击上传
-	uploadfileibefore:function(){},
 	uploadfilei:function(sna){
 		if(isedit==0)return;
 		var ts = this.uploadfileibefore(sna);
@@ -251,5 +244,88 @@ var inputtwo={
 	uploadimgclear:function(fid){
 		get('imgview_'+fid+'').src='images/noimg.jpg';
 		form(fid).value='';
+	},
+	
+	//2020-09-02新增地图上选择位置
+	selectmap:function(sna,snall,fna,iszb){
+		var hei = winHb()-150;
+		var url = 'https://map.qq.com/api/js?v=2.exp&libraries=convertor,geometry&key=55QBZ-JGYLO-BALWX-SZE4H-5SV5K-JCFV7&callback=c.showmap';
+		js.tanbody('selectmap','选择['+fna+']',winWb()-((ismobile==1)?5:80),hei,{
+			html:'<div style="padding:5px"><input onkeyup="if(event.keyCode==13)c.selectmapsou(this)" type="text" placeholder="输入城市区号来定位如：0592" class="inputs"></div><div id="selectmap" style="height:'+(hei-20)+'px;overflow:hidden"></div>',
+			btn:[{text:'确定'}]
+		});
+		this.selectmapdata={sna:sna,snall:snall};
+		this._temsel=[24.51036967209648,118.17883729934692,12];
+		if(snall && form(snall))this._temsel = form(snall).value.split(',');
+		if(!this.showmapbo){js.importjs(url);}else{this.showmap()}
+		$('#selectmap_btn0').click(function(){
+			c.selectmapque();
+			js.tanclose('selectmap');
+		});
+	},
+	selectmapclear:function(sna,snall){
+		if(form(sna))form(sna).value='';
+		if(snall && form(snall))form(snall).value='';
+	},
+	showmapbo:false,
+	showmap:function(){
+		this.showmapbo=true;
+		var center = new qq.maps.LatLng(parseFloat(this._temsel[0]),parseFloat(this._temsel[1]));
+		map = new qq.maps.Map(get('selectmap'),{
+			center: center,
+			zoom: parseFloat(this._temsel[2]) 
+		});
+		qq.maps.event.addListener(map, 'click', function(event) {
+			marker.setPosition(event.latLng);
+		});
+		marker = new qq.maps.Marker({
+			position: center,
+			map: map,
+			draggable:true,
+			title:'点地图确定位置'
+		});
+	},
+	selectmapsou:function(o1){
+		var val = o1.value;
+		if(!val || isNaN(val))return;
+		if(!this.citylocation)this.citylocation = new qq.maps.CityService({
+			complete : function(result){
+				map.setCenter(result.detail.latLng);
+			}
+		});
+		this.citylocation.searchCityByAreaCode(val);
+	},
+	selectmapque:function(){
+		var as = marker.getPosition();
+		var x 	= as.getLat();
+		var y 	= as.getLng();
+		var zoom = map.getZoom();
+		this.selectmapdata.lat=x;
+		this.selectmapdata.lng=y;
+		this.selectmapdata.zoom=zoom;
+		js.msg('wait','确定搜索地址...');
+		this.geocoder(x,y);
+	},
+	//搜索位置
+	geocoder:function(lat,lng, jid){
+		if(!this.geocoderObj){
+			this.geocoderObj 	= new qq.maps.Geocoder();
+			this.geocoderObj.setComplete(function(result){
+				var d1 = c.selectmapdata;
+				d1.address = result.detail.address;
+				d1.addressinfo = result.detail.addressComponents;
+				js.msg();
+				var sna = d1.sna;
+				if(form(sna))form(sna).value=d1.address+'|'+d1.lat+','+d1.lng+'';
+				var sna1 = d1.snall;
+				if(sna1 && form(sna1))form(sna1).value=''+d1.lat+','+d1.lng+','+d1.zoom+'';
+				c.onselectmap(sna,d1);
+			});
+			this.geocoderObj.setError(function() {
+				js.msg('msg','搜索地址失败');
+			});
+		}
+		var center 	= new qq.maps.LatLng(lat, lng);
+		this.geocoderObj.getAddress(center);
 	}
 }

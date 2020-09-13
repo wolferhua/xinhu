@@ -134,4 +134,16 @@ class indexClassAction extends apiAction
 		}
 		return returnsuccess();
 	}
+	
+	public function addlogAction()
+	{
+		$tit  = $this->post('title');
+		$cont = $this->post('cont');
+		$web  = $this->post('web');
+		$level = (int)$this->post('level','0');
+		m('log')->addlogs($tit, $cont,$level, array(
+			'web'		=> $web,
+		));
+		return returnsuccess();
+	}
 }

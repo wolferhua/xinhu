@@ -56,6 +56,7 @@ class baseClassModel extends Model
 		if(!$urs)$urs= array();
 		$urs['uid']  		= $uid;
 		$urs['date'] 		= $date;
+		$urs['year']		= date('Y');
 		$urs['month']		= $month;
 		$urs['time']		= date('H:i:s');
 		$urs['now']  		= $this->rock->now;

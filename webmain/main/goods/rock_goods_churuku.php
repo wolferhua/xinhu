@@ -88,7 +88,7 @@ $(document).ready(function(){
 				o1=$(o[i]);
 				val=o1.val();
 				if(!isempt(val)){
-					val=parseInt(val);
+					val=parseFloat(val);
 					if(val>0)s+=','+o1.attr('valid')+'|'+val+'';
 				}
 			}

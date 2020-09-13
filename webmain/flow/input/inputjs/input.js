@@ -123,6 +123,16 @@ js.changeuser_before=function(na){
 }
 
 var c={
+	//可重写的方法
+	onselectdata:{},
+	onselectdataall:function(){},
+	changeuser_before:function(){},
+	onselectdatabefore:function(){},
+	htmlediteritems:function(){},
+	uploadback:function(){},
+	uploadfileibefore:function(){},
+	onselectmap:function(){},
+	
 	callback:function(cs, msg){
 		var calb = js.request('callback');
 		if(ismobile==1 && js.msgok)js.msgok(msg, function(){js.back()},1);
@@ -139,7 +149,6 @@ var c={
 		try{parent.js.msgok(msg);}catch(e){}
 		try{parent.js.tanclose('winiframe');}catch(e){}
 	},
-	
 	save:function(){
 		var d = this.savesss();
 		if(!d)return;
@@ -626,6 +635,11 @@ var c={
 			if(form(ans))form(ans).value=d[i];
 		}
 	},
+	//设置子表行数据【常用】
+	setrowval:function(fid, d){
+		var sela = this.getxuandoi(fid);
+		this.setrowdata(sela[0],sela[1], d);
+	},
 	//根据名称获取第几个子，哪一行[第几个子表，第几行]
 	getxuandoi:function(fid){
 		var naa = fid.substr(fid.lastIndexOf('_')-1);
@@ -779,7 +793,7 @@ var c={
 	},
 	subtongjisd:function(gongsi){
 		var str = '',blarr,zb,i,dds,kes,gss,i1;
-		if(gongsi.indexOf('zb0.')>-1 || gongsi.indexOf('zb1.')>-1 || gongsi.indexOf('zb2.')>-1){
+		if(gongsi.indexOf('zb0.')>-1 || gongsi.indexOf('zb1.')>-1 || gongsi.indexOf('zb2.')>-1 || gongsi.indexOf('zb3.')>-1 || gongsi.indexOf('zb4.')>-1){
 			blarr = this.pipematch(gongsi);
 			zb    = blarr[0].split('.')[0].replace('zb','');//哪个子表
 			dds   = this.getsubdata(zb);

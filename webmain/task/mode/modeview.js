@@ -600,10 +600,20 @@ var c={
 	
 	showeditcont:function(optdt,uid){
 		js.tanbody('editcont','修改记录',(ismobile==1) ? winWb()-10 : 600,300, {
-			html:'<div style="height:300px;overflow:auto"><div id="editcontview" style="padding:5px">'+js.getmsg('加载中...')+'</div></div>'
+			html:'<div style="height:300px;overflow:auto"><div id="editcontview" class="wrap" style="padding:5px">'+js.getmsg('加载中...')+'</div></div>'
 		});
 		js.ajax(c.gurl('editcont'),{optdt:optdt,uid:uid,mid:mid,modenum:modenum},function(ret){
 			$('#editcontview').html(ret);
 		},'get');
-	}
+	},
+	
+	//审核表单中可重写的方法，录入js写用到
+	onselectdata:{},
+	onselectdataall:function(){},
+	changeuser_before:function(){},
+	onselectdatabefore:function(){},
+	htmlediteritems:function(){},
+	uploadback:function(){},
+	uploadfileibefore:function(){},
+	onselectmap:function(){}
 };

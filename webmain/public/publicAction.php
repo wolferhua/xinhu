@@ -74,6 +74,11 @@ class publicClassAction extends ActionNot{
 				$this->rock->location($url);
 				return;
 			}
+			if($officeyl=='5'){
+				$url = 'index.php?a=fileedit&m=public&id='.$frs['id'].'&otype=1';
+				$this->rock->location($url);
+				return;
+			}
 		}
 		$this->displayfile = ''.P.'/public/filetopdf.html';
 		$this->smartydata['frs'] = $frs;
@@ -113,6 +118,8 @@ class publicClassAction extends ActionNot{
 	public function fileeditAction()
 	{
 		$id = (int)$this->get('id','0');
+		$otype = (int)$this->get('otype','0');
 		$this->smartydata['id'] = $id;
+		$this->smartydata['otype'] = $otype;
 	}
 }

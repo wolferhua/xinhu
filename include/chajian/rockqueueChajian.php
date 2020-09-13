@@ -76,7 +76,9 @@ class rockqueueChajian extends Chajian
 			'url'		=> $url,
 			'id'		=> $id
 		);
-		return $this->pushdata($rarr);
+		$barr = $this->pushdata($rarr);
+		$barr['cmdurl'] = ''.$type.':'.$url;
+		return $barr;
 	}
 	
 	/**

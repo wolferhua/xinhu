@@ -2,7 +2,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-<title>打卡定位查看</title>
+<title>地址定位位置查看</title>
 <style type="text/css">
 *{
     margin:0px;
@@ -13,6 +13,7 @@ body, button, input, select, textarea {
 }
 
 </style>
+<script src="js/jquery.js"></script>
 <script charset="utf-8" src="https://map.qq.com/api/js?v=2.exp&key=<?=$da['qqmapkey']?>"></script>
 <script>
 //初始化函数
@@ -27,7 +28,7 @@ var init = function() {
         map: map
     });
     infoWin.open();
-    infoWin.setContent('地址：<?=$da['rs']['label']?><br>定位时间：<?=$da['rs']['optdt']?>');
+    infoWin.setContent('<?=$da['rs']['content']?>');
     infoWin.setPosition(map.getCenter());
 	
 	var marker = new qq.maps.Marker({
@@ -42,6 +43,11 @@ var init = function() {
 			center:center,
 			radius:precision
 		});
+	}
+	var type = '<?=$da['rs']['type']?>';
+	if(type==1){
+		var str = '<div onclick="history.back()" style="position:absolute;top:5;left:5px; background:white;padding:8px;cursor:pointer"><img height="24" src="images/back.png" align="absmiddle">返回</div>';
+		$('body').append(str);
 	}
 }
 </script>

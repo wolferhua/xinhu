@@ -59,7 +59,7 @@ class rockeditChajian extends Chajian{
 		return $data;
 	}
 	
-	public function sendedit($id, $admintoken='')
+	public function sendedit($id, $admintoken='', $otype=0)
 	{
 		$frs 		= m('file')->getone($id);
 		if(!$frs)return returnerror('文件不存在');
@@ -101,8 +101,11 @@ class rockeditChajian extends Chajian{
 			$url = $this->updatekey.'?m=file&a=goto&filenum='.$onlynum.'&sign='.md5($this->rock->HTTPweb).'';
 			$url.= '&optid='.$this->adminid.'';
 			$url.= '&gokey='.$gokey.'';
-			$callurl = $this->rock->getouturl().'api.php?m=upload&a=upfilevb&fileid='.$id.'&adminid='.$this->adminid.'&token='.$admintoken.'';
-			$url.='&callurl='.$this->rock->jm->base64encode($callurl).'';
+			$url.= '&otype='.$otype.'';
+			if($otype==0){
+				$callurl = $this->rock->getouturl().'api.php?m=upload&a=upfilevb&fileid='.$id.'&adminid='.$this->adminid.'&token='.$admintoken.'';
+				$url.='&callurl='.$this->rock->jm->base64encode($callurl).'';
+			}
 			$bsar['url'] = $url;
 		}
 		return returnsuccess($bsar);

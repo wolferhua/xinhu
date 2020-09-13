@@ -1,7 +1,8 @@
 //流程模块【goodgh.物品归还】下录入页面自定义js页面,初始函数
 function initbodys(){
 	
-}
+}	
+
 c.addrow=function(o1){
 	js.msg('msg','请用读取领用单，无需要自己新增');
 	$(o1).remove();

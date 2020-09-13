@@ -565,11 +565,16 @@ class reimClassModel extends Model
 	*/
 	public function addhistory($type, $receid, $uids,$optdt, $cont,$sendid=0, $title='', $xgurl='',$messid=0)
 	{
-		$uidsas = explode(',', $uids);
-		$db 	= $this->hisobj;
+		$uidsas 	= explode(',', $uids);
+		$db 		= $this->hisobj;
+		$isuar		= array();
+		$uarrs 		= $db->getrows("`type`='$type' and `receid`='$receid' and `uid` in($uids)", '`uid`,`id`');
+		foreach($uarrs as $k=>$rs)$isuar[$rs['uid']]=$rs['id'];
+		$iarr 		= $garr = array();
+		$gids	= '';
 		foreach($uidsas as $uid){
-			$where 	= "`type`='$type' and `receid`='$receid' and `uid`='$uid'";
-			$one 	= $db->getone($where);
+			$where  = '';
+			if(isset($isuar[$uid]))$where = $isuar[$uid];
 			$arr 	= array();
 			$arr['optdt'] 	= $optdt;
 			$arr['cont'] 	= substr($cont, 0, 190);
@@ -577,18 +582,24 @@ class reimClassModel extends Model
 			$arr['title'] 	= $title;
 			$arr['xgurl'] 	= $xgurl;
 			$arr['messid'] 	= $messid;
-			if(!$one){
+			if($where==''){
 				$arr['type'] 	= $type;
 				$arr['receid'] 	= $receid;
 				$arr['uid'] 	= $uid;
 				$arr['stotal'] 	= 1;
-				$where 	= '';
 			}else{
-				$arr['stotal'] 	= $one['stotal']+1;
+				$arr['stotal'] 	= '(&;)`stotal`+1';
 			}
-			if($this->adminid==$uid)$arr['stotal']=0;
-			$db->record($arr, $where);
+			if($where==''){
+				$iarr[] = $arr;
+			}else{
+				if(!$garr)$garr = $arr;
+				$gids.=','.$where.'';
+			}
 		}
+		if($iarr)$db->insertAll($iarr);
+		if($gids!='')$db->update($garr,'`id` in('.substr($gids,1).')');
+		$db->update('`stotal`=0',"`type`='$type' and `receid`='$receid' and `uid`='$this->adminid'");
 	}
 	
 	public function delhistory($type, $receid, $uid=0)
@@ -1050,7 +1061,7 @@ class reimClassModel extends Model
 			if($_web=='xiaomi'){
 				$xmalias[] = $rs['token'];
 			}else if(in_array($rs['cfrom'], array('nppandroid','nppios'))){//2019-11-25最新新app
-				$nestr = ''.$rs['token'].'|'.substr($rs['web'],0,8).'|'.$_uid.'|';
+				$nestr = ''.$rs['token'].'|'.mb_substr($rs['web'],0,8).'|'.$_uid.'|';
 				if(contain($rs['web'],'huawei') && !contain($rs['ip'],'.'))$nestr.=''.$rs['ip'].'';
 				$alias2019[] = $nestr;
 				$uid2019[]   = $_uid;

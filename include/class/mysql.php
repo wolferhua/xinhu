@@ -636,9 +636,7 @@ abstract class mysql{
 	*/	
 	public function isempt($str)
 	{
-		$bool=false;
-		if( ($str==''||$str==NULL||empty($str)) && (!is_numeric($str)) )$bool=true;
-		return $bool;
+		return isempt($str);
 	}
 	
 	public function contain($str,$a)
@@ -659,6 +657,8 @@ abstract class mysql{
 		$adstr="'$str'";
 		if($this->isempt($str)){
 			$adstr='null';
+		}else{
+			if(substr($str,0,4)=='(&;)')$adstr=substr($str,4);
 		}
 		return $adstr;
 	}

@@ -154,7 +154,7 @@ class flow_workClassModel extends flowModel
 	{
 		$dtobj= c('date');
 		$dt   = $this->rock->date;
-		$rows = $this->getrows("`status`=1 and `state` in(0,2) and ifnull(`distid`,'')<>'' and `enddt`>='$dt'");
+		$rows = $this->getrows("`status` in(0,3,4) and ifnull(`distid`,'')<>'' and `enddt`>='$dt'");
 		$arr  = array();
 		foreach($rows as $k=>$rs){
 			$jg = $dtobj->datediff('d', $this->rock->date, $rs['enddt']);

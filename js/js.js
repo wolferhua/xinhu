@@ -37,6 +37,10 @@ $(document).ready(function(){
 		plus.key.addEventListener('backbutton',function(){js.back();},false);
 		initApp();
 	});
+	if(HOST=='127.0.0.1')window.addEventListener('error',function(e){
+		var msg = '文件：'+e.filename+'\n行：'+e.lineno+'\n错误：<font color=red>'+e.message+'</font>';
+		js.alert(msg,'js错误');
+	});
 });
 var js={path:'index',url:'',bool:false,login:{},initdata:{},openarr:{},scroll:function(){}};
 var isIE=true;
@@ -586,7 +590,7 @@ js.savecookie=function(name,value,d){
 	if(!d)d=365;
 	if(!value)d=-10;
 	expires.setTime(expires.getTime()+d*24*60*60*1000);
-	var str=''+name+'='+value+';expires='+expires.toGMTString()+';path=/';
+	var str=''+name+'='+value+';expires='+expires.toGMTString()+';path=/;SameSite=Strict';
 	document.cookie = str;
 }
 js.backtop=function(ci){
@@ -1079,7 +1083,7 @@ js.setselectdata = function(o, data, vfs, devs){
 	if(typeof(devs)=='undefined')devs=-1;
 	for(i=0;i<ty.length;i++){
 		o.options.add(new Option(ty[i].name,ty[i][vfs]));
-		if(i==devs)sv=ty[i][vfs];
+		if(i==devs || ty[i].checked)sv=ty[i][vfs];
 	}
 	if(sv)o.value=sv;
 }
@@ -1153,4 +1157,8 @@ js.changdu=function(o){
 		var zlen = o.value.length;
 		if(zlen>parseFloat(max))js.alert('录入数据长度'+zlen+'超过'+max+'总长度，其余会被截取掉');
 	}
+}
+js.showmap=function(str){
+	var url = 'index.php?d=main&m=kaoqin&a=location&info='+jm.base64encode(str)+'';
+   js.location(url);
 }

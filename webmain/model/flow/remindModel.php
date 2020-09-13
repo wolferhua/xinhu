@@ -292,6 +292,9 @@ class flow_remindClassModel extends flowModel
 					//发送
 					if($uids!=''){
 						$uids = substr($uids, 1);
+						$flow->flowweixinarr = array(
+							'url' => $flow->getweurl()
+						);
 						$flow->push($uids, '', $cont, $title);
 					}
 				}

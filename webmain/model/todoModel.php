@@ -15,10 +15,12 @@ class todoClassModel extends Model
 		foreach($arrs as $k=>$v)$arr[$k] = $v;
 		$uid	= ''.$uid.'';
 		$suid	= explode(',', $uid);
+		$iarr	= array();
 		foreach($suid as $suids){
 			$arr['uid']	= $suids;
-			$this->insert($arr);
+			$iarr[] = $arr;
 		}
+		if($iarr)$this->insertAll($iarr);
 	}
 	
 	public function addtodo($receid, $title, $mess, $mode='', $mid=0)
@@ -31,7 +33,7 @@ class todoClassModel extends Model
 		foreach($rows as $k=>$rs)$uids.= ','.$rs['id'].'';
 		if($uids != ''){
 			$uids = substr($uids, 1);
-			if($mode!='' && $mid>0)$this->delete("`modenum`='$mode' and mid='$mid' and `uid` in($uids) and `status`=0");
+			if($mode!='' && $mid>0)$this->delete("`uid` in($uids) and `modenum`='$mode' and mid='$mid' and `status`=0");
 			$this->add($uids, $title, $mess, array(
 				'modenum' => $mode,
 				'mid'	  => $mid

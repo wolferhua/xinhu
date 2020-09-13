@@ -631,9 +631,24 @@ class kaoqinClassAction extends Action
 	public function locationAction()
 	{
 		$id = (int)$this->get('id');
-		$rs = m('location')->getone($id);
-		if(!$rs)exit('not found record');
-		if($rs['scale']<=0)$rs['scale']=12;
+		
+		if($id>0){
+			$rs = m('location')->getone($id);
+			if(!$rs)exit('not found record');
+			if($rs['scale']<=0)$rs['scale']=12;
+			$rs['content'] = '地址：'.$rs['label'].'<br>定位时间：'.$rs['optdt'].'';
+			$rs['type'] = 0;
+		}else{
+			$info = $this->get('info');
+			if(!$info)exit('not found info');
+			$arr = explode(',', $this->jm->base64decode($info));
+			$rs['precision'] = 0;
+			$rs['location_x'] = $arr[0];
+			$rs['location_y'] = $arr[1];
+			$rs['scale'] = $arr[2];
+			$rs['type'] = 1;
+			$rs['content'] = arrvalue($arr,3);
+		}
 		$this->smartydata['rs'] = $rs;
 		$this->smartydata['qqmapkey']	= getconfig('qqmapkey','55QBZ-JGYLO-BALWX-SZE4H-5SV5K-JCFV7');
 	}

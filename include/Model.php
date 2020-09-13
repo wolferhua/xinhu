@@ -104,6 +104,22 @@ abstract class Model{
 		return $nid;
 	}
 	
+	public function insertAll($arr)
+	{
+		$name 	= $values = '';
+		foreach($arr as $k=>$rs){
+			$cont = '';
+			foreach($rs as $i=>$v){
+				if($k==0)$name.=',`'.$i.'`';
+				$cont.=",".$this->db->toaddval($v)."";
+			}
+			$cont = substr($cont, 1);
+			if($k>0)$values.=',';
+			$values.='('.$cont.')';
+		}
+		return $this->db->insert($this->table, substr($name, 1),'values '.$values.'', true);
+	}
+	
 	public function getwhere($where='')
 	{
 		return $this->db->getwhere($where);

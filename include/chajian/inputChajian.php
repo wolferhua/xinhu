@@ -195,7 +195,14 @@ class inputChajian extends Chajian
 		}
 		if($type=='selectdatafalse' || $type=='selectdatatrue'){
 			$str 	= '<table width="98%" cellpadding="0" border="0"><tr><td width="100%"><input '.$attr.''.$onblue.''.$styles.' class="inputs" style="width:99%" value="'.$val.'" readonly type="text" name="'.$fname.'"></td>';
-			$str   .= '<td nowrap><a href="javascript:;" onclick="c.selectdata(\''.$data.'\','.substr($type,10).',\''.$fname.'\',\''.$fieldname.'\','.$iszb.')" class="webbtn">选择</a></td></tr></table>';
+			$str   .= '<td nowrap><button type="button" onclick="c.selectdata(\''.$data.'\','.substr($type,10).',\''.$fname.'\',\''.$fieldname.'\','.$iszb.')" class="webbtn">选择</button></td></tr></table>';
+		}
+		if($type=='ditumap'){
+			$zbnae	= $data;
+			if($iszb>0)$zbnae = ''.($iszb-1).''.$leox.'';
+			$str 	= '<table width="99%" cellpadding="0" border="0"><tr><td width="100%"><input '.$attr.''.$onblue.''.$styles.''.$lenstr.' class="inputs" style="width:99%" value="'.$val.'" type="text" name="'.$fname.'"></td>';
+			$str   .= '<td nowrap><button onclick="c.selectmapclear(\''.$fname.'\',\''.$zbnae.'\','.$iszb.')" class="webbtn" type="button">ｘ</button>';
+			$str   .= '<button type="button" onclick="c.selectmap(\''.$fname.'\',\''.$zbnae.'\',\''.$fieldname.'\','.$iszb.')" class="webbtn">选择</button></td></tr></table>';
 		}
 		if($type=='htmlediter'){
 			$iszhang= false;

@@ -269,10 +269,11 @@
 				at		= '',
 				v		= a[fields];
 			$('#edittable_'+rand+'').remove();
-			if(b.editorbefore && !b.editorbefore(a))return; //编辑前判断
+			if(b.editorbefore && !b.editorbefore(a))return;
+			if(!b.textmsg)b.textmsg='';
 			var s	= '<div id="edittable_'+rand+'" style="position:absolute;z-index:2;left:'+(l.left)+'px;top:'+(l.top+h)+'px">';
 			s+='<div style="border:1px #cccccc solid;background:white;padding:10px;box-shadow:0px 0px 10px rgba(0,0,0,0.3); border-radius:10px">';
-			s+='	<div>&nbsp;<b>'+b.text+'</b>：&nbsp;<span id="msgteita_'+rand+'"></span></div>';
+			s+='	<div>&nbsp;<b>'+b.text+'</b>：&nbsp;<span id="msgteita_'+rand+'">'+b.textmsg+'</span></div>';
 			s+='	<div class="blank10"></div>';
 			var wss = 200;
 			if(b.editorwidth)wss=b.editorwidth;
@@ -628,7 +629,9 @@
 				}
 			});
 		};
-		
+		this.settishi=function(nr){
+			$('#bottomtishi_'+rand+'').html(nr);
+		};
 		this._fanye	= function(){
 			var s = '';
 			s='<div style="margin-top:10px" class="btn-toolbar" role="toolbar">'+
@@ -642,6 +645,7 @@
 				'<div class="btn-group">'+
 				'	 <button id="refresh_'+rand+'" type="button" data-toggle="tooltip" data-placement="top" title="刷新"  class="btn btn-default"><i class="icon-refresh"></i></button>'+ 
 				'</div> '+ 
+				'<div class="btn-group" id="bottomtishi_'+rand+'"></div>'+
 				'<div class="btn-group" style="float:right; padding-top:3px">'+
 					'<span>共记录<span id="zjilu_'+rand+'">0</span>条</span> &nbsp;'+ 
 					'每页<input maxlength="3" onblur="js.number(this)" onfocus="js.focusval=this.value" id="pagesize_'+rand+'" type="number" value="'+can.pageSize+'" style="width:40px;text-align:center;height:24px;border:1px #dddddd solid;margin:0px 2px;font-size:12px">条&nbsp;'+

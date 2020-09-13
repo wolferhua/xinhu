@@ -23,6 +23,7 @@ class emailmClassModel extends Model
 		if(!isempt($time))$time = strtotime($time);
 		if(isempt($this->receyumi))return '未设置收信邮箱域名';
 		if(isempt($myurs['email']))return '未设置邮箱，可到[系统→邮件管理→用户邮箱设置]下设置';
+		if(isempt($myurs['emailpass']))return '未设置邮箱密码，可到[系统→邮件管理→用户邮箱设置]下设置';
 		if(!contain($myurs['email'], $this->receyumi))return '邮箱域名必须是['.$this->receyumi.']，当前用户邮箱:'.$myurs['email'].'';
 		$rows 	= c('imap')->receemail($this->recehost, $myurs['email'], $myurs['emailpass'], $time);
 		if(!is_array($rows))return $rows;

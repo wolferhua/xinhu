@@ -15,6 +15,8 @@ $(document).ready(function(){
 			try{guanflowmenulist.reload();}catch(e){}
 		},
 		submitcheck:function(d){
+			if(d.type==7 && !d.upgcont)return '请在更新内容上写对应方法名';
+			if(d.type==5 && !d.upgcont)return '请在更新内容上写打开地址';
 			return {
 				wherestr:jm.base64encode(d.wherestr),
 				upgcont:jm.base64encode(d.upgcont),
@@ -60,7 +62,7 @@ $(document).ready(function(){
 		<tr>
 			
 			<td  align="right" >类型：</td>
-			<td class="tdinput"><select name="type" class="form-control"><option value="1">弹出填写说明</option><option value="0">直接操作</option><option value="2">人员选择(单人)</option><option value="3">人员选择(多人)</option><option value="6">人员选择(多选部门人员组)</option><option value="4">更新字段</option><option value="5">打开新窗口</option></select></td>
+			<td class="tdinput"><select name="type" class="form-control"><option value="1">弹出填写说明</option><option value="0">直接操作</option><option value="2">人员选择(单人)</option><option value="3">人员选择(多人)</option><option value="6">人员选择(多选部门人员组)</option><option value="4">更新字段</option><option value="5">打开新窗口</option><option value="7">自定义方法(需开发)</option></select></td>
 			<td  align="right" >字段名称：</td>
 			<td class="tdinput"><input name="fields" class="form-control"></td>
 		</tr>

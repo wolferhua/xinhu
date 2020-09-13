@@ -39,6 +39,11 @@ $(document).ready(function(){
 				get('xinhukey_{rand}').focus();
 				return;
 			}
+			if(d.officeyl==5 && d.officebj!=1){
+				js.msg('msg','文档在线编辑请选第二个，否则无法使用');
+				get('officebj_{rand}').focus();
+				return;
+			}
 			js.ajax(js.getajaxurl('savecong','{mode}','{dir}'), d, function(s){
 				if(s!='ok')js.msg('msg', s);
 			},'post',false,'保存中...,保存成功');
@@ -186,6 +191,7 @@ $(document).ready(function(){
 			<option value="2">使用微软在线预览office服务(需要公网域名)</option>
 			<option value="3">使用明道在线预览office服务(需要公网域名)</option>
 			<option value="4">自己服务器安装LibreOffice转PDF服务(Win和Linux)都可以部署</option>
+			<option value="5">使用在线编辑服务预览(→右边那需要选第二个)</option>
 			</select></td>
 			
 			<td  align="right">文档在线编辑：</td>

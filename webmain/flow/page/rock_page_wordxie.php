@@ -77,6 +77,9 @@ upfilexiezuo{rand}=function(d){
 		a.reload();
 	},'get',false, '保存中...,保存成功');
 }
+openxieeditfile=function(d){
+	js.fileopt(d.fileid,2);
+}
 
 //[自定义区域end]
 

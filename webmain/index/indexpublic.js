@@ -214,6 +214,20 @@ function optmenuclass(o1,num,id,obj,mname,oi, cola){
 			}
 			return;
 		}
+		if(lx==7){
+			var upg = d.upgcont;
+			if(isempt(upg)){
+				js.msg('msg','没有设置自定义方法');
+			}else{
+				if(!window[upg]){
+					js.msg('msg','设置的方法“'+upg+'”不存在');
+				}else{
+					var xda = this.tableobj.getData(this.oi);
+					window[upg](xda,d);
+				}
+			}
+			return;
+		}
 		var nwsh = 'showfielsv_'+js.getrand()+'';
 		var uostr= '<div align="left" style="padding:10px"><div id="'+nwsh+'" style="height:60px;overflow:auto" class="input"></div><input style="width:180px" id="'+nwsh+'_input" type="file"></div>';
 		var bts = (d.issm==1)?'必填':'选填';

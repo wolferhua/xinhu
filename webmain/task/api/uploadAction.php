@@ -414,7 +414,8 @@ class uploadClassAction extends apiAction
 	public function sendeditAction()
 	{
 		$id 		= (int)$this->get('id',0);
-		return c('rockedit')->sendedit($id, $this->admintoken);
+		$otype 		= (int)$this->get('otype',0);
+		return c('rockedit')->sendedit($id, $this->admintoken, $otype);
 	}
 	
 	/**

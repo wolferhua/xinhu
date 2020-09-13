@@ -6,9 +6,9 @@
 <script type="text/javascript" src="js/jquery.js"></script>
 <script type="text/javascript" src="js/js.js"></script>
 <script>
-var id = '<?=$da['id']?>';
+var id = '<?=$da['id']?>',otype='<?=$da['otype']?>';
 function initbody(){
-	var url = 'api.php?m=upload&a=sendedit&id='+id+'';
+	var url = 'api.php?m=upload&a=sendedit&id='+id+'&otype='+otype+'';
 	$.ajax({
 		type:'get',
 		url:url,

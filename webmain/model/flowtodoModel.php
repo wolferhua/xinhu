@@ -20,20 +20,27 @@ class flowtodoClassModel extends Model
 		$modenum	= arrvalue($uarr,'modenum');
 		$uidsa 		= explode(',',$uids);
 		$isuar		= array();
-		$uarrs 		= $this->getrows("`modenum`='$modenum' and `uid` in($uids)", '`uid`,`id`');
+		$uarrs 		= $this->getrows("`modenum`='$modenum' and `mid`=$mid and `uid` in($uids)", '`uid`,`id`');
 		foreach($uarrs as $k=>$rs)$isuar[$rs['uid']]=$rs['id'];
+		$iarr 		= $garr = array();
+		$gids	= '';
 		foreach($uidsa as $uid){
 			$where = '';
-			if(isset($isuar[$uid])){
-				$where = $isuar[$uid];
-			}
+			if(isset($isuar[$uid]))$where = $isuar[$uid];
 			$adda['adddt'] 	= $this->rock->now;
-			$adda['uid'] 	= $uid;
 			$adda['readdt'] = null;
 			$adda['isread'] = 0;
 			foreach($uarr as $k=>$v)$adda[$k] = $v;
-			$this->record($adda, $where);
+			if($where==''){
+				$adda['uid'] = $uid;
+				$iarr[] = $adda;
+			}else{
+				if(!$garr)$garr = $adda;
+				$gids.=','.$where.'';
+			}
 		}
+		if($iarr)$this->insertAll($iarr);
+		if($gids!='')$this->update($garr,'`id` in('.substr($gids,1).')');
 	}
 	
 	/**
@@ -41,7 +48,7 @@ class flowtodoClassModel extends Model
 	*/
 	public function biaoyidu($uid, $mode, $mid)
 	{
-		$where 	= "`modenum`='$mode' and `uid`='$uid' and `mid`='$mid'";
+		$where 	= "`uid`='$uid' and `modenum`='$mode' and `mid`='$mid'";
 		$this->update(array(
 			'isread'    => 1,
 			'readdt'	=> $this->rock->now

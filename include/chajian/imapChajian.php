@@ -245,7 +245,7 @@ class imapChajian extends Chajian
     private function _iconv_utf8($text) {
 		$encode = mb_detect_encoding($text, array('ASCII','UTF-8','GB2312','GBK','BIG5'));
 		if($encode != 'UTF-8'){
-			return iconv($encode, 'utf-8', $text);
+			return @iconv($encode, 'utf-8', $text);
 		}else{
 			return $text;
 		}

@@ -475,6 +475,7 @@ class inputAction extends Action
 		$fieldarr	= $this->flow->flowfieldarr($fieldarr, $this->ismobile);
 		
 		$modelu		= '';
+		$fieldstypearr = array();
 		foreach($fieldarr as $k=>$rs){
 			if($slx==1 && $oldrs){
 				$rs['value'] = $oldrs[$rs['fields']];
@@ -491,6 +492,7 @@ class inputAction extends Action
 				);
 			}
 			$this->fieldarr[$rs['fields']] = $rs;
+			if($rs['islu']==1)$fieldstypearr[] = $rs['fieldstype'];
 		}
 		
 		$this->smartydata['fieldsjson']	= json_encode($fieldarr);
@@ -515,8 +517,8 @@ class inputAction extends Action
 			$content = $modelu;
 			if($tableas && $slx==0){
 				foreach($tableas as $k1=>$tableass){
-					$zbstr 	 = m('input')->getsubtable($modeid,$k1+1,1,1, $zbshu);
-					if($zbshu>2 && $this->flow->minwidth<300)$this->flow->minwidth = $zbshu*180;
+					$zbstr 	 = m('input')->getsubtable($modeid,$k1+1,1,1, $zbzdshu);
+					if($zbzdshu>2 && $this->flow->minwidth<300)$this->flow->minwidth = $zbzdshu*180;
 					if($zbstr!=''){
 						$zbnam   = arrvalue($nameaas, $k1);
 						$zbstr   = str_replace('{subzbname'.$k1.'}', $zbnam, $zbstr);
@@ -632,6 +634,7 @@ class inputAction extends Action
 		$inpwhere	= $this->flow->inputwidth;
 		if($inpwhere<200)$inpwhere = $this->option->getval('inputwidth', 750);
 		$this->smartydata['inputwidth']	= $inpwhere;
+		$this->assign('fieldstypearr', $fieldstypearr);
 	}
 	
 	//多行子表内替换

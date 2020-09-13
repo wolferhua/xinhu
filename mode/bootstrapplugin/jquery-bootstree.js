@@ -179,6 +179,11 @@
 			}
 			return a;
 		};
+		this.setparams = function(cans, relo){
+			if(!cans)cans={};
+			can.params = js.apply(can.params,cans);
+			if(relo)this._load();
+		};
 		this._load = function(){
 			if(this.bool)return;
 			var h= obj.height()-2,

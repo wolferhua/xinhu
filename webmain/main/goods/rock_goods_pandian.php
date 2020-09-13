@@ -47,6 +47,9 @@ $(document).ready(function(){
 				a.setColumns(columns);
 			}
 			lbefe = true;
+		},
+		itemdblclick:function(d){
+			openxiangs('【'+d.name+'】详情','goods',d.id);
 		}
 	});
 	var c = {

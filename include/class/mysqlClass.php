@@ -6,6 +6,7 @@ class mysqlClass extends mysql{
 	protected function connect()
 	{
 		$this->errormsg	= '';
+		if(!function_exists('mysql_connect'))exit('不支持mysql_connect的php扩展');
 		$this->conn	= @mysql_connect($this->db_host,$this->db_user, $this->db_pass);
 		$msg  = $this->error();
 		if($msg){

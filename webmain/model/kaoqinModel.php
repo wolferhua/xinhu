@@ -1028,6 +1028,8 @@ class kaoqinClassModel extends Model
 					
 					//结束时间+1
 					if($iskt=='1'){
+						$dts2 = $this->dtobj->adddate($dts, 'd', 1);
+						$_ets = strtotime($dts2.' '.$rs['etime']);
 					}
 					
 					if($_sts<$sdt1)$_sts=$sdt1;

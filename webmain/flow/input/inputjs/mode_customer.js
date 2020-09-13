@@ -7,3 +7,13 @@ function initbodys(){
 		if(form('shi'))form('shi').value = d.cityname;
 	}
 }
+
+//地图选择
+c.onselectmap=function(sna,res){
+	var info = res.addressinfo;
+	if(form('sheng'))form('sheng').value = info.province;
+	if(form('shi'))form('shi').value = info.city;
+	var dz = info.town;
+	dz+=(info.streetNumber)?info.streetNumber:info.street;
+	form(sna).value=dz;
+}

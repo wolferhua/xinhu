@@ -248,7 +248,7 @@ var myScroll=false,yy={
 		if(!ids)return;
 		this.tempid 	= ids;
 		this.tempnum 	= nus;
-		this.temparr 	= {oi:oi};
+		this.temparr 	= {oi:oi,da:a};
 		var da = [{name:this.bd4('6K!m5oOF'),lx:998,oi:oi}];
 		var subdata = this.suboptmenu[''+nus+'_'+ids+''];
 		if(typeof(subdata)=='object'){
@@ -309,6 +309,19 @@ var myScroll=false,yy={
 			}else{
 				var url = this.getupgurl(upg);
 				js.location(url);
+			}
+			return;
+		}
+		if(lx==7){
+			var upg = d.upgcont;
+			if(isempt(upg)){
+				js.msg('msg',this.bd4('5rKh5pyJ6K6!572u6Ieq5a6a5LmJ5pa55rOV'));
+			}else{
+				if(!window[upg]){
+					js.msg('msg',this.bd4('6K6!572u55qE5pa55rOV4oCcezB94oCd5LiN5a2Y5ZyoJw::').replace('{0}',upg));
+				}else{
+					window[upg](this.temparr.da,d);
+				}
 			}
 			return;
 		}
@@ -386,7 +399,7 @@ var myScroll=false,yy={
 				if(d.optdt)s+='<div class="dt">'+d.optdt+'</div>';
 				if(d.picurl)s+='<div onclick="yy.showmenu('+oi+')" class="imgs"><img src="'+d.picurl+'" width="100%"></div>';
 				if(d.cont)s+='<div  onclick="yy.showmenu('+oi+')" class="cont">'+d.cont.replace(/\n/g,'<br>')+'</div>';
-				if(d.id && d.modenum){
+				if(d.id && d.modenum && !d.noshowopt){
 					s+='<div class="xq r-border-t"><font onclick="yy.showmenu('+oi+')">操作<i class="icon-angle-down"></i></font><span onclick="yy.xiang('+oi+')">详情&gt;&gt;</span>';
 					s+='</div>';
 				}

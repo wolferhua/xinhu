@@ -205,6 +205,46 @@ class optionClassModel extends Model
 		return $arr;
 	}
 	
+	/**
+	*	添加默认选项
+	*/
+	public function addoption($name, $num, $pid=0, $down=array(), $arr=array())
+	{
+		$id = (int)$this->getmou('id',"`num`='$num'");
+		if(!$id)$id=0;
+		if($id>0)return $id;
+		if(!is_numeric($pid))$pid = (int)$this->getmou('id',"`num`='$pid'");
+		if($pid==0)$pid = 1;
+		$uarr = array(
+			'num' => $num,
+			'pid' => $pid,
+			'name' => $name,
+		);
+		foreach($arr as $k=>$v)$uarr[$k]=$v;
+		$id = $this->insert($uarr);
+		if($down && is_string($down)){
+			$downa = explode(',', $down);$down  = array();
+			foreach($downa as $k2)$down[]=array('name'=>$k2);
+		}
+		if($down)foreach($down as $k=>$rs){
+			$iarr = $rs;
+			$iarr['pid'] = $id;
+			$idown= arrvalue($rs, 'down');
+			if($idown){
+				unset($iarr['down']);
+				$sid = $this->insert($iarr);
+				foreach($idown as $k1=>$rs1){
+					$isarr = $rs1;
+					$isarr['pid'] = $sid;
+					$this->insert($isarr);
+				}
+			}else{
+				$this->insert($iarr);
+			}
+		}
+		return $id;
+	}
+	
 	public function authercheck($mym='')
 	{
 		$rows	 = $this->getall('pid=-101','`num`,`value`');

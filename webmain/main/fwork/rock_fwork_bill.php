@@ -2,11 +2,12 @@
 <script >
 $(document).ready(function(){
 	{params}
-	var atype=params.atype,zt=params.zt;
+	var atype=params.atype,zt=params.zt,mid=params.modeid;
 	if(!zt)zt='';
+	if(!mid)mid='0';
 	var bools=false;
 	var a = $('#view_{rand}').bootstable({
-		tablename:'flow_bill',params:{'atype':atype,'zt':zt},fanye:true,
+		tablename:'flow_bill',params:{'atype':atype,'zt':zt,'modeid':mid},fanye:true,
 		url:publicstore('{mode}','{dir}'),checked:atype=='daib',
 		storeafteraction:'flowbillafter',storebeforeaction:'flowbillbefore',
 		columns:[{
@@ -44,6 +45,7 @@ $(document).ready(function(){
 					types = csd.type;
 				}
 				$('#mode_{rand}').html(s);
+				if(mid>0)get('mode_{rand}').value=mid;
 			}
 			bools=true;
 		},

@@ -302,8 +302,8 @@ class goodsClassAction extends Action
 	public function croptaftershow($table, $rows)
 	{
 		$dgs 	= m('goods');
-		$typeb = array('0'		,'1'	  ,'2'		,'3', '4'); 
-		$typea = array('领用单' ,'采购单' ,'销售单'	,'调拨单', '归还单'); 
+		$typeb = array('0'		,'1'	  ,'2'		,'3', '4','5'); 
+		$typea = array('领用单' ,'采购单' ,'销售单'	,'调拨单', '归还单','退货单'); 
 		$chux  = array('0','2');
 		if($rows)foreach($rows as $k=>&$rs){
 			$rs['typev'] = $rs['type'];

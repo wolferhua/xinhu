@@ -35,6 +35,7 @@ class mode_sealaplClassAction extends inputAction{
 			$optgroup = '印章';
 			if(!contain($rs['type'],'章'))$optgroup='证照';
 			$rs['optgroup'] = $optgroup;
+			$rs['subname'] = $rs['type'];
 			$rs['padding'] = '40';
 			if($optgroup=='印章'){
 				$aaar[] = $rs;
@@ -51,6 +52,22 @@ class mode_sealaplClassAction extends inputAction{
 		}
 		
 		return array_merge($ba1,$aaar,$ba2, $barr);
+	}
+	
+	public function getsealdatass()
+	{
+		$where= m('admin')->getcompanywhere(1);
+		$rows = m('seal')->getall('1=1 '.$where.'','`id`as value,`name`,`type`','`sort`,`type`');
+		$barr = array();
+		$type = '';
+		foreach($rows as $k=>$rs){
+			if($type!=$rs['type'])$barr[] = array('value'=>'','name'=>$rs['type'],'disabled'=>true);
+			$rs['padding'] = '40';
+			$barr[] = $rs;
+			$type = $rs['type'];
+		}
+
+		return $barr;
 	}
 	
 	//获取相关信息放到说明里

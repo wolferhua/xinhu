@@ -11,14 +11,15 @@ class emailClassAction extends runtAction
 	*/
 	public function defaultAction()
 	{
-		$rows 	= $this->db->getall("select b.`id`,b.`name` from `[Q]option` a left join `[Q]admin` b on a.`optid`=b.`id` where b.`status`=1 and a.`num` like 'email_recexin_%' and ifnull(a.`value`,'')<>''");
+		$rows 	= $this->db->getall("select b.`id`,b.`name`,b.`email` from `[Q]option` a left join `[Q]admin` b on a.`optid`=b.`id` where b.`status`=1 and a.`num` like 'email_recexin_%' and ifnull(a.`value`,'')<>''");
 		$cg 	= $sb = 0;
 		$tzid 	= '';
 		$estr 	= '';
 		foreach($rows as $k=>$rs){
+			if(isempt($rs['email']))continue; //没设置邮箱
 			$uid = $rs['id'];
 			$this->rock->adminid 	= $uid;
-			$this->rock->adminname 	= $rs['name'];
+			$this->rock->adminname 	= '系统';
 			$barr = m('emailm')->receemail($uid);
 			if(is_array($barr)){
 				$cg+=$barr['count'];
