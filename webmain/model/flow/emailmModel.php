@@ -153,7 +153,7 @@ class flow_emailmClassModel extends flowModel
 		
 		return array(
 			'where' => 'and '.$where,
-			'fields'=> 'a.`id`,a.`title`,a.`sendname`,a.`recename`,a.`senddt`,a.`isfile`,b.`ishui`,b.`zt`',
+			'fields'=> 'a.`id`,a.`title`,a.`sendname`,a.`recename`,a.`senddt`,a.`isfile`,b.`ishui`,b.`zt`,a.`outzt`,a.`type`',
 			'order' => 'a.`senddt` desc',
 			'table'	=> '`[Q]emailm` a left join `[Q]emails` b on a.`id`=b.`mid` '.$onwhere.''
 		);
@@ -202,6 +202,7 @@ class flow_emailmClassModel extends flowModel
 		$arr['receid'] 		= $rers['uid'];
 		$arr['recename'] 	= $rers['personal'];
 		$arr['isturn'] 		= 1;
+		$arr['outzt'] 		= 0;
 		$arr['toemail'] 	= ''.$rers['personal'].'('.$rers['email'].')';
 		$arr['optdt'] 		= $this->rock->now;
 		
@@ -226,6 +227,7 @@ class flow_emailmClassModel extends flowModel
 				'body' 		=> $cont,
 				'receemail' => $rers['email'],
 				'recename' 	=> $arr['recename'],
+				'mid' 		=> $id,
 			));
 		}
 		

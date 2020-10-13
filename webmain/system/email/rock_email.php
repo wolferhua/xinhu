@@ -18,6 +18,11 @@ $(document).ready(function(){
 			text:'主题',dataIndex:'title',align:'left',renderer:function(v,d){
 				var s = v;	
 				if(d.isfile=='1')s+='&nbsp;<img title="有附件" src="mode/icons/attach.png">';
+				if(d.type=='1' && atype=='yfs'){
+					s+='&nbsp;<img src="images/jian1.gif" title="外发邮件">';
+					if(d.outzt=='2')s+='&nbsp;<img src="images/error.png" onclick="refa{rand}('+d.id+')" title="外发失败">';
+					if(d.outzt=='0')s+='&nbsp;<img src="images/loadings.gif" onclick="refa{rand}('+d.id+')" title="待外发">';
+				}
 				return s;
 			}
 		},{
@@ -139,9 +144,23 @@ $(document).ready(function(){
 		},
 		clickset:function(){
 			js.open('?a=helpset&m=email&d=system');
+		},
+		refa:function(sid,bo){
+			if(bo){
+				js.loading('请求中...');
+				js.ajax(publicmodeurl('emailm','reoutfa'),{sid:sid},function(s){
+					js.msgok(s);
+					a.reload();
+				});
+			}else{
+				js.confirm('确定要重新发送吗？',function(jg){if(jg=='yes')c.refa(sid,true)});
+			}
 		}
 	};
 	js.initbtn(c);
+	refa{rand}=function(sid){
+		c.refa(sid,false);
+	}
 	
 	if(adminid!='1')$('#msgss{rand}').html('');
 });

@@ -21,7 +21,9 @@ $(document).ready(function(){
 		},{
 			text:'申请日期',dataIndex:'applydt',sortable:true
 		},{
-			text:'摘要',dataIndex:'summary',align:'left',width:300
+			text:'摘要',dataIndex:'summary',align:'left',renderer:function(v){
+				return '<div style="min-width:400px">'+v+'</div>';
+			}
 		},{
 			text:'操作人',dataIndex:'optname',sortable:true
 		},{

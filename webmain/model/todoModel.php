@@ -8,7 +8,8 @@ class todoClassModel extends Model
 	{
 		if(isempt($uid))return false;
 		$arr['title']	= $title;
-		$arr['mess']	= $mess;
+		$mess			= htmlspecialchars(str_replace(array('<br>',"\n"),'[br]',$mess));
+		$arr['mess']	= str_replace('[br]','<br>',$mess);
 		$arr['status']	= '0';
 		$arr['optdt']	= $this->rock->now;
 		$arr['tododt']	= $this->rock->now;

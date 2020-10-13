@@ -44,6 +44,7 @@ class mode_emailmClassAction extends inputAction{
 			//外发发邮件的
 			if($type == 1){
 				$emsa = $this->getrecename($arr['receid']);
+				m($table)->update('`outzt`=0', $id);
 				if($emsa != ''){
 					$ccsa 	= $this->getrecename($arr['ccid']);
 					$fjar 	= m('file')->getfilepath('emailm', $id);
@@ -56,10 +57,46 @@ class mode_emailmClassAction extends inputAction{
 						'ccname' 	=> $ccsa[1],
 						'attachpath'=> $fjar[0],
 						'attachname'=> $fjar[1],
-					), 1);//自己发送，不异步
+						'mid'		=> $id,
+					), 0);
 				}
 			}
 		}
+	}
+	
+	private function faemail($id, $arr)
+	{
+		$emsa = $this->getrecename($arr['receid']);
+		m('emailm')->update('`outzt`=0', $id);
+		if($emsa[0] != ''){
+			$ccsa 	= $this->getrecename($arr['ccid']);
+			$fjar 	= m('file')->getfilepath('emailm', $id);
+			return m('email')->sendemailout($this->adminid, array(
+				'title' 	=> $arr['title'],
+				'body' 		=> $arr['content'],
+				'receemail' => $emsa[0],
+				'recename' 	=> $emsa[1],
+				'ccemail' 	=> $ccsa[0],
+				'ccname' 	=> $ccsa[1],
+				'attachpath'=> $fjar[0],
+				'attachname'=> $fjar[1],
+				'mid'		=> $id,
+			), 0);
+		}else{
+			return '接收空的';
+		}
+	}
+	
+	/**
+	*	重新请求外发
+	*/
+	public function reoutfaAjax()
+	{
+		$id = (int)$this->get('sid','0');
+		$arr = m('emailm')->getone($id);
+		if($arr['type']!='1')return;
+		$msg = $this->faemail($id, $arr);
+		return $msg;
 	}
 	
 	private function getrecename($sid)

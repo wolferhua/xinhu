@@ -140,7 +140,7 @@ var inputtwo={
 				if(tsye=='img'){
 					get('imgview_'+sna+'').src = d.filepath;
 					form(sna).value=d.filepath;
-					c.upimages(sna,d.id,false);
+					c.upimages(sna,d.id,false, d.autoup);
 				}else if(tsye=='file'){
 					$('#meng_'+c.uprnd+'').remove();
 					$('#up_'+c.uprnd+'').attr('upid_'+sna+'',d.id);
@@ -188,10 +188,11 @@ var inputtwo={
 		$('#'+sna+'_divadd').before(s);
 		this.filearr['f'+f.id+''] = f;
 	},
-	upimages:function(fid,fileid,bs){
+	upimages:function(fid,fileid,bs, lbu){
 		if(!bs){
+			if(lbu!=1){js.unloading();return;}
 			js.loading('等待上传完成...');
-			setTimeout("c.upimages('"+fid+"','"+fileid+"', true)",2000);
+			setTimeout("c.upimages('"+fid+"','"+fileid+"', true)",3000);
 		}else{
 			js.ajax(geturlact('upimagepath'),{fileid:fileid,fid:fid},function(ret){
 				js.unloading();

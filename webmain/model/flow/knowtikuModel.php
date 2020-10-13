@@ -34,7 +34,7 @@ class flow_knowtikuClassModel extends flowModel
 	protected function flowbillwhere($uid, $lx)
 	{
 		$where  = '';
-		$typeid = $this->rock->post('typeid','0');
+		$typeid = (int)$this->rock->post('typeid','0');
 		$key 	= $this->rock->post('key');
 		if($lx=='xuexi')$where='and a.`status`=1';
 		if($typeid!='0'){

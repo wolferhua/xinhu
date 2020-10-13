@@ -166,15 +166,28 @@ class flow_customerClassModel extends flowModel
 
 	public function flowdaorubefore($data)
 	{
+		$arr = array();
+		$dbs = m('admin');
 		foreach($data as $k=>$rs){
 			$isgh 	= (arrvalue($rs,'isgh')=='是') ? 1: 0 ;
 			$isstat = (arrvalue($rs,'isstat')=='是') ? 1: 0 ;
+			if(isset($rs['status'])){
+				$rs['status'] = (arrvalue($rs,'status')=='启用') ? 1: 0 ;
+			}
+			if(isset($rs['suoname'])){
+				if($isgh==0){
+					$urs = $dbs->geturs('name:'.$rs['suoname']);
+					if($urs)$rs['uid'] = $urs['id'];
+				}
+				unset($rs['suoname']);
+			}
+			$rs['isgh'] 	= $isgh;
+			$rs['isstat'] 	= $isstat;
+			if($isgh==1)$rs['uid'] = 0; 
 			
-			$data[$k]['isgh'] 	= $isgh;
-			$data[$k]['isstat'] = $isstat;
-			if($isgh==1)$data[$k]['uid'] = 0; 
+			$arr[] = $rs;
 		}
-		return $data;
+		return $arr;
 	}
 	
 	

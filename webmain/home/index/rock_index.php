@@ -184,7 +184,7 @@ $(document).ready(function(){
 
 	openmobile=function(){
 		js.tanbody('loginmobile','登录手机版', 300,200,{
-			html:'<div  style="height:160px;padding:5px" align="center"><div><img id="logeweerew" src="images/logo.png" width="130" height="130"></div><div>直接扫一扫即可登录</div></div>'
+			html:'<div  style="height:160px;padding:5px" align="center"><div><img id="logeweerew" src="images/logo.png" width="130" height="130"></div><div>5分钟内直接扫一扫即可登录</div></div>'
 		});
 		var surl = js.getajaxurl('getqrcode','index','home'),surls = js.getajaxurl('getqrcores','index','home');
 		$.get(surls,function(ass){

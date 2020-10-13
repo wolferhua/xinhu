@@ -2,8 +2,7 @@
 class beifenClassModel extends Model
 {
 	/**
-	*	创建备份使用加密的字符串
-	*	每个安装的系统备份的数据是不一样，即使得到备份文件也无法打开数据
+	*	备份到upload/data下
 	*/
 	public function start()
 	{
@@ -21,16 +20,10 @@ class beifenClassModel extends Model
 				'data'		=> $rows
 			);
 			$file	= ''.$tabs.'_'.count($fields).'_'.count($rows).'.json';
-			//$str  	= $this->rock->jm->mcrypt_encrypt(json_encode($data));
 			$str  	= json_encode($data);
-			$this->rock->createtxt(''.$beidir.'/'.$file.'', $str);
+			$bo 	= $this->rock->createtxt(''.$beidir.'/'.$file.'', $str);
+			if(!$bo){echo '无权限写入：'.$beidir.'';break;return false;}
 		}
-		/*
-		$rnd  = str_shuffle('abcedfghijk').rand(1000,9999);
-		$file = 'databat_'.date('Ymd').'_'.$rnd.'.json';
-		$str  = $this->rock->jm->mcrypt_encrypt(json_encode($data));
-		$this->rock->createtxt(''.UPDIR.'/data/'.$file.'', $str);
-		*/
 		return true;
 	}
 	

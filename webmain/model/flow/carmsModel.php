@@ -30,11 +30,16 @@ class flow_carmsClassModel extends flowModel
 
 	public function flowbillwhere($uid, $lx)
 	{
+		$where = '';
+		$carid = (int)$this->rock->get('carid',0);
+		if($carid>0)$where='and a.`carid`='.$carid.'';
+		
 		return array(
-			'table' 		=> '`[Q]'.$this->mtable.'` a left join `[Q]carm` b on a.carid=b.id',
+			'table' 		=> '`[Q]'.$this->mtable.'` a left join `[Q]carm` b on a.`carid`=b.id',
 			'fields'		=> 'a.*,b.carnum,b.carbrand,b.carmode,cartype',
 			'orlikefields'	=> 'b.carnum,b.carbrand,b.carmode,b.`cartype`,a.`otype`@1',
-			'asqom'			=> 'a.'
+			'asqom'			=> 'a.',
+			'where'			=> $where,
 		);
 	}
 	

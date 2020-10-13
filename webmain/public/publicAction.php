@@ -4,6 +4,7 @@ class publicClassAction extends ActionNot{
 	public function initAction()
 	{
 		$this->mweblogin(0, false);
+		$this->officedocx = ',doc,docx,xls,xlsx,ppt,pptx,';
 	}
 	
 	//文档预览的
@@ -15,13 +16,12 @@ class publicClassAction extends ActionNot{
 		if(!$frs)exit('文件的记录不存在了1');
 		$type 		= $frs['fileext'];
 		$filepath 	= $frs['filepath'];
+		$filepathout= arrvalue($frs, 'filepathout');
 		
-		if(substr($filepath, 0,4)!='http' && !file_exists($filepath))exit('文件不存在了2');
+		if(substr($filepath, 0,4)!='http' && isempt($filepathout) && !file_exists($filepath))exit('文件不存在了2');
 		
 		$types 		= ','.$type.',';
-		//可读取文件预览的扩展名
-		$docx	= ',doc,docx,xls,xlsx,ppt,pptx,';
-		if(contain($docx, $types)){
+		if(contain($this->officedocx, $types)){
 			$filepath 	= $frs['pdfpath'];
 			if(isempt($filepath)){
 				$this->topdfshow($frs, 1);
@@ -37,20 +37,31 @@ class publicClassAction extends ActionNot{
 		}else if($type=='mp4'){
 			$this->displayfile = ''.P.'/public/fileopen_mp4.html';		
 		}else if($fobj->isyulan($type)){
-			$content  = file_get_contents($filepath);
-			if(substr($filepath,-6)=='uptemp')$content = base64_decode($content);
-			$bm =  c('check')->getencode($content);
-			if(!contain($bm, 'utf')){
-				$content = @iconv($bm,'utf-8', $content);
+			
+			$content  = '';
+			if(file_exists($filepath)){
+				$content  = file_get_contents($filepath);
+				if(substr($filepath,-6)=='uptemp')$content = base64_decode($content);
+				$bm =  c('check')->getencode($content);
+				if(!contain($bm, 'utf')){
+					$content = @iconv($bm,'utf-8', $content);
+				}
+			}else{
+				if(!isempt($filepathout)){
+					return $this->getdstr($frs);
+				}
 			}
 			$this->smartydata['content'] = $content;
-			$this->displayfile = ''.P.'/public/fileopen.html';
+			$this->smartydata['fileext'] = $type;
+			$this->smartydata['filesizecn'] = $frs['filesizecn'];
+			$this->displayfile = ''.P.'/public/fileopen.html';//直接打开文件
 		}else if($type=='pdf'){
-		
+			if(!isempt($filepathout) && !file_exists($filepath)){
+				return $this->getdstr($frs);
+			}
 		}else{
 			$this->topdfshow($frs,0);
 			return;
-			//exit('文件类型为['.$type.']，不支持在线预览');
 		}
 		$str = 'mode/pdfjs/web/viewer.css';
 		if(!file_exists($str))exit('未安装预览pdf插件，不能预览该文件，可到信呼官网下查看安装方法，<a target="_blank" href="'.URLY.'view_topdf.html">查看帮助?</a>。');
@@ -60,15 +71,25 @@ class publicClassAction extends ActionNot{
 		$fobj->addlogs($id,0);//记录预览记录
 	}
 	
+	private function getdstr($frs)
+	{
+		$fenz = (int)(floatval($frs['filesize'])/(1024*100));
+		if($fenz<5)$fenz = 5;
+		c('rockqueue')->senddown($frs['id']);
+		return '<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0"><img src="images/mloading.gif" align="absmiddle"> 等待从远程文件下载(<span id="mia0shu">'.$fenz.'</span>)...<script>zmian='.$fenz.';function yunshi(){zmian--;if(zmian==0){location.reload();return;};document.getElementById(\'mia0shu\').innerHTML=zmian};setInterval(yunshi,1000);</script>';
+	}
+	
 	private function topdfshow($frs, $lx=0)
 	{
+		$officeyl	= getconfig('officeyl','0');
 		if($lx==1){
-			$officeyl	= getconfig('officeyl','0');
 			if($officeyl=='2' || $officeyl=='3'){//用微软文档服务
 				$filepath = $frs['filepath'];
 				if(substr($filepath, 0,4)!='http'){
 					$filepath = ''.getconfig('outurl',URL).''.$filepath.'';
 				}
+				$filepathout= arrvalue($frs, 'filepathout');
+				if(!isempt($filepathout))$filepath = $filepathout;
 				$url = 'https://view.officeapps.live.com/op/view.aspx?src='.urlencode($filepath).'';
 				if($officeyl=='3')$url = 'https://docview.mingdao.com/op/view.aspx?src='.urlencode($filepath).'';
 				$this->rock->location($url);
@@ -80,6 +101,17 @@ class publicClassAction extends ActionNot{
 				return;
 			}
 		}
+		//转pdf预览
+		if($officeyl=='0' || $officeyl=='1'){
+			if(contain($this->officedocx, ','.$frs['fileext'].',')){
+				$filepathout= arrvalue($frs, 'filepathout');
+				if(!isempt($filepathout) && !file_exists($frs['filepath'])){
+					$str = $this->getdstr($frs);
+					exit($str);
+				}
+			}
+		}
+		
 		$this->displayfile = ''.P.'/public/filetopdf.html';
 		$this->smartydata['frs'] = $frs;
 		$this->smartydata['ismobile'] = $this->rock->ismobile()?'1':'0';

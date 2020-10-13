@@ -34,11 +34,24 @@ class emailClassAction extends runtAction
 		//发通知
 		if($tzid!=''){
 			$flow = m('flow')->initflow('emailm');
-			$flow->push(substr($tzid,1),'','有未读的新邮件，请进入邮件应用查看详情。','新邮件提醒', 0, array(
+			$flow->push(substr($tzid,1),'','有未读的新邮件，现在是'.$this->rock->now.'，请进入邮件应用查看详情。','新邮件提醒', 0, array(
 				'wxurl' => $flow->getwxurl()
 			));
 		}
 		
 		return 'success('.$cg.'),fail('.$sb.')';
+	}
+	
+	/**
+	*	curl异步发邮件
+	*	php task.php email,anaysend -id=1 -stype=1
+	*/
+	public function anaysendAction()
+	{
+		$id   	= (int)$this->getparams('id','0');
+		$stype  = (int)$this->getparams('stype','0');
+		$msg 	= m('email')->sendemailcont($id,$stype);
+		if($msg!='ok')m('log')->addlogs('邮件', $msg , 2);
+		return $msg;
 	}
 }

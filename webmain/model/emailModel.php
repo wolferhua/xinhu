@@ -83,7 +83,7 @@ class emailClassModel extends Model
 			m('reim')->asynurl('asynrun','sendemail', array(
 				'id' 	=> $sid,
 				'stype' => 0
-			));
+			));//系统邮件提醒用的
 		}
 		return $msg;
 	}
@@ -155,11 +155,11 @@ class emailClassModel extends Model
 	/**
 	*	异步发送邮件
 	*/
-	public function sendemailcont($id)
+	public function sendemailcont($id, $stype=-1)
 	{
 		$rs 	= m('email_cont')->getone($id);
 		if(!$rs)return '记录不存在';
-		$stype	= (int)$this->rock->get('stype');
+		if($stype==-1)$stype	= (int)$this->rock->get('stype');
 		if($stype == 0){
 			$msg 	= $this->sendmail($rs['title'],$rs['body'], $rs['receid'], array(), 1);
 		}else{
@@ -172,6 +172,7 @@ class emailClassModel extends Model
 				'ccemail' 	=> $rs['ccemail'],
 				'attachpath'=> $rs['attachpath'],
 				'attachname'=> $rs['attachname'],
+				'mid'		=> $rs['mid'],
 			), 1);
 		}
 		$status = '2';
@@ -215,6 +216,7 @@ class emailClassModel extends Model
 		if(isempt($serversmtp) || isempt($serverport) || isempt($emailuser)|| isempt($emailpass))return '用户未设置邮件帐号密码';
 		
 		$msg 	= 'ok';
+		$outzt	= 2;
 		if(!getconfig('asynsend') || $zjsend==1){
 			$bo 	= $this->sendddddd(array(
 				'emailpass' 	=> $emailpass,
@@ -233,6 +235,10 @@ class emailClassModel extends Model
 				'body' 			=> $body,
 			), false);
 			if(!$bo)$msg = $this->errorinfo;
+			if(isset($mid)){
+				if($msg=='ok')$outzt=1;
+				m('emailm')->update('`outzt`='.$outzt.'', $mid);
+			}
 		}else{
 			//异步发送邮件
 			$uarr['title'] 		= $title;
@@ -248,12 +254,17 @@ class emailClassModel extends Model
 			$uarr['optid'] 		= $this->adminid;
 			$uarr['optname'] 	= $this->adminname;
 			$uarr['status'] 	= 0;
+			if(isset($mid))$uarr['mid'] = $mid;
 			$sid 	= m('email_cont')->insert($uarr);
-			
-			m('reim')->asynurl('asynrun','sendemail', array(
+			c('rockqueue')->push('email,anaysend', array(
 				'id' 	=> $sid,
 				'stype' => 1
 			));
+			/*
+			m('reim')->asynurl('asynrun','sendemail', array(
+				'id' 	=> $sid,
+				'stype' => 1
+			));*/
 		}
 		return $msg;
 	}

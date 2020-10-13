@@ -94,5 +94,5 @@ define('UPURL', $config['upurl']);
 define('ISMORECOM', $config['companymode']);
 
 $_confpath	= ''.ROOT_PATH.'/config/iplogs.php'; //这个用来限制IP访问的
-if(file_exists($_confpath))include_once($_confpath);
+if(file_exists($_confpath) && PHP_SAPI != 'cli')include_once($_confpath);
 $rock->initRock();

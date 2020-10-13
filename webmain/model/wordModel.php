@@ -160,7 +160,7 @@ class wordClassModel extends Model
 		$sarr	= array(
 			'where' => $where,
 			'table' => '`[Q]word` a left join `[Q]file` b on a.`fileid`=b.`id`',
-			'fields'=> 'a.*,b.filename,a.sort,b.filesizecn,b.filenum,b.thumbplat,b.filesize,b.fileext,b.filepath,b.thumbpath,b.downci',
+			'fields'=> 'a.*,b.filename,a.sort,b.filesizecn,b.filenum,b.thumbplat,b.filesize,b.fileext,b.filepath,b.thumbpath,b.downci,b.`filepathout`',
 			'order' => 'a.`type` desc,a.`sort`,a.id desc'
 		);
 		
@@ -185,18 +185,22 @@ class wordClassModel extends Model
 				$rs['thumbpath'] = $fobj->getthumbpath($rs); //缩略图的路径
 				
 				$fpath = $rs['filepath'];
-			
 				$wjstatus= 1;
 				if(substr($fpath,0,4)=='http'){
 					$wjstatus = 2;
 				}else{
-					if(isempt($rs['filenum']) && !file_exists($fpath)){
-						$wjstatus=0;
-						$rs['ishui']=1;
+					$filepathout = $rs['filepathout'];
+					if(isempt($filepathout)){
+						if(!file_exists($fpath)){
+							$wjstatus=0;
+							$rs['ishui']=1;
+						}
+					}else{
+						if($fobj->isimg($rs['fileext']))$rs['filepath'] = $filepathout;
+						$wjstatus = 2;
 					}
 				}
-				$rs['wjstatus'] = $wjstatus;
-				
+				$rs['wjstatus'] = 2;
 			}
 		}
 		if($lx==0){

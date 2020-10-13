@@ -91,6 +91,7 @@ $(document).ready(function(){
 		//get('del_{rand}').disabled = bo;
 	}
 	js.initbtn(c);
+	a.settishi('<div class="tishi">提示：上传的文件可能会在某些单据上，删除请谨慎。</div>');
 });
 </script>
 
@@ -136,4 +137,3 @@ $(document).ready(function(){
 </div>
 <div class="blank10"></div>
 <div id="veiw_{rand}"></div>
-<div class="tishi">提示：上传的文件可能会在某些单据上，删除请谨慎。</div>

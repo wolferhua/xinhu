@@ -64,6 +64,9 @@ $(document).ready(function(){
 					a.reload()
 				}
 			});
+		},
+		daochu:function(){
+			a.exceldown();
 		}
 	};
 
@@ -78,6 +81,7 @@ $(document).ready(function(){
 		<button class="btn btn-success" click="yidu,1"  type="button">标为已读</button>
 	</li>
 	<li class="floats50" style="text-align:right">
+		<button class="btn btn-default"  click="daochu" type="button">导出</button>&nbsp;
 		<button class="btn btn-danger" click="del" type="button"><i class="icon-trash"></i> 删除</button>
 	</li>
 </ul>

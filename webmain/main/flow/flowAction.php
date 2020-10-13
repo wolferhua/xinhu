@@ -605,7 +605,7 @@ class mode_'.$modenum.'ClassAction extends inputAction{
 		$zlen= count($rows)-1;
 		foreach($rows as $k=>$rs){
 			$xuo++;
-			$name = $rs['name'];
+			$name = '^'.$rs['fields'].'^';
 			if($rs['isbt']=='1')$name='*'.$name.'';
 			if(in_array($rs['fieldstype'], $zhang) || contain($rs['attr'],'maxhang')){
 				if($xuo==2)$s.='<td height="34" align="right" class="ys1"></td><td class="ys2"></td></tr><tr>';
@@ -634,8 +634,8 @@ class mode_'.$modenum.'ClassAction extends inputAction{
 				$s.='<tr><td class="ys0" colspan="4">'.$str.'</td></tr>';
 			}
 		}
-		if($xgwj==1)$s.='<td height="34" align="right" class="ys1">相关文件</td><td colspan="3" class="ys2">	{file_content}</td>';
-		if($base==1)$s.='<tr><td height="34"  align="right" class="ys1">申请人</td><td class="ys2" >{base_name}</td><td align="right" class="ys1" >申请人部门</td><td class="ys2" >{base_deptname}</td></tr>';
+		if($xgwj==1)$s.='<td height="34" align="right" class="ys1">^file_content^</td><td colspan="3" class="ys2">	{file_content}</td>';
+		if($base==1)$s.='<tr><td height="34"  align="right" class="ys1">^base_name^</td><td class="ys2" >{base_name}</td><td align="right" class="ys1" >^base_deptname^</td><td class="ys2" >{base_deptname}</td></tr>';
 		$s.='</tbody></table>';
 		return $s;
 	}

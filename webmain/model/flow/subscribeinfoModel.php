@@ -59,7 +59,7 @@ class flow_subscribeinfoClassModel extends flowModel
 		$params['excelfields'] 		= $this->rock->jm->encrypt($params['excelfields']);
 		$params['excelheader'] 		= $this->rock->jm->encrypt($params['excelheader']);
 		
-		//传个让不需要登录验证(免登陆设置，不知道会不会有漏洞，求告知)
+		//传个让不需要登录验证
 		$subscribe_post 			= 'subscribe_'.time().'';
 		$subscribe_key				= md5($url.time().$subscribe_post); 
 		$params['subscribe_key']	= $subscribe_key;

@@ -5,18 +5,34 @@
 <title><?=$da['filename']?></title>
 <script type="text/javascript" src="js/jquery.js"></script>
 <script type="text/javascript" src="js/js.js"></script>
+<link rel="shortcut icon" href="favicon.ico" />
 <style>
-pre span{color:#999999}
-pre font{color:blue}
-table {
-  border-spacing: 0;
-  border-collapse: collapse;
-}
+
 </style>
 <script>
-var fileext ='<?=$da['fileext']?>';
+var fileext = '<?=$da['fileext']?>';
+function save(o1){
+	var cont = get('content').innerText;
+	js.setmsg('保存中...');
+	o1.disabled = true;
+	js.ajax({
+		type:'post',
+		url:'?m=sysfile&a=savefile&path=<?=$da['filepath']?>',
+		data:{content:cont},
+		success:function(res){
+			if(res=='ok'){
+				js.setmsg('保存成功，可修改继续保存','green');
+				o1.disabled=false;
+			}else{
+				js.setmsg(res);
+				o1.disabled=false;
+			}
+		}
+	});
+}
 function initbody(){
 	var hei = winHb()-40;
+	
 	$('#lineheihtss').css('height',''+hei+'px');
 	$('#content').scroll(scrollss);
 	
@@ -32,8 +48,10 @@ function initbody(){
 	$('#lineheiht').html(s1+'<br>&nbsp;');
 	
 	var sphe = ',php,js,java,';
-
+	
+	
 	if(sphe.indexOf(','+fileext+',')>-1){
+		//var rNote = /(?:^|\n|\r)\s*\/\/.*(?:\r|\n|$)|(\/\*(.|\s)*?\*\/)/g;
 		var rNote = /(\/\*(.|\s)*?\*\/)/g;
 		var emu		= cont.match(rNote),st1;
 		if(emu != null){
@@ -47,6 +65,7 @@ function initbody(){
 	if(fileext=='conf')confini(cont,'#');
 	if(fileext=='ini')confini(cont,';');
 }
+
 function phpjcq(cont, lx){
 	if(lx=='php'){
 		var jcz = 'include_once,$_GET,isset,unset,explode,foreach,isempt,if,else,extends,require,public,function,protected,array,return,echo,private,exit,is_numeric,property_exists,this'.split(','),i,reg;
@@ -80,12 +99,20 @@ function confini(cont, lx){
 		}
 	}
 	get('content').innerHTML=s1;
-	//contenteditable="plaintext-only"
 }
+
 function scrollss(){
 	get('lineheihtss').scrollTop=get('content').scrollTop;
 }
 </script>
+<style>
+pre span{color:#999999}
+pre font{color:blue}
+table {
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+</style>
 </head>
 
 <body style="background:white;padding:0px;margin:0px;overflow:hidden">
@@ -93,14 +120,14 @@ function scrollss(){
 <td valign="top" style="background:#e4e4e4;"><div id="lineheihtss" style="width:50px;height:300px;overflow:hidden"><div style="line-height:20px;padding-top:5px;text-align:right;padding-right:3px;font-size:14px" id="lineheiht">1<br>2<br></div></div></td>
 <td valign="top" style="width:100%;height:100%;padding:0px">
 <div id="contentdiv" style="overflow:hidden;background:#caeccb;">
-<pre id="content"  style="height:100%;width:100%;border:0px #aaaaaa solid;background:none;line-height:20px;font-size:14px;overflow:auto;padding:5px;margin:0px;outline:none"><?=htmlspecialchars($da['content'])?></pre></div>
+<pre id="content" contenteditable="plaintext-only" style="height:100%;width:100%;border:0px #aaaaaa solid;background:none;line-height:20px;font-size:14px;overflow:auto;padding:5px;margin:0px;outline:none"><?=htmlspecialchars($da['content'])?></pre></div>
 </td>
 </tr>
 <tr>
 <td></td>
 <td style="height:40px;overflow:hidden">
 
-<div ><span id="msgview">大小：<?=$da['filesizecn']?>，查找请用Ctrl+F</span></div>
+<div ><span id="msgview">大小：<?=$da['filesize']?>，查找请用Ctrl+F</span>，文件：<?=$rock->jm->base64decode($da['filepath'])?></div>
 </td>
 </tr>
 </table>

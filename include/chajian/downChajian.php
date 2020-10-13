@@ -156,7 +156,7 @@ class downChajian extends Chajian{
 			$arrs['pich'] = $upses['pich'];
 			$data= $arrs;
 			
-			//发队列自动上传到信呼文件平台
+			//【已弃用】发队列自动上传到信呼文件平台
 			if(getconfig('autoup_toxinhudoc') && $noasyn != 'yes'){
 				$notlx = getconfig('autoup_notfileext');//不上传类型
 				$booo  = true;
@@ -164,9 +164,17 @@ class downChajian extends Chajian{
 				if($booo){
 					$stime = time()+rand(3,6);
 					if($subo)$stime=0;
-					c('rockqueue')->sendfile($id, $stime);
+					//c('rockqueue')->sendfile($id, $stime);
 				}
 			}
+			
+			//自动上传到腾讯云存储
+			if(getconfig('qcloudCos_autoup') && $noasyn != 'yes'){
+				$stime = time()+rand(3,6);
+				if($subo)$stime=0;
+				c('rockqueue')->sendfile($id, $stime);
+			}
+			
 		}else{
 			$data['msg'] = $upses;
 		}

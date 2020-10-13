@@ -34,7 +34,7 @@ class fileClassModel extends Model
 	public function getfile($mtype, $mid, $where='')
 	{
 		if($where=='')$where = "`mtype`='$mtype' and `mid` in($mid)";
-		$rows	= $this->getall("$where order by `id`",'id,`mid`,filename,filenum,filepath,filesizecn,filesize,fileext,optname,thumbpath,thumbplat');
+		$rows	= $this->getall("$where order by `id`");
 		return $rows;
 	}
 	
@@ -147,6 +147,7 @@ class fileClassModel extends Model
 		$isdel = file_exists($rs['filepath']);
 		if(substr($rs['filepath'],0,4)=='http')$isdel=true;
 		if(!isempt($rs['filenum']))$isdel=true;
+		if(arrvalue($rs,'filepathout'))$isdel=true;
 		
 		$fstr .='<img src="'.$imurl.'" align="absmiddle" height=20 width=20>';
 		if($isdel){
@@ -210,7 +211,7 @@ class fileClassModel extends Model
 		$arr 	= array();
 		foreach($rows as $k=>$rs){
 			$inuar  = $rs;
-			if(isempt($rs['filepath']) || (substr($rs['filepath'],0,4)!='http' && !file_exists($rs['filepath'])))continue;
+			if(isempt($rs['filepath']) || (substr($rs['filepath'],0,4)!='http' && !arrvalue($rs,'filepathout') && !file_exists($rs['filepath'])))continue;
 			unset($inuar['id']);
 			$oid	= $rs['id'];
 			$inuar['adddt'] 	= $this->rock->now;
@@ -244,7 +245,7 @@ class fileClassModel extends Model
 	{
 		if($sid!='')$where = "`id` in ($sid)";
 		if($where=='')return;
-		$rows 	= $this->getall($where, 'id,filepath,thumbpath,pdfpath,filenum');
+		$rows 	= $this->getall($where);
 		foreach($rows as $k=>$rs){
 			$path = $rs['filepath'];
 			if(!$this->isempt($path) && substr($path,0,4)!='http' && file_exists($path))unlink($path);
@@ -253,7 +254,9 @@ class fileClassModel extends Model
 			$path = $rs['pdfpath'];
 			if(!$this->isempt($path) && substr($path,0,4)!='http' && file_exists($path))unlink($path);
 			
-			if(!isempt($rs['filenum']))c('rockqueue')->delfile($rs['filenum']);//发送队列删除对应平台上文件
+			//if(!isempt($rs['filenum']))c('rockqueue')->delfile($rs['filenum']);//发送队列删除对应平台上文件
+			
+			//远程上删除
 		}
 		$this->delete($where);
 	}
@@ -293,6 +296,7 @@ class fileClassModel extends Model
 		$filename	= $rs['filename'];
 		$filesize 	= $rs['filesize'];
 		$fileext 	= $rs['fileext'];
+		$filepathout= $rs['filepathout'];
 		if($this->rock->contain($filepath,'http')){
 			header('location:'.$filepath.'');
 		}else{
@@ -301,7 +305,11 @@ class fileClassModel extends Model
 			$ielx1 = substr($filepath,0,6);
 			if($ielx!=UPDIR && $ielx1!='upload' && $ielx1!='images')exit('无效操作1');
 			
-			if(!file_exists($filepath))exit('404 Not find files');
+			if(!file_exists($filepath)){
+				if(!isempt($filepathout))header('location:'.$filepathout.'');
+				exit('404 Not find files');
+			}
+			
 			if(!contain($filename,'.'.$fileext.''))$filename .= '.'.$fileext.'';
 			$filesize = filesize($filepath);
 			$this->fileheader($filename, $fileext, $filesize);

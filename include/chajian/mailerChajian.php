@@ -87,7 +87,7 @@ class mailerChajian extends Chajian{
 		for($i=0; $i<count($a1); $i++){
 			$na = '';
 			if(isset($n1[$i]))$na = $n1[$i];
-			$this->mail->AddAttachment($a1[$i], $this->tojoin($na)); 
+			$this->mail->AddAttachment(ROOT_PATH.'/'.$a1[$i], $this->tojoin($na)); 
 		}
 	}
 	

@@ -38,7 +38,8 @@ final class rockClass
 		$this->unarr	= explode(',','1,2');
 		$this->now		= $this->now();
 		$this->date		= date('Y-m-d');
-		$this->lvlaras  = explode(',','select ,alter table,delete ,drop ,update ,insert into,load_file,/*,*/,union,<script,</script,sleep ,outfile,eval(,user(,phpinfo(),select*,union%20,sleep%20,select%20,delete%20,drop%20,and%20');
+		$this->lvlaras  = explode(',','select ,
+		alter table,delete ,drop ,update ,insert into,load_file,/*,*/,union,<script,</script,sleep(,outfile,eval(,user(,phpinfo(),select*,union%20,sleep%20,select%20,delete%20,drop%20,and%20');
 		$this->lvlaraa  = explode(',','select,alter,delete,drop,update,/*,*/,insert,from,time_so_sec,convert,from_unixtime,unix_timestamp,curtime,time_format,union,concat,information_schema,group_concat,length,load_file,outfile,database,system_user,current_user,user(),found_rows,declare,master,exec,(),select*from,select*');
 		$this->lvlarab	= array();
 		foreach($this->lvlaraa as $_i)$this->lvlarab[]='';
@@ -54,7 +55,9 @@ final class rockClass
 		return str_ireplace($xpd, '', $str);
 	}
 	
-	//获取IP
+	/*
+	*	获取IP
+	*/
 	public function getclientip()
 	{
 		$ip = 'unknow';
@@ -180,7 +183,7 @@ final class rockClass
 		$txt.=''.chr(10).''.chr(10).'[datetime]'.chr(10).''.$this->now().'';
 		$txt.=''.chr(10).''.chr(10).'[Browser]'.chr(10).''.$this->HTTPweb.'';
 		
-		$file = ''.UPDIR.'/logs/'.date('Y-m').'/'.$lx.''.date('YmdHis').'_'.str_shuffle('abcdefghijklmn').'.log';
+		$file = ''.UPDIR.'/logs/'.date('Y-m').'/'.$lx.''.date('YmdHis').'_'.str_shuffle('abcdefghijklmn').'.txt';
 		$this->createtxt($file, $txt);
 		return $file;
 	}

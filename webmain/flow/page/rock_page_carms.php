@@ -19,7 +19,8 @@ $(document).ready(function(){
 	
 //[自定义区域start]
 
-
+var carid = params.carid;
+if(carid)bootparams.url+='&carid='+carid+'';
 
 //[自定义区域end]
 

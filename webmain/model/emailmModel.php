@@ -44,10 +44,10 @@ class emailmClassModel extends Model
 			$uarr['senddt'] 	= $rs['date'];
 			$uarr['optdt'] 		= $this->rock->now;
 			$uarr['size'] 		= $rs['size'];
-			$uarr['fromemail'] 	= $rs['fromemail'];
-			$uarr['toemail'] 	= $rs['toemail'];
-			$uarr['reply_toemail'] 	= $rs['reply_toemail'];
-			$uarr['ccemail'] 		= $rs['ccemail'];
+			$uarr['fromemail'] 	= $this->gshemail($rs['fromemail']);
+			$uarr['toemail'] 	= $this->gshemail($rs['toemail']);
+			$uarr['reply_toemail'] 	= $this->gshemail($rs['reply_toemail']);
+			$uarr['ccemail'] 		= $this->gshemail($rs['ccemail']);
 			$uarr['isturn'] 		= 1;
 			$uarr['isfile'] 		= count($rs['attach']) > 0 ? 1 : 0;
 			$uarr['type'] 			= 1;
@@ -82,6 +82,12 @@ class emailmClassModel extends Model
 		return array(
 			'count' => $jf
 		);
+	}
+	
+	private function gshemail($str)
+	{
+		$str = str_replace(array('"',' ','\''),'', $str);
+		return $str;
 	}
 	
 	//保存到子表

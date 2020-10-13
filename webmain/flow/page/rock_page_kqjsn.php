@@ -44,7 +44,8 @@ bootparams.celleditor = true;
 			c.sendcmd(0, d.lx);
 		}
 	});
-	
+	c.optbtn=function(){
+	}
 	c.sendcmd=function(id, type){
 		var ids = a.getchecked();
 		if(ids==''){js.msg('msg','没用复选框选中记录');return;}

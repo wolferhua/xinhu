@@ -139,20 +139,25 @@ class rockqueueChajian extends Chajian
 	}
 	
 	/**
-	*	发送文件到信呼文件管理平台上
+	*	发送腾讯云存储
 	*	调用：c('rockqueue')->sendfile(文件Id);
 	*/
 	public function sendfile($fileid, $runtime=0)
 	{
-		return $this->push('uptoxinhudoc,run', array('fileid'=>$fileid), $runtime);
+		return $this->push('qcloudCos,run', array('fileid'=>$fileid), $runtime);
+	}
+	
+	public function senddown($fileid)
+	{
+		return $this->push('qcloudCos,down', array('fileid'=>$fileid));
 	}
 	
 	/**
 	*	在信呼文件管理平台上删除对应文件
 	*	调用：c('rockqueue')->delfile(文件编号);
 	*/
-	public function delfile($filenum)
+	public function delfile($fileid)
 	{
-		return $this->push('uptoxinhudoc,del', array('filenum'=>$filenum));
+		return $this->push('qcloudCos,del', array('fileid'=>$fileid));
 	}
 }

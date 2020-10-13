@@ -49,7 +49,6 @@ class sysClassAction extends runtAction
 		m('admin')->updateinfo(); //更新人员
 		m('imgroup')->updategall(); //更新会话组
 		$reim 	= m('reim');
-		if($reim->installwx(0))m('weixin:user')->getuserlist();
 		if($reim->installwx(1))m('weixinqy:user')->getuserlist();
 		return 'success';
 	}

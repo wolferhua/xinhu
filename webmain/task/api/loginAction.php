@@ -189,10 +189,11 @@ class loginClassAction extends apiAction
 		if(isempt($randkey))$this->showreturn($data);
 		if($val>'0'){
 			$dbs 		= m('admin');
-			$urs 		= $dbs->getone("`id`='$val' and `status`=1",'`name`,`user`,`face`,`pass`');
+			$urs 		= $dbs->getone("`id`='$val' and `status`=1",'`id`,`name`,`user`,`face`,`pass`');
 			if(!$urs){
 				$val = '-1';
 			}else{
+				c('cache')->set('login'.$urs['user'].'', $urs['id'], 60);
 				$data['user'] = $urs['user'];
 				$data['face'] = $dbs->getface($urs['face']);
 				$data['pass'] = md5($urs['pass']);

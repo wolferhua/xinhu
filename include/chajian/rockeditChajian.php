@@ -65,7 +65,15 @@ class rockeditChajian extends Chajian{
 		if(!$frs)return returnerror('文件不存在');
 		
 		$filepath 	= $frs['filepath'];
+		$filepathout= arrvalue($frs, 'filepathout');
 		$onlynum	= $frs['onlynum'];
+		$recedata   = '';
+		if(substr($filepath,0,4)!='http' && !file_exists($filepath)){
+			if(isempt($filepathout))return returnerror('文件不存在2');
+			$filepath = $filepathout;
+			$recedata = $filepath;
+		}
+		
 		if(isempt($onlynum)){
 			$onlynum	= md5(''.$this->rock->jm->getRandkey().date('YmdHis').'file'.$id.'');
 			m('file')->update("`onlynum`='$onlynum'", $id);
@@ -83,8 +91,9 @@ class rockeditChajian extends Chajian{
 		$gokey		= $data['gokey'];
 		$bsar		= $data;
 		if($type=='0'){
+			if($recedata=='')$recedata = $this->rock->jm->base64encode(file_get_contents($filepath));
 			$barr 	= $this->postdata('file','recedata', array(
-				'data' 		=> $this->rock->jm->base64encode(file_get_contents($filepath)),
+				'data' 		=> $recedata,
 				'fileid' 	=> $id,
 				'filenum' 	=> $onlynum,
 				'fileext'	=> $frs['fileext'],

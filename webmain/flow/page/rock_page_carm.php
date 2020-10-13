@@ -22,13 +22,13 @@ $(document).ready(function(){
 c.setcolumns('djshu',{
 	renderer:function(v,d){
 		var s=''+v+'';
-		if(v>0)s+=',<a onclick="valdwew{rand}('+d.id+')" href="javascript:;">查看</a>';
+		if(v>0)s+=',<a onclick="valdwew{rand}('+d.id+',\''+d.carnum+'\')" href="javascript:;">查看</a>';
 		if(v=='0')s='&nbsp;';
 		return s;
 	}
 });
-valdwew{rand}=function(cid){
-	
+valdwew{rand}=function(cid,nums){
+	addtabs({url:'flow,page,carms,atype=all,pnum=all,carid='+cid+'',num:'cacarmss'+cid+'',name:'['+nums+']车辆登记查看'});
 }
 
 //[自定义区域end]

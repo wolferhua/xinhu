@@ -93,6 +93,7 @@ class indexClassAction extends Action{
 	{
 		header("Content-type:image/png");
 		$urls= $this->rock->getouturl();
+		c('cache')->set('login'.$this->adminuser.'', $this->adminid, 300);
 		$url = ''.$urls.'?m=login&d=we&token='.$this->admintoken.'&user='.$this->jm->base64encode($this->adminuser).'';
 		$img = c('qrcode')->show($url);
 		echo $img;

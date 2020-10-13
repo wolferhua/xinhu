@@ -15,10 +15,10 @@ function initbodys(){
 	if(mid=='0'){
 		if(form('cardid'))js.ajax(geturlact('getlast'),{},function(d){
 			if(d){
-				form('paytype').value=d.paytype;
-				form('cardid').value=d.cardid;
-				form('openbank').value=d.openbank;
-				form('fullname').value=d.fullname;
+				if(form('paytype'))form('paytype').value=d.paytype;
+				if(form('cardid'))form('cardid').value=d.cardid;
+				if(form('openbank'))form('openbank').value=d.openbank;
+				if(form('fullname'))form('fullname').value=d.fullname;
 			}
 		},'get,json');
 	}

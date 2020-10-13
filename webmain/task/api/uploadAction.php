@@ -24,6 +24,7 @@ class uploadClassAction extends apiAction
 		$upses	= $upimg->up('file');
 		if(!is_array($upses))exit($upses);
 		$arr 	= c('down')->uploadback($upses);
+		$arr['autoup'] = getconfig('qcloudCos_autoup') ? 1 : 0; //是否上传其他平台
 		$this->returnjson($arr);
 	}
 	
@@ -67,8 +68,12 @@ class uploadClassAction extends apiAction
 		),$fileid);
 		c('cache')->del('filetopdf'.$fileid.'');
 		
-		//发队列自动上传到信呼文件平台
+		//【弃用】发队列自动上传到信呼文件平台
 		if(getconfig('autoup_toxinhudoc')){
+			//c('rockqueue')->sendfile($fileid);
+		}
+		//上传到腾讯存储
+		if(getconfig('qcloudCos_autoup')){
 			c('rockqueue')->sendfile($fileid);
 		}
 		
@@ -213,8 +218,15 @@ class uploadClassAction extends apiAction
 		$frs 	= m('file')->getone($fileid);
 		if(!$frs)return returnerror('文件不存在了');
 		$filepath = $frs['filepath'];
+		$filepathout = $frs['filepathout'];
 		
-		if(substr($filepath,0,4)!='http' && !file_exists($filepath))return returnerror('文件不存在了1');
+		if(substr($filepath,0,4)!='http' && !file_exists($filepath)){
+			if(isempt($filepathout)){
+				return returnerror('文件不存在了1');
+			}else{
+				$filepath = $filepathout;
+			}
+		}
 		
 		$uptype = '|doc|docx|xls|xlsx|ppt|pptx|';
 		if(!contain($uptype,'|'.$frs['fileext'].'|'))return returnerror('不是文档类型无法在线编辑');
@@ -224,6 +236,7 @@ class uploadClassAction extends apiAction
 			$filename = '(只读)'.$filename.'';
 			$utes     = 'yulan';
 		}
+	
 		$arr	 = array();
 		$arr[0]  = URL; 
 		$arr[1]  = $filename;
@@ -270,6 +283,7 @@ class uploadClassAction extends apiAction
 		$fileext		= $frs['fileext'];
 		$filename		= $frs['filename'];
 		$filepath		= $frs['filepath'];
+		$filepathout	= arrvalue($frs, 'filepathout');
 		
 		$data			= array();
 		$loadyuan		= false;
@@ -282,7 +296,7 @@ class uploadClassAction extends apiAction
 				return returnerror('此'.$fileext.'类型文件不支持在线预览');
 		}
 		
-		//从文件平台读取
+		//从文件平台读取【弃用】
 		if(!isempt($filenum)){
 			$docobj = c('xinhudoc');
 			$logo   = '';
@@ -321,7 +335,7 @@ class uploadClassAction extends apiAction
 		$this->loadyuan = $loadyuan;
 		//存自己服务器的
 		if(!$loadyuan){
-			if(substr($filepath,0,4)!='http' && !file_exists($filepath))return returnerror('文件不存在了1');
+			if(substr($filepath,0,4)!='http' && isempt($filepathout) && !file_exists($filepath))return returnerror('文件不存在了1');
 			if(c('upfile')->isimg($fileext)){
 				$data['url'] = m('admin')->getface($filepath);
 			}
@@ -403,7 +417,11 @@ class uploadClassAction extends apiAction
 		$frs['downurl']		= $barr['data']['url'].'&cfrom=app';
 		if(!$this->loadyuan){
 			$frs['downurl']= '';
-			if(substr($frs['filepath'],0,4)=='http')$frs['downurl'] = $frs['filepath'];
+			if(substr($frs['filepath'],0,4)=='http'){
+				$frs['downurl'] = $frs['filepath'];
+			}else{
+				if(!file_exists($frs['filepath']) && arrvalue($frs,'filepathout'))$frs['downurl'] = $frs['filepathout'];
+			}
 		}
 		return returnsuccess($frs);
 	}
@@ -434,5 +452,35 @@ class uploadClassAction extends apiAction
 			}
 		}
 		return $filearr;
+	}
+	
+	/**
+	*	获取文件(写入到内容里)
+	*/
+	public function filedaoAction()
+	{
+		$allfid = c('check')->onlynumber($this->get('fileid'));
+		$filearr= array();
+		$str = '';
+		if($allfid){
+			$fobj 	= m('file');
+			$frows 	 = $fobj->getall('`id` in('.$allfid.')');
+			$urla   = getconfig('outurl', URL);
+			foreach($frows as $k1=>$rs1){
+				$str.='<br>';
+				$url = ''.$urla.''.$rs1['filepath'].'';
+				if($sst = arrvalue($rs1,'filepathout'))$url = $sst;
+				
+				$flx   = $rs1['fileext'];
+				if(!contain($fobj->fileall,','.$flx.','))$flx='wz';
+				$str1  = '';
+				$imurl = ''.URL.'web/images/fileicons/'.$flx.'.gif';
+				$thumbpath = $fobj->getthumbpath($rs1);
+				if($fobj->isimg($flx) && !isempt($thumbpath))$imurl = $thumbpath;
+				
+				$str.='<img src="'.$imurl.'" align="absmiddle" height=20 width=20> <a target="_blank" href="'.$url.'">'.$rs1['filename'].'</a>('.$rs1['filesizecn'].')';
+			}
+		}
+		return $str;
 	}
 }

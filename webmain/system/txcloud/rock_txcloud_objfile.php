@@ -13,4 +13,4 @@ $(document).ready(function(){
 </script>
 
 
-<div id="view_{rand}"><h1>暂未开发，就是将文件上传到腾讯云的对象存储中</h1></div>
+<div id="view_{rand}"><h1>文件上传到腾讯云的对象存储中</h1><br>查看这个<a target="_blank" href="<?=URLY?>view_txcos.html">帮助</a>去配置。</div>

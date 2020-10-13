@@ -3,13 +3,13 @@
 	caratename：chenxihu
 	caratetime：2014-04-06 21:40:00
 	email:admin@rockoa.com
-	homepage:www.xh829.com
+	homepage:www.rockoa.com
 */
 
 (function ($) {
 	
 	function _getstyles(){
-		var s='<style>.changeuserlist div.listsss{padding:10px; background:white;border-bottom:1px #eeeeee solid;cursor:default}.changeuserlist div:active{ background:#f1f1f1}.changeuserbotton{height:30px;width:50px; background:#d9534f;color:white;font-size:14px;border:none;padding:0px;margin:0px;line-height:20px;cursor:default;opacity:1;outline:none;border-radius:5px}.changeuserbotton:active{color:white;border:none;opacity:0.8}</style>';
+		var s='<style>.changeuserlist div.listsss{padding:10px; background:white;border-bottom:1px #eeeeee solid;cursor:default}.changeuserlist div:active{ background:#f1f1f1}.changeuserbotton{height:30px;width:50px; background:#d9534f;color:white;font-size:14px;border:none;padding:0px;margin:0px;line-height:20px;cursor:default;opacity:1;outline:none;border-radius:5px}.changeuserbotton:active{color:white;border:none;opacity:0.8}.changeuserxuan span{background:white;border:1px #cccccc solid;padding:3px;border-radius:5px;font-size:12px;margin-left:5px;cursor:pointer}</style>';
 		return s;
 	}
 	
@@ -82,6 +82,9 @@
 				if(this.changetype.indexOf('user')>=0)s3+='<option value="3">显示组</option>';
 				s3+='</select>';
 			}
+			if(type=='checkbox'){
+				s+='<div class="changeuserxuan" style="padding:5px;border-right:1px #cccccc solid;border-top:1px #cccccc solid;line-height:30px;position:absolute;bottom:49px;background:white;"><font style="cursor:pointer" id="yixuanbtn_'+rand+'">∨</font><font id="yixuan_'+rand+'"></font></div>';
+			}
 			s+='<div style="height:50px;line-height:50px;border-top:1px #cccccc solid" align="right"><table width="100%"><tr><td width="10" nowrap>&nbsp;</td><td width="80%">'+s3+'</td><td><button style="width:70px;border:none" type="button" id="changereload_'+rand+'" class="changeuserbotton" >刷新数据</button></td><td width="10" nowrap>&nbsp;</td><td><button class="changeuserbotton" type="button" id="changecancl_'+rand+'" >取消</button></td><td width="10" nowrap>&nbsp;</td><td height="50"><button style="background:#1389D3;" id="changeok_'+rand+'" type="button" class="changeuserbotton">确定</button></td><td width="10" nowrap>&nbsp;</td></tr></table></div>';
 			s+=_getstyles();
 			s+='</div>';
@@ -112,6 +115,18 @@
 			$('#changesel_'+this.rand+'').change(function(){
 				me._changesel(this)
 			});
+			if(type=='checkbox'){
+				$('#yixuanbtn_'+rand+'').click(function(){
+					$('#yixuan_'+rand+'').toggle();
+				});
+				this._initmrvel();
+			}
+			rchanguserclick=function(o1){
+				me._changexuan(o1);
+			}
+			rchanguserquxiao=function(o1){
+				me._changequxiao(o1);
+			}
 		};
 		this.showlist=function(pid,oi){
 			var type=this.inputtype,hw=24;
@@ -149,7 +164,7 @@
 			}
 		};
 		this._showuser=function(pid,s1,type,sel){
-			var a,len,i,ssu='',dids,zoi=0,ids;
+			var a,len,i,ssu='',dids,zoi=0,ids,chk='';
 			a=this.userarr;
 			len=a.length;
 			for(i=0;i<len;i++){
@@ -159,11 +174,13 @@
 				||
 				(sel=='3' && (','+a[i].groupname+',').indexOf(','+pid+',')>-1)//显示组下人员
 				){
+					chk='';
+					if(get('show'+rand+'_u'+a[i].id+''))chk='checked ';
 					ssu+='<div class="listsss">';
-					ssu+='<table width="100%"><tr><td>'+s1+'</td><td width="100%"><img align="absmiddle" height="24" height="24" src="'+a[i].face+'">&nbsp;'+a[i].name+'<span style="font-size:12px;color:#888888">('+a[i].ranking+')</span></td><td><input name="changeuserinput_'+rand+'" xxu="'+i+'" xls="u" xname="'+a[i].name+'" value="'+a[i].id+'" style="width:18px;height:18px;" type="'+type+'"></td></tr></table>';
+					ssu+='<table width="100%"><tr><td>'+s1+'</td><td width="100%"><img align="absmiddle" height="24" height="24" src="'+a[i].face+'">&nbsp;'+a[i].name+'<span style="font-size:12px;color:#888888">('+a[i].ranking+')</span></td><td><input name="changeuserinput_'+rand+'" xxu="'+i+'" xls="u" xname="'+a[i].name+'" value="'+a[i].id+'" style="width:18px;height:18px;" '+chk+'onclick="rchanguserclick(this)" type="'+type+'"></td></tr></table>';
 					ssu+='</div>';
 					zoi++;
-					if(zoi>=200)break;//最多显示200人，其他用搜索
+					if(zoi>=200)break;
 				}
 			}
 			return ssu;
@@ -177,7 +194,7 @@
 					this.fid = a[i].id;
 					wjj= 'images/files.png';
 					if(a[i].ntotal=='0' && uob)wjj= 'images/file.png';
-					s2 = '<input name="changeuserinput_'+rand+'" xls="d" xname="'+a[i].name+'" xu="'+i+'" value="'+a[i].id+'" style="width:18px;height:18px;" type="'+type+'">';
+					s2 = '<input name="changeuserinput_'+rand+'" xls="d" xname="'+a[i].name+'" xu="'+i+'" value="'+a[i].id+'" style="width:18px;height:18px;" onclick="rchanguserclick(this)" type="'+type+'">';
 					if(dob)s2='';
 					if(s2!='' && !this._isdeptcheck(a[i]))s2='';
 					s+='<div class="listsss">';
@@ -193,7 +210,7 @@
 			a=this.grouparr;
 			len=a.length;
 			for(i=0;i<len;i++){
-				s1  = '<input name="changeuserinput_'+rand+'" xls="g" xname="'+a[i].name+'" value="'+a[i].id+'" style="width:18px;height:18px;" type="'+type+'">';
+				s1  = '<input name="changeuserinput_'+rand+'" xls="g" xname="'+a[i].name+'" value="'+a[i].id+'" style="width:18px;height:18px;" onclick="rchanguserclick(this)" type="'+type+'">';
 				if(this.changetype.indexOf('deptuser')==-1)s1='';
 				ssu+='<div class="listsss">';
 				ssu+='<table width="100%"><tr><td></td><td groupxu="'+i+'" width="100%"><img align="absmiddle" height="24" height="24" src="images/group.png">&nbsp;'+a[i].name+' <span style="font-size:12px;color:#888888">('+a[i].usershu+'人)</span></td><td>'+s1+'</td></tr></table>';
@@ -215,6 +232,44 @@
 			}else{
 				o1.toggle();
 			}
+		};
+		this._changexuan=function(o1){
+			if(this.inputtype!='checkbox')return;
+			var o = $(o1),xls=o.attr('xls'),val=o.val();
+			var sid = 'show'+rand+'_'+xls+''+val+'';
+			if(o1.checked){
+				var str='<span id="'+sid+'" xls="'+xls+'" xvl="'+val+'" onclick="rchanguserquxiao(this)">';
+				str+='<input name="yixuancheck_'+rand+'" value="'+val+'" align="absmiddle" xls="'+xls+'" type="checkbox" checked xxu="" xname="'+o.attr('xname')+'">'+o.attr('xname')+'';
+				str+='</span>';
+				if(!get(sid))$('#yixuan_'+rand+'').append(str);
+			}else{
+				$('#'+sid+'').remove();
+			}
+		};
+		this._changequxiao=function(o1){
+			var o = $(o1),xls=o.attr('xls'),xvl=o.attr('xvl');
+			o.remove();
+			$("input[name='changeuserinput_"+rand+"'][xls='"+xls+"'][value='"+xvl+"']").attr('checked', false);
+		};
+		this._initmrvel=function(){
+			var sid ='',sna='',i,str='',xls,val;
+			if(this.idobj)sid=this.idobj.value;
+			if(this.nameobj)sna=this.nameobj.value;
+			if(!sid || !sna)return;
+			var sida = sid.split(','),snaa=sna.split(',');
+			var ob1=this.changetype.indexOf('dept')>-1,ob2=this.changetype.indexOf('user')>-1;
+			for(i=0;i<sida.length;i++){
+				xls=sida[i].substr(0,1);
+				if(!isNaN(xls)){
+					if(ob1)xls='d';
+					if(ob2)xls='u';
+				}
+				val=sida[i].replace('u','').replace('g','').replace('d','');
+				str+='<span id="show'+rand+'_'+xls+''+val+'" xls="'+xls+'" xvl="'+val+'" onclick="rchanguserquxiao(this)">';
+				str+='<input name="yixuancheck_'+rand+'" value="'+val+'" align="absmiddle" xls="'+xls+'" type="checkbox" checked xxu="" xname="'+snaa[i]+'">'+snaa[i]+'';
+				str+='</span>';
+			}
+			$('#yixuan_'+rand+'').html(str);
 		};
 		this._changesel=function(o1){
 			var val = o1.value;
@@ -264,7 +319,7 @@
 			len = d.length;
 			for(i=0;i<len;i++){
 				s+='<div class="listsss">';
-				s+='<table width="100%"><tr><td></td><td width="100%"><img align="absmiddle" height="24" height="24" src="'+d[i].face+'">&nbsp;'+d[i].name+'<span style="font-size:12px;color:#888888">('+d[i].ranking+')</span></td><td><input name="changeuserinput_'+rand+'_soukey" xxu="'+d[i].xu+'" xls="u" xname="'+d[i].name+'" value="'+d[i].id+'" style="width:18px;height:18px;" type="'+this.inputtype+'"></td></tr></table>';
+				s+='<table width="100%"><tr><td></td><td width="100%"><img align="absmiddle" height="24" height="24" src="'+d[i].face+'">&nbsp;'+d[i].name+'<span style="font-size:12px;color:#888888">('+d[i].ranking+')</span></td><td><input name="changeuserinput_'+rand+'_soukey" xxu="'+d[i].xu+'" xls="u" xname="'+d[i].name+'" value="'+d[i].id+'" style="width:18px;height:18px;" onclick="rchanguserclick(this)" type="'+this.inputtype+'"></td></tr></table>';
 				s+='</div>';
 			}
 			if(bo && s=='' && key!='')js.msg('msg','无相关['+key+']的记录', 2);
@@ -336,6 +391,7 @@
 		this.queding=function(){
 			var ns= 'changeuserinput_'+rand+'';
 			if($('#showdiv'+rand+'_search').html()!='')ns+='_soukey';
+			if(this.inputtype=='checkbox')ns='yixuancheck_'+rand+'';
 			var o = $("input[name='"+ns+"']");
 			var i,len=o.length,o1,xls,xna,xal,xxu,sid='',sna='',ob1=this.changetype.indexOf('dept')==-1,ob2=this.changetype.indexOf('user')==-1,xzarr=[];
 			var ob3=ob1 || ob2;

@@ -8,7 +8,7 @@ $(document).ready(function(){
 		window:false,rand:'{rand}',tablename:'flow_set',
 		url:publicsave('{mode}','{dir}'),url:publicsave('{mode}','{dir}'),
 		params:{otherfields:'optdt={now}'},aftersaveaction:'flowsetsaveafter',beforesaveaction:'flowsetsavebefore',
-		submitfields:'name,tables,type,num,table,sort,isscl,status,where,summary,summarx,pctx,mctx,wxtx,emtx,ddtx,isflow,sericnum,receid,recename,names,statusstr,isgbjl,ispl,ishz,istxset,isup,isflowlx,isgbcy,isbxs,lbztxs,iscs,zfeitime,istpl',
+		submitfields:'name,tables,type,num,table,sort,isscl,status,where,summary,summarx,pctx,mctx,wxtx,emtx,ddtx,isflow,sericnum,receid,recename,names,statusstr,isgbjl,ispl,ishz,istxset,isup,isflowlx,isgbcy,isbxs,lbztxs,iscs,zfeitime,istpl,sortdir',
 		requiredfields:'name,type,num,table',
 		success:function(){
 			closenowtabs();
@@ -138,6 +138,11 @@ $(document).ready(function(){
 		</tr>
 		
 		<tr>
+			<td  align="right" >列表默认排序：</td>
+			<td class="tdinput" colspan="3"><input placeholder="相对主表字段如：id desc，不会设置不要设置" name="sortdir" class="form-control"></input></td>
+		</tr>
+		
+		<tr>
 			<td  align="right" >应用上摘要显示：</td>
 			<td class="tdinput" colspan="3"><textarea  name="summarx"
 placeholder="title:{title}
@@ -148,6 +153,8 @@ cont:
 			<font color=#888888>title:标题，optdt:显示的时间，cont:内容信息</font>
 			</td>
 		</tr>
+		
+		
 		
 		<tr>
 			<td  align="right" >流程审批模式：</td>

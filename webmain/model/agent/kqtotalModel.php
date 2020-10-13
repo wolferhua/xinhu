@@ -42,6 +42,7 @@ class agent_kqtotalClassModel extends agentModel
 			$rows[] = array(
 				'title' => ''.$rs['name'].'['.$month.']统计',
 				'cont'	=> $cont,
+				'month'	=> $month,
 				'uid'	=> $rs['id']
 			);
 		}

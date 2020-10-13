@@ -70,6 +70,11 @@ class gerenClassAction extends Action
 				$status = 2;
 			}else{
 				if(isempt($rs['filenum']) && !file_exists($fpath))$status=0;
+				$filepathout = arrvalue($rs, 'filepathout');
+				if(!file_exists($fpath) && !isempt($filepathout)){
+					if($fobj->isimg($rs['fileext']))$rs['filepath'] = $filepathout;
+					$status=2;
+				}
 			}
 			$rs['status'] = $status;
 		}

@@ -95,7 +95,7 @@ class inputAction extends Action
 		}
 		if($oldrs)$this->rs = $oldrs;
 		$uaarr  = $farrs 	= array();
-		$lvls	= array('textarea','htmlediter');
+		$lvls	= array('text','textarea','ditumap');
 		foreach($fieldsarr as $k=>$rs){
 			$fid = $rs['fields'];
 			$fi1 = substr($fid, 0, 5);
@@ -104,7 +104,7 @@ class inputAction extends Action
 			if($rs['isbt']==1 && isempt($val))$this->backmsg(''.$rs['name'].'不能为空');
 			$msy = $this->attrcheck($val, arrvalue($rs, 'attr'), $this->checkobj);
 			if($msy)$this->backmsg(''.$rs['name'].''.$msy.'');
-			//if(!in_array($rs['fieldstype'], $lvls))$val = htmlspecialchars($val);
+			if(in_array($rs['fieldstype'], $lvls))$val = htmlspecialchars($val);
 			$uaarr[$fid] = $val;
 			$farrs[$fid] = array('name' => $rs['name']);
 		}
@@ -554,12 +554,20 @@ class inputAction extends Action
 		}
 		
 		//初始表单插件元素
+		$this->fieldarrall	= $this->fieldarr;
 		$this->inputobj	= c('input');
 		$this->inputobj->ismobile 	= $this->ismobile;
 		$this->inputobj->fieldarr 	= $this->fieldarr;
 		$this->inputobj->flow 		= $this->flow;
 		$this->inputobj->mid 		= $this->mid;
 		$this->inputobj->initUser($this->adminid);
+		
+		$chufarr= array();
+		if(method_exists($this->flow, 'flowxiangfields'))$chufarr = $this->flow->flowxiangfields($chufarr);
+		$this->fieldarrall['base_sericnum'] = array('name'=>arrvalue($chufarr,'base_sericnum','单号'));
+		$this->fieldarrall['base_name'] 	= array('name'=>arrvalue($chufarr,'base_name','申请人'));
+		$this->fieldarrall['base_deptname'] = array('name'=>arrvalue($chufarr,'base_deptname','申请人部门'));
+		$this->fieldarrall['file_content']  = array('name'=>arrvalue($chufarr,'file_content','相关文件'));
 		
 		preg_match_all('/\{(.*?)\}/', $content, $list);
 		foreach($list[1] as $k=>$nrs){
@@ -569,6 +577,13 @@ class inputAction extends Action
 		$this->subfielsa = array();
 		$content 	 	= $this->pisubduolie($content, $modeid, $nameaas);//多列子表匹配的是[]
 		$content		= str_replace('*','<font color=red>*</font>', $content);
+		
+		//替换字段名^^
+		preg_match_all('/\^(.*?)\^/', $content, $list);
+		foreach($list[1] as $k=>$nrs){
+			$fzdrs = arrvalue($this->fieldarrall, $nrs);
+			if($fzdrs)$content	= str_replace('^'.$nrs.'^', $fzdrs['name'], $content);
+		}
 		
 		$course			= array();
 		$nowcourseid	= 0;
@@ -1037,7 +1052,7 @@ class inputAction extends Action
 	public function getuinfoAjax()
 	{
 		$uid = $this->post('uid', $this->adminid);
-		$rs	 = m('admin')->getone($uid,'id,name,deptname,deptallname,ranking,workdate,pingyin');
+		$rs	 = m('admin')->getone($uid,'id,name,deptname,deptid,deptallname,ranking,workdate,pingyin');
 		$unrs= m('userinfo')->getone($uid, 'syenddt,positivedt');
 		if($unrs)foreach($unrs as $k=>$v)$rs[$k] =$v;
 		return $rs;
@@ -1052,6 +1067,8 @@ class inputAction extends Action
 		if(!isempt($frs['thumbplat'])){
 			$path = str_replace('_s.','.',$frs['thumbplat']);
 		}
+		$filepathout = arrvalue($frs,'filepathout');
+		if($filepathout)$path = $filepathout;
 		return returnsuccess(array(
 			'path' => $path,
 			'fid'  => $fid,

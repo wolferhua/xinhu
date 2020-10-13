@@ -137,12 +137,12 @@ abstract class mysql{
 		//记录错误sql
 		if(!$rsbool && $ebo){
 			$txt	= '[ERROR SQL]'.chr(10).''.$sql.''.chr(10).''.chr(10).'[Reason]'.chr(10).''.$this->error().''.chr(10).'';
-			$efile 	= $this->rock->debug($txt,'mysql_sqlerr', true);
+			$efile 	= $this->rock->debug($txt,''.DB_DRIVE.'_sqlerr', true);
 			$errmsg = str_replace("'",'&#39;', $this->error());
 			if(!contain($sql, $stabs)){
 				m('log')->addlogs('错误SQL',''.$errmsg.'', 2, array(
 					'url' => $efile
-				)); //写入日志中方便查看
+				));
 			}
 		}
 		return $rsbool;

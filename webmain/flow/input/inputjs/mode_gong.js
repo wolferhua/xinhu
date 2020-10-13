@@ -4,6 +4,8 @@ function initbodys(){
 		if(!val || val=='0')hidetou();
 	}
 	if(form('issms'))form('issms').checked=false; //每次编辑都取消
+	
+	//if(ismobile==0)$('#fileupaddbtn').append('&nbsp; <input onclick="addfujian()" value="相关文件用链接放入内容中" type="button" class="webbtn">');
 }
 
 //隐藏投票的
@@ -52,4 +54,19 @@ function changesubmit(d){
 		
 		if(d.startdt>=d.enddt)return '截止时间必须大于开始时间';
 	}
+}
+
+function addfujian(){
+	var fid = form('fileid').value;
+	if(!fid){
+		js.msg('msg','没有上传文件');
+		return;
+	}
+	js.ajax('api.php?m=upload&a=filedao',{fileid:fid},function(ret){
+		if(ret){
+			c.editorobj['content'].appendHtml(ret);
+			$('#view_fileidview').html('');
+			form('fileid').value='';
+		}
+	});
 }

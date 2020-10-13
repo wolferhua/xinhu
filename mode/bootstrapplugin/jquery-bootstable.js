@@ -58,6 +58,7 @@
 			$('#tablebody_'+rand+'').scroll(function(){
 				me._scrollTopla($(this));
 			});
+			if(can.tree)window['stabletree'+rand+'']=function(j,o1){me.stabletree(j,o1)}
 		};
 		this.setColumns=function(cols){
 			can.columns=cols;var a,i;
@@ -113,6 +114,7 @@
 				$('#tbody_'+rand+'').append(s);
 			}
 			s='';
+			
 			this.trobj = obj.find('tr[dataid]');
 			this.trobj.click(function(event){
 				me._itemclick(this, event);
@@ -125,38 +127,43 @@
 					me._celldblclick(this, event);
 				});
 			}
-			$('#seltablecheck_'+rand+'').click(function(){
-				js.selall(this, 'tablecheck_'+rand+'');
-			});
-			
 			if(can.celleditor){
 				var o = obj.find('td[fields]');
 				o[can.celledittype](function(){
 					me._celleditla(this);	
 				});
 			}
-			obj.find('i[tempsort]').click(function(){
-				me._clickorder(this);
-			});
 			obj.find("a[temp='caozuomenu_"+rand+"']").click(function(){
 				me._caozuochengss(this);
 				return false;
 			});
+			
+			
+			$('#seltablecheck_'+rand+'').click(function(){
+				js.selall(this, 'tablecheck_'+rand+'');
+			});
+			obj.find('i[tempsort]').click(function(){
+				me._clickorder(this);
+			});
 		};
-		this.insert=function(d, funs){
+		this.insert=function(d, funs,inid){
 			d = js.apply({id:'auto'}, d);
 			this.data.push(d);
 			var j = this.data.length-1;
 			var s=this.createrows(j);
 			this.count++;
-			$('#tbody_'+rand+'').append(s);
+			if(!inid){
+				$('#tbody_'+rand+'').append(s);
+			}else{
+				obj.find('tr[dataid="'+inid+'"]').after(s);
+			}
 			if(typeof(funs)=='function'){
 				funs(this,j);
 			}
 		};
 		this.createrows=function(j){
 			var a	= can.columns;
-			var s 	= '',i,len=a.length,val,s1,s2='',s3='',s4='',s5='',le,st,ov,j,j1,na,attr,sty='',hs='',dis,trsty='';
+			var s 	= '',i,len=a.length,val,s1,s2='',s3='',s4='',s5='',le,st,ov,j,j1,na,attr,sty='',hs='',dis,trsty='',xu;
 			ov	= this.data[j];
 			s3 	= can.rendertr(ov, this, j);
 			s4  = can.rowsbody(ov, this, j);
@@ -165,9 +172,11 @@
 				trsty='color:#aaaaaa;';
 			}
 			if(ov.trbgcolor)trsty+='background:'+ov.trbgcolor+';';
+			if(ov.trstyle)trsty+=''+ov.trstyle+';';
 			if(trsty)trsty='style="'+trsty+'"';
-			s='<tr oi="'+j+'" dataid="'+ov.id+'" '+s3+' '+trsty+'>';
-			s+='<td '+s5+' align="right" width="40">'+(j+1+can.pageSize*(this.page-1))+'</td>';
+			s='<tr clickbo="false" oi="'+j+'" dataid="'+ov.id+'" '+s3+' '+trsty+'>';
+			xu = ov.trxu;if(!xu)xu=j+1+can.pageSize*(this.page-1);
+			s+='<td '+s5+' align="right" width="40">'+xu+'</td>';
 			if(can.checked){
 				dis = '';
 				if(ov.checkdisabled)dis='disabled';
@@ -196,7 +205,7 @@
 					st = ov.stotal;
 					le = ov.level;
 					for(j1=1;j1<le;j1++)s2+='<img src="images/white.gif" class="icons">&nbsp; ';
-					s2 += '<i class="icon-'+((st>0)?'folder-close-alt':'file-alt')+'"></i>&nbsp;';
+					s2 += '<i onclick="stabletree'+rand+'('+j+',this)" class="icon-'+((st>0)?'folder-close-alt':'file-alt')+'"></i>&nbsp;';
 				}
 				if(can.celleditor &&a[i].editor)attr+=' fields="'+na+'"';
 				if(a[i].width)attr+=' width="'+a[i].width+'"';
@@ -213,6 +222,55 @@
 			s+='</tr>';
 			if(s4)s+='<tr><td colspan="'+(len+1)+'">'+s4+'</td></tr>';
 			return s;
+		};
+		this._tredat={};
+		this.stabletree=function(j,o1){
+			if(!can.loadtree)return;
+			var ov	= this.data[j];
+			if(!ov.stotal || ov.stotal<1 || this._tredat[j])return;
+			var das  = this._loaddata(1, true);
+			das.pvalue = ov.id;
+			das.level = ov.level+1;
+			this.bool = true;
+			this._tredat[j]=true;
+			o1.className='icon-spinner';
+			$.ajax({
+				url:can.url,type:can.method,data:das,dataType:'json',
+				success:function(ret){
+					o1.className='icon-folder-open-alt';
+					me.showtreeda(ret.rows,das.pvalue);
+					me.bool = false;
+				},
+				error: function(e){
+					o1.className='icon-folder-close-alt';
+					js.msg('msg',e.responseText);
+					me.bool = false;
+				}
+			});
+		};
+		this.showtreeda=function(da,pj){
+			if(!da)return;var len = da.length,o1,i;if(len==0)return;
+			for(i=len-1;i>=0;i--){
+				this.insert(da[i],false,pj);
+				if(can.celleditor){
+					o1 = obj.find('tr[dataid="'+da[i].id+'"]').find('td[fields]');
+					o1[can.celledittype](function(){
+						me._celleditla(this);	
+					});
+				}
+			}
+			this.trobj = obj.find('tr[dataid]');
+			this.trobj.unbind();
+			this.trobj.click(function(event){
+				me._itemclick(this, event);
+			});
+			this.trobj.dblclick(function(event){
+				me._itemdblclick(this, event);
+			});
+			obj.find("a[temp='caozuomenu_"+rand+"']").unbind().click(function(){
+				me._caozuochengss(this);
+				return false;
+			});
 		};
 		this._celldblclick = function(o1,e){
 			var o = $(o1);
@@ -475,6 +533,7 @@
 				url:can.url,type:'POST',data:das,dataType:'json',
 				success:function(a1){
 					var lex = (nwjsgui)?'_self':'_blank';
+					if(!a1.downCount)a1.downCount = a1.totalCount;
 					js.msg('success', '处理成功，共有记录'+a1.totalCount+'条/导出'+a1.downCount+'条，点我直接<a class="a" href="'+a1.url+'" target="'+lex+'">[下载]</a>', 60);
 					me.bool=false;
 				},
@@ -494,6 +553,7 @@
 			if(relo)this.reload();
 		};
 		this._loaddataback=function(a){
+			this._tredat={};
 			this.json = a;
 			this.data = a.rows;
 			this.count = a.totalCount;
@@ -813,7 +873,7 @@
 			dir:'',   //排序类型desc和asc
 			storeafteraction:'',  //数据源请求后先处理函数
 			storebeforeaction:'',//数据源请求时先处理函数，可返回条件字段等
-			
+			loadtree:false,
 			modedir:'',  //当前文件路径，一般都是写：'{mode}:{dir}'
 			keywhere:'', //条件
 			params:{},   //其他参数

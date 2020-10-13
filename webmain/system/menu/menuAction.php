@@ -25,18 +25,24 @@ class menuClassAction extends Action
 	
 	private function getmenu($pid, $oi, $zt)
 	{
+		$downid = '';
 		foreach($this->alldata as $k=>$rs){
 			if($pid==$rs['pid']){
+				$downid.=','.$rs['id'].'';
 				$rs['level']	= $oi;
 				$zthui			= $rs['status'];
 				if($zt==0){
 					$rs['ishui']=1;
 					$zthui = 0;
 				}
+				//if($oi>1)$rs['trstyle']='display:none;';
 				$this->rows[] 	= $rs;
-				$this->getmenu($rs['id'], $oi+1, $zthui);
+				$len = count($this->rows)-1;
+				$sidss = $this->getmenu($rs['id'], $oi+1, $zthui);
+				//if($sidss)$this->rows[$len]['downallid'] = substr($sidss,1);
 			}
 		}
+		return $downid;
 	}
 	
 	//下级需要验证，那上级也必须验证的
@@ -46,5 +52,20 @@ class menuClassAction extends Action
 		$sid 	= '0';
 		foreach($rows as $k=>$rs)$sid.=','.$rs['pid'].'';
 		if($sid!='')m('menu')->update('`ispir`=1', "`id` in($sid)");
+	}
+	
+	/**
+	* 菜单管理获取菜单
+	*/
+	public function getdataAjax()
+	{
+		$pvalue = (int)$this->get('pvalue','0');
+		$level 	= (int)$this->get('level','1');
+		$rows 	= $this->db->getall('select *,(select count(1)from `[Q]menu` where `pid`=a.id )stotal from `[Q]menu` a where `pid`='.$pvalue.' order by `sort`');
+		foreach($rows as $k=>$rs)$rows[$k]['level'] = $level;
+		echo json_encode(array(
+			'totalCount'=> 0,
+			'rows'		=> $rows
+		));
 	}
 }

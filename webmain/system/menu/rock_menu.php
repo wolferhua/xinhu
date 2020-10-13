@@ -2,7 +2,7 @@
 <script >
 $(document).ready(function(){
 	var a = $('#menu_{rand}').bootstable({
-		tablename:'menu',url:js.getajaxurl('data','{mode}','{dir}'),
+		tablename:'menu',url:js.getajaxurl('data','{mode}','{dir}'),method:'get',loadtree:false,
 		tree:true,celleditor:!ISDEMO,bodyStyle:'height:'+(viewheight-70)+'px;overflow:auto',
 		columns:[{
 			text:'菜单名称',dataIndex:'name',align:'left',editor:true,renderstyle:function(v,d){
