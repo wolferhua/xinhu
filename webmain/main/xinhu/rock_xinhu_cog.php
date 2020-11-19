@@ -18,6 +18,9 @@ $(document).ready(function(){
 			if(ISDEMO){js.msg('msg','演示不要操作');return;}
 			var d={push:get('push_{rand}').value};
 			d.host = get('host_{rand}').value;
+			if(d.host && NOWURL.indexOf('https')==0 && d.host.indexOf('wss')!=0){
+				js.msg('msg','使用https必须配置wss才能通信');return;
+			}
 			d.receid = get('receid_{rand}').value;
 			d.chehui = get('chehui_{rand}').value;
 			d.reimappwx = get('appwx_{rand}').checked ? '1' : '0';

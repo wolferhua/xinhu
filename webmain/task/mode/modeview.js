@@ -235,6 +235,8 @@ function _submitother(nae,zt,ztid,ztcol,ocan,las){
 }
 var c={
 	callback:function(cs,cbo){
+		var nowli= js.getoption('nowListener');
+		if(nowli)js.sendevent('reload',nowli);
 		if(ismobile==1 && js.msgok)js.msgok(cs, function(){js.back()},1);
 		var calb = js.request('callback');
 		if(!calb)return;

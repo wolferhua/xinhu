@@ -13,9 +13,6 @@
 <script type="text/javascript" src="js/base64-min.js"></script>
 <script charset="utf-8" src="https://map.qq.com/api/js?v=2.exp&libraries=convertor,geometry&key=<?=$da['qqmapkey']?>"></script>
 <script type="text/javascript" src="js/dingwei.js"></script>
-<?php 
-if($da['web']=='iPhone')echo '<script src="js/fastclick.min.js"></script>';
-?>
 <style>
 .weui_tabbar_icon{text-align:center;color:#888888;font-size:20px;}
 .weui_tabbar_item{padding-top:2px;margin-bottom:5px;position:relative}
@@ -31,12 +28,11 @@ function initbody(){
 	js.getsplit();
 	showtimessabc();
 	showkqrswz();
-	
+	initupload();
 	kqallrs.push(kqrs);
 	for(var i in kqors)kqallrs.push(kqors[i]);
 	
 	addkqinfor(0);
-	if(typeof(FastClick)!='undefined')FastClick.attach(document.body);
 }
 
 
@@ -147,8 +143,8 @@ function isfenwein(){
 	kqwucha = slju;
 	return iskqbo;
 }
-var addkaoqinbool=false;
-function addkaoqin(o1){
+var addkaoqinbool=false,upfileid='';
+function addkaoqin(o1, lbos){
 	if(addkaoqinbool){
 		js.wx.alert('已保存过了，请退出页面');
 		return;
@@ -156,7 +152,13 @@ function addkaoqin(o1){
 	if(js.dw.dwbool){js.wx.alert('正在定位，稍后在添加');return;}
 	if(latitude=='' || kqjuli==-1){js.wx.alert('定位没有成功，不能添加');return;}
 	if(!addbo){js.wx.alert('请重新定位后在打卡');return;}
-	//if(!isfenwein()){js.wx.alert('当前位置距离考勤点有'+kqjuli+'米,考勤设置误差不能超过'+kqwucha+'米，故不能添加考勤打卡！');return;}
+	
+	if(!lbos && ispzs){
+		js.wx.load('<span id="tisssa">处理中</span>...');
+		upfaceobj.start();
+		return;
+	}
+	
 	if(isfenwein()){
 		adddk('打卡',1);
 	}else{
@@ -167,9 +169,10 @@ function addkaoqin(o1){
 function adddk(ts, lx){
 	var o1 = get('dkbtn');
 	$(o1).html(''+ts+'中...');
-	var data = {location_x:latitude,type:lx,location_y:longitude,scale:12,precision:accuracy,label:jm.base64encode(label),sm:jm.base64encode(explain)};
+	var data = {location_x:latitude,type:lx,location_y:longitude,scale:12,fileid:upfileid,precision:accuracy,label:jm.base64encode(label),sm:jm.base64encode(explain)};
 	addkaoqinbool = true;
 	js.ajax('weixin','addlocation',data,function(ret){
+		js.wx.unload();
 		js.wx.alert(''+ts+'成功:'+ret.now+'');
 		$(o1).html(''+ts+'成功');
 		addbo = false;
@@ -197,7 +200,7 @@ function changetab(lx){
 }
 
 
-function paizhao(){
+function paizhao33(){
 	if(js.jssdkstate!=1){
 		js.wx.alert('非微信下的jssdk无法使用拍照');
 		return;
@@ -213,8 +216,51 @@ function paizhao(){
         }
     });
 }
+
+function paizhao(){
+	if(!ispzs){
+		upfaceobj.click({uptype:'image'});
+	}else{
+		upfaceobj.clear();
+		$('#paizhaoimg').parent().hide();
+		get('paizhaoimg').src = 'images/noimg.jpg';
+		get('pzbtnicons').className='icon-camera';
+		ispzs	= false;
+	}
+}
+
 function showimgs(o1){
 	$.imgview({'url':o1.src,'ismobile':true});
+}
+
+var ispzs = false;
+function initupload(){
+	upfaceobj=$.rockupload({
+		uptype:'image',
+		inputfile:'cameraInput',
+		fileview:'fileview',
+		autoup:false,
+		onsuccess:function(f,str){
+			var a=js.decode(str);
+			
+		},
+		onchange:function(f){
+			$('#paizhaoimg').parent().show();
+			get('paizhaoimg').src = f.imgviewurl;
+			get('pzbtnicons').className='icon-remove';
+			ispzs = true;
+		},
+		onprogress:function(f,bl){
+			$('#tisssa').html('上传中('+bl+'%)');
+		},
+		allsuccess:function(far, ids){
+			upfileid = ids;
+			addkaoqin(false,true);
+		}
+	});
+}
+function changfile(o1){
+	upfaceobj.change(o1);
 }
 
 var yy={
@@ -264,12 +310,12 @@ var yy={
 <body>
 <?php if($showheader==1){?>
 <div>
-	<div class="r-header">
+	<div class="r-header" style="padding-top:<?=$cenghei?>px" >
 		<div class="r-header-text" onclick="location.reload()" id="header_title"><?=$da['title']?></div>
-		<span onclick="js.back()" class="r-position-left r-header-btn"><i class="icon-chevron-left"></i></span>
+		<span ontouchend="js.back()" class="r-position-left r-header-btn"><i class="icon-chevron-left"></i></span>
 		<span onclick="yy.clickadd()" class="r-position-right r-header-btn"><i class="icon-plus"></i></span>
 	</div>
-	<div class="blank50"></div>
+	<div class="blank50" id="header_line" style="height:<?=($cenghei+50)?>px"></div>
 </div>
 <?php }?>
 <div align="center"  style="background:white;padding-bottom:10px">
@@ -281,6 +327,11 @@ var yy={
 </div>
 
 <div style="display:none;position:fixed;z-index:2;left:1px;top:60px;width:120px;height:80px;overflow:hidden;"><img width="100%" onclick="showimgs(this)" id="paizhaoimg" src="images/noimg.jpg"></div>
+<div style="display:none">
+<form name="form_cameraInput">
+<input type="file" <?php if($rock->iswebbro())echo 'capture="camera"';?> onchange="changfile(this)" accept="image/*" id="cameraInput" /></form>
+</div>
+<div style="display:none" id="fileview"></div>
 
 <div class="r-padding10 r-border-t" style="background:white;padding:15px 10px; background-color:#f5f5f5">考勤范围：<font color="#888888" id="weizhi">没设置考勤位置</font></div>
 <div id="shangbshow" style="background:white">
@@ -295,7 +346,7 @@ var yy={
 		<div class="addbtnss" id="dkbtn" onclick="addkaoqin(this)">第1次打卡</div>
 	</div>
 </div>
-<div class="r-padding10" align="center" style="font-size:14px;"><a id="beshuomdiv" onclick="addbeizhu(this)" href="javascript:;">加备注...</a><!--&nbsp;&nbsp;<a href="javascript:;" onclick="paizhao()"><i class="icon-camera"></i>拍照</a>--></div>
+<div class="r-padding10" align="center"><a id="beshuomdiv" onclick="addbeizhu(this)" href="javascript:;">加备注...</a>&nbsp;&nbsp;<a href="javascript:;" onclick="paizhao()"><i id="pzbtnicons" class="icon-camera"></i></a></div>
 <div class="r-padding10 r-wrap" align="center" style="font-size:14px;color:#888888;">今日打卡：<span id="todyadak">无</span></div>
 
 <audio id="notify_sound_audio" hidden="true" style="display:none" src="web/res/sound/dkcg.mp3"></audio>
@@ -327,6 +378,7 @@ var yy={
 	</a>
 </div>
 
-
+<script type="text/javascript" src="web/res/js/jquery-rockupload.js"></script>
+<script type="text/javascript" src="web/res/js/jquery-imgview.js"></script>
 </body>
 </html>

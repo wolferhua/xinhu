@@ -21,7 +21,7 @@ var myScroll=false,yy={
 	getheight:function(ss){
 		var hei = 0;if(!ss)ss=0;
 		if(get('searsearch_bar'))hei+=45;
-		if(get('header_title'))hei+=50;
+		if(get('header_title'))hei+=$('#header_line').height();
 		if(get('footerdiv'))hei+=50;
 		return $(window).height()-hei+ss;
 	},

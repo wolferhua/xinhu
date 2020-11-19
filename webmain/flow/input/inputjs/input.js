@@ -351,7 +351,8 @@ var c={
 			savesuccess();
 			this.callback(a.data, sumsg);
 			try{
-			js.sendevent('reload', 'yingyong_mode_'+moders.num+'');
+			var nowli= js.getoption('nowListener');
+			if(nowli)js.sendevent('reload',nowli);
 			js.backla();}catch(e){}
 		}else{
 			if(typeof(msg)=='undefined')msg=str;

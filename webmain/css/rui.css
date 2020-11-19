@@ -30,19 +30,19 @@ a:link,a:visited{TEXT-DECORATION:none;color:#0572AD}
 .r-info-bgcolor{background-color:#d9edf7;}
 .r-error-bgcolor{background-color:#f2dede;}
 
-.r-header{height:50px;line-height:50px; background-color:#1389D3;overflow:hidden;color:white;font-size:18px;text-align:center;position:fixed;left:0px;top:0px;width:100%;z-index:10}
-.r-header-text{text-align:center;}
+.r-header{height:50px;line-height:50px; background-color:white;overflow:hidden;color:#000000;font-size:18px;text-align:center;position:fixed;left:0px;top:0px;width:100%;z-index:10;border-bottom:0.5px #dddddd solid}
+.r-header-text{text-align:center;font-size:18px;color:#000000}
 .r-float-right{float:right;}
 .r-float-left{float:left;}
-.r-position-right{position:absolute;right:0px;top:0px}
-.r-position-left{position:absolute;left:0px;top:0px}
+.r-position-right{position:absolute;right:0px;bottom:0px}
+.r-position-left{position:absolute;left:0px;bottom:0px}
 
 .r-padding10{padding:10px}
 .r-padding20{padding:20px}
 
 .r-header-btn{display:block;height:50px;width:40px;text-align:center;line-height:50px;font-size:16px}
 
-.r-header-btn:active{background-color:rgba(0,0,0,0.2)}
+.r-header-btn:active{color:#aaaaaa}
 
 .r-label{padding:3px;color:white;font-size:12px;border-radius:2px}
 

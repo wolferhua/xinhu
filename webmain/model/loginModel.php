@@ -135,9 +135,10 @@ class loginClassModel extends Model
 					$logins	= '验证码登录';
 				}
 			}else{
-				$soekbo = (c('cache')->get('login'.$user.'')==$uid);
-				
+	
 				if(md5($pass)!=$us['pass'])$msg='密码不对';
+				
+				$soekbo = (c('cache')->get('login'.$user.'')==$uid);
 				if($msg!='' && $pass==md5($us['pass']) && $soekbo){
 					$msg='';
 					$notyzmbo= true;
@@ -152,7 +153,8 @@ class loginClassModel extends Model
 					$trs 	= $this->getone("`uid`='$uid' and `token`='$token' and `online`=1 and `moddt`>='$moddt'");
 					if($trs){
 						$msg	= '';
-						$logins = '快捷登录';	
+						$logins = '快捷登录';
+						$notyzmbo= true;
 					}
 				}
 			}

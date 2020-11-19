@@ -453,6 +453,7 @@ var reim={
 		}
 		if(lx=='agent'){
 			this.receiveagenh(d);
+			nwjs.jumpicon();
 		}
 		if(lx=='chehui'){
 			$('#qipaocont_mess_'+d.messid+'').html(js.getmsg(jm.base64decode(d.cont),'green'));
@@ -777,6 +778,7 @@ var reim={
 			if(this.getzhuom())notifyobj.showpopup(msg,{icon:face,type:lx,gid:gid,name:name,title:title,rand:num,click:function(b){
 				reim.openchat(b.type, b.gid,b.name,b.icon);
 			}});
+			nwjs.jumpicon();
 		}
 	},
 	addtabs:function(num, s){
@@ -1580,7 +1582,7 @@ function chatcreate(cans){
 		var ids = this.rightdata.id;
 		if(lx==0){
 			var cont = $('#qipaocont_'+this.randmess+'').text();
-			if(cont)this.addinput(cont);
+			if(cont)js.setcopy(cont);
 		}
 		if(lx==1){
 			$('#ltcont_'+this.randmess+'').remove();
@@ -1651,6 +1653,7 @@ var im = {
 			reim.chatobj[reim.nowtabs].pasteimg();
 		}
 		jietubool = false;
+		nwjs.jumpclear();
 	},
 	fileyulan:function(pn,fid){
 		var url = '?m=public&a=fileviewer&id='+fid+'';

@@ -22,4 +22,11 @@ class viewClassAction extends Action
 			'modearr' => m('mode')->getmodearr(),
 		);
 	}
+	
+	public function flowview_savebefore($table, $arr)
+	{
+		//$where = $arr['wherestr'];
+		//$modeid = $arr['modeid'];
+	
+	}
 }

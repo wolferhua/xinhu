@@ -108,13 +108,29 @@ var nwjs={
 		this.win.show();
 		this.win.focus();
 	},
-	changeicon:function(oi){
+	jumpicon:function(oi,bo){
+		if(!this.tray)return;
+		clearTimeout(this.jumptime);
+		var s=this.changeicon(this.wdshu,true);
+		if(oi==1)s='images/logo_none.png';
+		this.tray.icon = s;
+		oi = (oi==1)?0:1;
+		if(!bo)this.jumptime=setTimeout('nwjs.jumpicon('+oi+')',500);
+		if(bo)this.changeicon(this.wdshu);
+	},
+	jumpclear:function(){
+		this.jumpicon(0,true);
+	},
+	wdshu:0,
+	changeicon:function(oi,lx){
 		if(!this.tray)return;
 		var s='images/logo.png';
 		if(oi>0){
 			s='images/logo_new.png';
 		}
-		this.tray.icon = s;
+		this.wdshu = oi;
+		if(lx)return s;
+		if(!lx)this.tray.icon = s;
 	},
 	writeFile:function(path, str){
 		if(!this.nw)return;

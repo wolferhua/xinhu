@@ -59,6 +59,14 @@ var c={
 		var nr= editor.html();
 		nr = nr.replace(/\n/gi,'');
 		nr = nr.replace(/[	]/gi,'');
+		if(nr.indexOf('[xuhao0,0]')>-1){
+			js.msg('msg', '子表的展示内容请全部替换为{subdata0}');
+			return;
+		}
+		if(nr.indexOf('r-tabs-item')>0){
+			js.msg('msg', '有选择卡的展示，不能在这里保存否则无法使用选择卡，请直接到对文件修改');
+			return;
+		}
 		var d = {content:nr,num:modenum,atype:atype};
 		$.post(js.getajaxurl('viewsave','flow','main'),d,function(da){
 			if(da=='success'){
@@ -76,7 +84,11 @@ var c={
 		}
 		var s = '';
 		$.get(js.getajaxurl('getinput','flow','main',{num:modenum}),function(s){
-			editor.html(s);
+			var str = '<div id="htmlstsing" style="display:none">'+s+'</div>';
+			$('body').append(str);
+			for(var i=0;i<=5;i++)if(get('tablesub'+i+''))$('#tablesub'+i+'').parent().html('{subdata'+i+'}');
+			editor.html($('#htmlstsing').html());
+			$('#htmlstsing').remove();
 		});
 		
 	},

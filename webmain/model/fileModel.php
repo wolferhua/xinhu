@@ -133,6 +133,7 @@ class fileClassModel extends Model
 		if($lx==1)$str='href="javascript:;" onclick="return js.downshow('.$rs['id'].')"';
 		if($lx>=2){
 			$paths = $rs['filepath'];
+			if(arrvalue($rs,'filepathout'))$paths = $rs['filepathout'];
 			if(!$isimg)$paths='';
 			$str='href="javascript:;" onclick="return c.downshow('.$rs['id'].',\''.$ext.'\',\''.$paths.'\',\''.$rs['filenum'].'\')"';//详情上预览
 		}
@@ -191,18 +192,25 @@ class fileClassModel extends Model
 		$rows		= $this->getfiles($mtype, $mid);
 		$str 		= '';
 		$nas 		= '';
+		$st1		= '';
 		foreach($rows as $k=>$rs){
 			$path = $rs['filepath'];
-			if(!isempt($path) && (file_exists($path) || substr($path,0,4)=='http') ){
-				$str .= ','.$path.'';
-				$nas .= ','.$rs['filename'].'';
+			$outu = arrvalue($rs, 'filepathout');
+			if(isempt($outu)){
+				if(!isempt($path) && (file_exists($path) || substr($path,0,4)=='http') ){
+					$str .= ','.$path.'';
+					$nas .= ','.$rs['filename'].'';
+				}
+			}else{
+				if($st1!='')$st1.='<br>';
+				$st1.=''.$rs['filename'].'('.$rs['filesizecn'].')&nbsp;<a target="_blank" href="'.$outu.'">下载</a>';
 			}
 		}
 		if($str!=''){
 			$str = substr($str, 1);
 			$nas = substr($nas, 1);
 		}
-		return array($str, $nas);
+		return array($str, $nas, $st1);
 	}
 	
 	public function copyfile($mtype, $mid)

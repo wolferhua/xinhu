@@ -47,24 +47,24 @@ ul,li,a{ list-style-type:none}
 .h1{ font-size:24px;font-weight:bold;}
 .h2{ font-size:20px;font-weight:bold;}
 
-.input,.inputs,.textarea{height:30px;line-height:25px;background-color:white;padding:2px;width:95%; border:1px #dddddd solid}
+.input,.inputs,.textarea{height:30px;line-height:25px;background-color:white;padding:2px;width:95%;border:0.5px #dddddd solid;border-radius:2px}
 
-.inputb{height:30px;line-height:20px;background-color:white;padding:2px;border:1px #cccccc solid}
-.inputb:focus,.inputs:focus,.textarea:focus{border:1px #1389D3 solid;box-shadow:0px 0px 5px rgba(0,0,0,0.3);}
+.inputb{height:30px;line-height:20px;background-color:white;padding:2px;border:0.5px #cccccc solid;border-radius:2px}
+.inputb:focus,.inputs:focus,.textarea:focus{border:0.5px #1389D3 solid;box-shadow:0px 0px 5px rgba(0,0,0,0.3);}
 
 .title{height:40px;line-height:40px;overflow:hidden;font-size:18px;text-align:left;border-bottom:1px #cccccc solid;color:#55555;font-weight:bold; background-color:#1389D3}
 
-.inputs[readonly]{ background-color:#f1f1f1;border:1px #dddddd solid}
+.inputs[readonly]{ background-color:#f1f1f1;}
 
 .btn{width:100%;height:44px;line-height:44px;opacity:0.8; background-color:#1389D3;border:none;color:white;font-size:14px; cursor:pointer}
 .btn:active,.btn:hover{opacity:1;color:white;TEXT-DECORATION:none;}
 .btn:disabled{ background-color:#cccccc;color:#888888}
 a.btn{padding:5px 8px}
 
-.header{height:46px; overflow:hidden;line-height:46px; text-align:center; border-bottom:1px #cccccc solid;font-size:18px; position:fixed;width:100%;top:0px;left:0px; background:white;z-index:10}
+.header{height:50px; overflow:hidden;line-height:50px; text-align:center; border-bottom:0.5px #cccccc solid;font-size:18px; position:fixed;width:100%;top:0px;left:0px; background:white;z-index:8}
 .header .back{position:absolute;top:5px;left:5px}
 .header .back img{height:24px;width:24px}
-.header-back{width:46px;height:46px;display:block; background:url(../../images/back.png) no-repeat 7px 7px;position:absolute;left:0px;top:0px; cursor:default}
+.header-back{width:50px;height:50px;display:block; background:url(../../images/back.png) no-repeat 7px 7px;position:absolute;left:0px;bottom:0px; cursor:default}
 .header-back:active{opacity:0.5}
 .divinput{padding:8px; background-color:white;}
 .padding10{padding:10px;}

@@ -52,9 +52,11 @@ class yingClassAction extends ActionNot{
 		$yyurljs 	= ''.P.'/we/ying/yingyong/'.$num.'.js';
 		if(!file_exists($yyurljs))$yyurljs='';
 		
+
 		$rs['iscy'] = $this->iscy($num);
 		$this->assign('arr', $rs);
 		$this->assign('num', $num);
+		
 		
 		$this->assign('yyurl', $yyurl);
 		$this->assign('yyurljs', $yyurljs);

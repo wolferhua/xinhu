@@ -64,17 +64,18 @@ class deptClassModel extends Model
 		}
 		$this->groupids = $gids;
 		$this->temparaa	= array();
-		$this->getshowdeptarr($rows, $this->firstpid);
+		$this->getshowdeptarr($rows, $this->firstpid, 1);
 		return $this->temparaa;
 	}
 	
-	private function getshowdeptarr($rows, $pid)
+	private function getshowdeptarr($rows, $pid, $level)
 	{
 		foreach($rows as $k=>$rs){
 			if($pid>=0){
 				if($rs['pid']==$pid){
+					$rs['level'] = $level;
 					$this->temparaa[] = $rs;
-					$this->getshowdeptarr($rows, $rs['id']);
+					$this->getshowdeptarr($rows, $rs['id'],$level+1);
 				}
 			}
 		}
@@ -93,6 +94,7 @@ class deptClassModel extends Model
 	*/
 	public function getdeptuserdata($lx=0)
 	{
+		$changerange= $this->rock->get('changerange');
 		$admindb 	= m('admin');
 		$userarr 	= $admindb->getuser($lx);
 		//根据禁看权限
@@ -100,22 +102,26 @@ class deptClassModel extends Model
 		$userarr 	= $flow->viewjinfields($userarr);
 		
 		$deptarr 	= $this->getdata($userarr);
-		//$grouparr	= m('group')->getall('id in('.$this->groupids.')','id,name','`sort`');
 		$where1		= '';
 		if(ISMORECOM && $this->adminid>1)$where1=' and `companyid` in('.$admindb->getcompanyid().')';
 		$grouparr	= m('group')->getall('id >0'.$where1.'','id,name','`sort`');
-		
+		$garr 		= array();
+
 		foreach($grouparr as $k=>$rs){
+			if(!isempt($changerange)){
+				if(!contain(','.$changerange.',',',g'.$rs['id'].','))continue;
+			}
 			$uids = $admindb->getgrouptouid($rs['id']);
 			$usershu = 0;
 			if($uids!='')$usershu = count(explode(',', $uids));
-			$grouparr[$k]['usershu'] = $usershu;
+			$rs['usershu'] = $usershu;
+			$garr[] = $rs;
 		}
 		
 		return array(
 			'uarr' => $userarr,
 			'darr' => $deptarr,
-			'garr' => $grouparr,
+			'garr' => $garr,
 		);
 	}
 	

@@ -82,5 +82,48 @@ class mode_finpiaoClassAction extends inputAction{
 		
 		return $barr;
 	}
+	
+	/**
+	*	发邮件给客户
+	*/
+	public function sendemailAjax()
+	{
+		$id = (int)$this->get('id','0');
+		$rs = m('finpiao')->getone('`id`='.$id.'');
+		if(!$rs || $rs['type']!=0)return returnerror('不存在');
+		
+		$mairs = m('customer')->getone('`id`='.$rs['maicustid'].'');
+		if(!$mairs)return returnerror('客户不存在');
+		$email = $mairs['email'];
+		if(isempt($email))return returnerror('此客户没有设置邮箱');
+		
+		$fjar  = m('file')->getfilepath('finpiao', $id);
+		$html  = c('html')->createtable(array(
+			'custname' => '开票方',
+			'maicustname' => '购买方',
+			'opendt' => '开票日期',
+			'ptype' => '发票类型',
+			'daima' => '发票代码',
+			'haoma' => '发票号码',
+			'money' => '金额',
+		), $rs,'发票信息');
+		
+		$emcont  = '您好：<br>这是我们开的发票消息请查收。<br>'.$html.'';
+		if($fjar[2])$emcont.='<br><b>相关文件：</b><br>'.$fjar[2].'';
+		$emcont .= '<hr>发送人：'.$rs['optname'].'<br>发送时间：'.$this->now.'';
+
+		$msg 	= m('email')->sendmail('给您开的发票信息',$emcont , array(
+			'receemail' => $email,
+			'recename' 	=> $rs['maicustname'],
+			'receid' 	=> $mairs['id'],
+		), array(), 0, array(
+			'attachpath'=> $fjar[0],
+			'attachname'=> $fjar[1],
+		));
+		
+		if($msg!='ok')return returnerror($msg);
+		
+		return returnsuccess('已发送给：'.$email.'');
+	}
 }	
 			

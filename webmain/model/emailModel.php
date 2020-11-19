@@ -32,19 +32,25 @@ class emailClassModel extends Model
 
 		$to_em	= $to_mn = $to_id 	= '';
 		
-		$urs	= $this->db->getall("select `email`,`name`,`id` from `[Q]admin` where `id` in($to_uid) and `email` is not null and `status`=1 order by `sort`");
-		foreach($urs as $k=>$rs){
-			$to_em.=','.$rs['email'];
-			$to_mn.=','.$rs['name'];
-			$to_id.=','.$rs['id'];
-		}	
+		if(is_array($to_uid)){
+			$to_id = arrvalue($to_uid,'receid','0');
+			$to_em = arrvalue($to_uid,'receemail');
+			$to_mn = arrvalue($to_uid,'recename');
+		}else{
+			$urs	= $this->db->getall("select `email`,`name`,`id` from `[Q]admin` where `id` in($to_uid) and `email` is not null and `status`=1 order by `sort`");
+			foreach($urs as $k=>$rs){
+				$to_em.=','.$rs['email'];
+				$to_mn.=','.$rs['name'];
+				$to_id.=','.$rs['id'];
+			}	
+			if(isempt($to_em))return '没有接收人';
+			$to_em	= substr($to_em, 1);
+			$to_mn	= substr($to_mn, 1);
+			$to_id	= substr($to_id, 1);
+		}
 		
 		if(isempt($to_em))return '没有接收人';
-		
-		$to_em	= substr($to_em, 1);
-		$to_mn	= substr($to_mn, 1);
-		$to_id	= substr($to_id, 1);
-		
+
 		$body	= $this->rock->reparr($body, $rows);
 		$title	= $this->rock->reparr($title, $rows);
 			
@@ -79,6 +85,7 @@ class emailClassModel extends Model
 			$uarr['optid'] 		= $this->adminid;
 			$uarr['optname'] 	= $this->adminname;
 			$uarr['status'] 	= 0;
+			foreach($oparm as $k1=>$v1)$uarr[$k1] = $v1;
 			$sid 	= m('email_cont')->insert($uarr);
 			m('reim')->asynurl('asynrun','sendemail', array(
 				'id' 	=> $sid,
@@ -161,7 +168,16 @@ class emailClassModel extends Model
 		if(!$rs)return '记录不存在';
 		if($stype==-1)$stype	= (int)$this->rock->get('stype');
 		if($stype == 0){
-			$msg 	= $this->sendmail($rs['title'],$rs['body'], $rs['receid'], array(), 1);
+			$msg 	= $this->sendmail($rs['title'],$rs['body'], array(
+				'receid' 	=> $rs['receid'],
+				'receemail' => $rs['receemail'],
+				'recename' 	=> $rs['recename'],
+			), array(), 1, array(
+				'ccname' 	=> $rs['ccname'],
+				'ccemail' 	=> $rs['ccemail'],
+				'attachpath'=> $rs['attachpath'],
+				'attachname'=> $rs['attachname'],
+			));
 		}else{
 			$msg 	= $this->sendemailout($rs['optid'],array(
 				'title' 	=> $rs['title'],

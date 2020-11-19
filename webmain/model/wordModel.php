@@ -483,4 +483,50 @@ class wordClassModel extends Model
 		}
 		return $rarr;
 	}
+	
+	/**
+	*	模版替换
+	*/
+	public function replaceWord($fid, $arr)
+	{
+		$word  = c('PHPWord');
+		if($fid==0 || !$word->isbool())return;
+		$frs = m('file')->getone($fid);
+		if($frs && $frs['fileext']=='docx'){
+			$filepath = $frs['filepath'];
+			if(contain($filepath,'rocktpl')){
+				$tplid = str_replace('.docx','',substr($filepath, strripos($filepath, '_')+1));
+				$tplrs = m('wordxie')->getone('`fileid`='.$tplid.'');
+				$npath = ''.UPDIR.'/'.date('Y-m').'/'.date('d_His').''.rand(10,99).'.docx';
+				if(!$tplrs)return;
+				
+				$this->rock->createdir($npath);
+				$tplvar = $tplrs['tplvar'];
+				$tihad	= array();
+				if(isempt($tplvar)){
+					$tihad = $arr;
+				}else{
+					$tpla = explode(',', $tplvar);
+					foreach($tpla as $k)$tihad[$k] = arrvalue($arr, $k);
+				}
+			
+				if($tihad){
+					$barr = $word->replaceWord($filepath, $tihad, $npath);
+					if($barr['success']){
+						$nnpath = $barr['data'];
+						if(file_exists($nnpath)){
+							$filesize = filesize($nnpath);
+							$uarr['filepathout']= '';
+							$uarr['pdfpath'] 	= '';
+							$uarr['filepath'] 	= $nnpath;
+							$uarr['filesize'] 	= $filesize;
+							$uarr['filesizecn'] = $this->rock->formatsize($filesize);	
+							m('file')->update($uarr,$fid);
+							@unlink($filepath);
+						}
+					}
+				}
+			}
+		}
+	}
 }

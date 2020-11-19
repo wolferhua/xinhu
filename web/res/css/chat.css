@@ -28,12 +28,12 @@
 	margin-top:5px;
 	border-width:8px;
     border-style:solid;
-    border-color:transparent #dddddd transparent transparent;
+    border-color:transparent #e5e5e5 transparent transparent;
 	z-index:1;
 }
 .qipao .qipaocontleft{
-	background:#ffffff;
-	border:1px #dddddd solid;
+	background:#e5e5e5;
+	border:0px #e5e5e5 solid;
 }
 
 
@@ -45,13 +45,13 @@
 	border-width:8px;
     border-style:solid;
 	
-    border-color:transparent transparent transparent #75c4f4;
+    border-color:transparent transparent transparent #bbe2f7;
 	z-index:1;
 }
 
 .qipao .qipaocontright{
-	background:#b5e2fc;
-	border:1px #75c4f4 solid
+	background:#bbe2f7;
+	border:0px #bbe2f7 solid
 }
 
 .qipao .qipaofile{

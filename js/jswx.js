@@ -30,10 +30,20 @@ js.wx.confirm=function(msg,fun,tit){
 }
 js.wx.prompt=function(tit,msg,fun,nr){
 	if(!nr)nr='';
-	var msg = '<div align="left">'+msg+'</div><div align="left"><input value="'+nr+'" class="r-input" id="prompttxt" type="text"></div>';
+	if(apicloud){
+		api.prompt({
+			buttons: ['确定', '取消'],
+			text:nr,title:tit,msg:msg
+		}, function(ret, err) {
+			var index = ret.buttonIndex;
+			if(index==1)fun(ret.text);
+		});
+		return;
+	}
 	function func(lx){
 		if(lx=='yes')fun(get('prompttxt').value);
 	}
+	var msg = '<div align="left">'+msg+'</div><div align="left"><input value="'+nr+'" class="r-input" id="prompttxt" type="text"></div>';
 	this.alert(msg,func,tit, 1);
 }
 js.apiurl = function(m,a,cans){

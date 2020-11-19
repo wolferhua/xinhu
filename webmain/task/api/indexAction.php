@@ -78,14 +78,6 @@ class indexClassAction extends apiAction
 		$this->showreturn('');
 	}
 	
-	public function pushtestAction()
-	{
-		m('reim')->pushagent('1','会议','关于端午节放假通知');
-		//$a = c('apiCloud')->send(1,'通知','内容');
-		//$a = c('JPush')->send('2','发来一条消息', '内容');
-		//print_r($a);
-		echo 'ok';
-	}
 	
 	public function changetxAction()
 	{
@@ -128,10 +120,14 @@ class indexClassAction extends apiAction
 	*/
 	public function updateTokenIpAction()
 	{
-		$hwtoken = $this->get('hwtoken');
-		if(!isempt($hwtoken)){
-			m('login')->update("`ip`='$hwtoken'", "`token`='$this->admintoken'");
-		}
+		$hwtoken 	= $this->get('hwtoken');
+		$pushtoken 	= $this->get('pushtoken');
+		$ispush  	= (int)$this->get('ispush','0');
+		$uarr['ispush'] 	= $ispush;
+		$uarr['pushtoken'] 	= $pushtoken;
+		$uarr['moddt'] 		= $this->now;
+		if(!isempt($hwtoken))$uarr['ip'] = $hwtoken;
+		m('login')->update($uarr, "`token`='$this->admintoken'");
 		return returnsuccess();
 	}
 	
@@ -145,5 +141,9 @@ class indexClassAction extends apiAction
 			'web'		=> $web,
 		));
 		return returnsuccess();
+	}
+	
+	public function sgstrs()
+	{
 	}
 }

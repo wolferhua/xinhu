@@ -469,7 +469,12 @@ class adminClassModel extends Model
 			}
 			//--end--
 			//读取我可查看权限
-			$rows = $this->getall("`status`=1 and ((1 $where) or (`id`='$uid')) $where1 $where2",$fields,'`sort`,`name`');
+			if(contain($where,'1=1')){
+				$where = '';
+			}else{
+				$where = 'and ((1 '.$where.') or (`id`='.$uid.'))';
+			}
+			$rows = $this->getall("`status`=1 $where $where1 $where2",$fields,'`sort`,`name`');
 		}else{
 			$rows = $this->getall("`id`='$uid'",$fields,'`sort`,`name`');
 		}
@@ -480,7 +485,9 @@ class adminClassModel extends Model
 			$deptidss = ','.$rs['deptid'].',';
 			if(!isempt($rs['deptids']))$deptidss.=''.$rs['deptids'].',';
 			$rows[$k]['deptidss'] = $deptidss;
-			foreach($rs as $k1=>$v1)if($v1==null)$rows[$k][$k1]='';
+			if($rs['pingyin']==null)$rows[$k]['pingyin']='';
+			if($rs['ranking']==null)$rows[$k]['ranking']='';
+			if($rs['deptname']==null)$rows[$k]['deptname']='';
 		}
 		return $rows;
 	}

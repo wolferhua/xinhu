@@ -38,9 +38,12 @@ js.changeuser=function(na,lx,tit, cans){
 	can.formname = formname;
 	$('body').chnageuser(can);
 }
+function initApp(){
+	js.setapptitle('详情');
+}
 </script>
 <style>
-.stitle{padding:10px;border-bottom:1px #dddddd solid;font-size:16px;}
+.stitle{padding:10px;border-bottom:0.5px #dddddd solid;font-size:16px;}
 .ydullist{display:inline-block;width:100%;}
 .ydullist li{float:left;width:16.6%;text-align:center;padding:5px 0px;font-size:12px;display:block;line-height:25px;padding-top:10px}
 .ydullist li:active{ background-color:#eeeeee}
@@ -55,7 +58,7 @@ js.changeuser=function(na,lx,tit, cans){
 .faces{margin-right:10px}
 .createtable{width:98%}
 .status{position: absolute;left:5px;top:5px;display:}
-td.tdys1{border:1px #e5e5e5 solid;text-align:center;padding:0px 5px}
+td.tdys1{border:0.5px #e5e5e5 solid;text-align:center;padding:0px 5px}
 .divinput{padding:0px}
 .datesss{background:url(mode/icons/date.png) no-repeat right;cursor:pointer;}
 
@@ -71,7 +74,7 @@ td.tdys1{border:1px #e5e5e5 solid;text-align:center;padding:0px 5px}
 
 <?php
 $cheikbo = false;
-if($showheader==1)echo '<div class="header" id="header_title"><span onclick="js.back()" class="header-back"></span>'.$da['title'].'</div><div style="height:46px;overflow:hidden"></div>';
+if($showheader==1)echo '<div class="header" style="padding-top:'.$cenghei.'px" id="header_title"><span onclick="js.back()" class="header-back"></span>'.$da['title'].'</div><div style="height:'.($cenghei+50).'px;overflow:hidden"></div>';
 
 if($da['arr']['isdefaultview']==1)echo '<div onclick="c.changeshow(0)" class="r-subtitle">&nbsp;&nbsp;'.$da['arr']['modename'].'</div>';
 ?>

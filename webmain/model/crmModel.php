@@ -7,9 +7,10 @@ class crmClassModel extends Model
 	}
 	
 	//读取我的客户和共享给我的
-	public function getmycust($uid, $id=0)
+	public function getmycust($uid=0, $id=0)
 	{
 		if(isempt($id))$id = 0;
+		if($uid==0)$uid=$this->adminid;
 		$s		= $this->rock->dbinstr('shateid', $uid);
 		$rows 	= $this->getrows("`status`=1 and ((`uid`='$uid') or (`id`=$id) or (".$s."))",'id as value,name,id,unitname as subname','`name`');
 		return $rows;

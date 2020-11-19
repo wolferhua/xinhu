@@ -4,7 +4,7 @@ $(document).ready(function(){
 	{params}
 	var atype=params.atype;
 	var a = $('#view_{rand}').bootstable({
-		tablename:'location',celleditor:true,fanye:true,sort:'id',dir:'desc',
+		tablename:'location',celleditor:true,fanye:true,
 		modedir:'{mode}:{dir}',params:{'atype':atype},modenum:'kqdw',
 		columns:[{
 			text:'部门',dataIndex:'deptname',align:'left'

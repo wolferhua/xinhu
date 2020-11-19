@@ -49,4 +49,16 @@ class mode_customerClassAction extends inputAction{
 		$cont  = $flow->getrowstable($atype, 'and `custid`='.$custid.'');//读取表格数据
 		return $cont;
 	}
+	
+	public function shatetoAjax()
+	{
+		$sna  = $this->post('sna');
+		$sid  = c('check')->onlynumber($this->post('sid'));
+		$khid = c('check')->onlynumber($this->post('khid'));
+		
+		m('customer')->update(array(
+			'shate' 	=> $sna,
+			'shateid' 	=> $sid,
+		),"`id` in($khid)");
+	}
 }

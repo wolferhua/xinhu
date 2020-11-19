@@ -429,6 +429,7 @@
 		var me		= this;
 		this.rand	= rand;
 		this.ismobile = false;
+		this.selvalue = '';
 		
 		this._init	= function(){
 			for(var i in options)this[i]=options[i];
@@ -459,7 +460,7 @@
 				me.queding();
 			});
 			$('#changereload_'+this.rand+'').click(function(){
-				me.loaddata();
+				me.reload();
 			});
 			$('#changesoubtn_'+this.rand+'').click(function(){
 				me._searchkey(true);
@@ -542,6 +543,7 @@
 			}).show();
 		};
 		this._changeselval=function(o){
+			this.selvalue = o.value;
 			this.loaddata(o.value);
 		};
 		this.showhtml=function(a){
@@ -567,6 +569,9 @@
 				s+='</label></div>';
 			}
 			return s;
+		};
+		this.reload=function(){
+			this.loaddata(this.selvalue);
 		};
 		this.loaddata=function(svel){
 			var url = this.url;

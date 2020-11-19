@@ -8,7 +8,7 @@ $(document).ready(function(){
 		window:false,rand:'{rand}',tablename:'flow_extent',
 		url:publicsave('{mode}','{dir}'),
 		submitfields:'recename,receid,modeid,type,whereid,wherestr,explain,status,fieldstr',
-		requiredfields:'recename,type,modeid',
+		requiredfields:'recename,type,modeid',beforesaveaction:'flowview_savebefore',
 		success:function(){
 			closenowtabs();
 			try{guanflowviewlist.reload();}catch(e){}
@@ -142,7 +142,7 @@ $(document).ready(function(){
 		
 		<tr>
 			<td  align="right" >相应条件：</td>
-			<td class="tdinput" colspan="3"><textarea placeholder="由对应模块上主表字段，如:optid={uid}，操作人是当前用户" name="wherestr" style="height:60px" class="form-control"></textarea><br>如:<a click="hanrenss,0" href="javascript:;">[receid中包含我]</a>,<a click="hanrenss,1" href="javascript:;">[所有下属人员]</a>,<a click="hanrenss,2" href="javascript:;">[直属下属人员]</a>,<a click="hanrenss,4" href="javascript:;">[同级本部门]</a>,<a click="hanrenss,6" href="javascript:;">[同级本部门(含子部门)]</a>,<a click="hanrenss,5" href="javascript:;">[所在单位]</a>,<a click="hanrenss,3" href="javascript:;">[所有数据]</a></td>
+			<td class="tdinput" colspan="3"><textarea placeholder="不会设置不要瞎写就写1=1" name="wherestr" style="height:60px" class="form-control"></textarea><br>如:<a click="hanrenss,0" href="javascript:;">[receid中包含我]</a>,<a click="hanrenss,1" href="javascript:;">[所有下属人员]</a>,<a click="hanrenss,2" href="javascript:;">[直属下属人员]</a>,<a click="hanrenss,4" href="javascript:;">[同级本部门]</a>,<a click="hanrenss,6" href="javascript:;">[同级本部门(含子部门)]</a>,<a click="hanrenss,5" href="javascript:;">[所在单位]</a>,<a click="hanrenss,3" href="javascript:;">[所有数据]</a></td>
 		</tr>
 		
 		<tr>

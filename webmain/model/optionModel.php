@@ -20,7 +20,7 @@ class optionClassModel extends Model
 		return $val;
 	}
 	
-	private function getpids($num)
+	public function getpids($num)
 	{
 		if(!is_numeric($num)){
 			$id  = (int)$this->getmou('id', "`num`='$num'");
@@ -50,7 +50,7 @@ class optionClassModel extends Model
 		$this->getselectdatas($num,0, $tbo);
 		return $this->getselectdatad;
 	}
-	private function getselectdatas($num,$lev=0, $tbo=false)
+	public function getselectdatas($num,$lev=0, $tbo=false)
 	{
 		$pid = $this->getpids($num);
 		$fied= '';
@@ -100,7 +100,7 @@ class optionClassModel extends Model
 		return $rows;
 	}
 	
-	private function getfoldrowsss($pid)
+	public function getfoldrowsss($pid)
 	{
 		$rows 	= $this->db->getall("select `id`,`pid`,`name`,`optdt`,`sort`,`receid`,`recename` from [Q]option where `pid`='$pid' and `valid`=1 order by `sort`,`id`");
 		foreach($rows as $k=>$rs){
@@ -254,7 +254,7 @@ class optionClassModel extends Model
 			if($rs1['num']=='auther_yuming')$yuming = $rs1['value'];
 			if($rs1['num']=='auther_enddt')$enddt = $rs1['value'];
 		}
-		if(isempt($yuming) || isempt($enddt) || isempt($authkey))return $this->rock->jm->base64decode('57O757uf5pyq562!5o6I5LiN6IO95L2.55So');
+		if(isempt($yuming) || isempt($enddt) || isempt($authkey))return $this->rock->jm->base64decode('57O757uf5pyq562!5o6I5LiN6IO95L2.55So77yM562!5o6I5piv5YWN6LS555qE77yMPGEgaHJlZj0iaHR0cDovL3d3dy5yb2Nrb2EuY29tL3ZpZXdfYXV0aGVyLmh0bWwiPueci!W4ruWKqeiuvue9rjwvYT4:');
 		if($this->rock->jm->uncrypt($enddt)<$this->rock->date)return $this->rock->jm->base64decode('57O757uf562!5o6I5bey5Yiw5pyf');
 		$ym 	= $this->rock->jm->uncrypt($yuming);
 		$ho		= $this->rock->jm->base64decode('LDEyNy4wLjAuMSxsb2NhbGhvc3Qs');
@@ -266,5 +266,9 @@ class optionClassModel extends Model
 			'authkey'	=> $authkey,
 			'yuming' 	=> $ym
 		);
+	}
+	
+	public function strsste()
+	{
 	}
 }

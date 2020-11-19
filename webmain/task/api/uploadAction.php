@@ -483,4 +483,59 @@ class uploadClassAction extends apiAction
 		}
 		return $str;
 	}
+	
+	/**
+	*	获取模版文件
+	*/
+	public function getmfileAction()
+	{
+		$data = array();
+		$fenlei = $this->jm->base64decode($this->get('fenlei'));
+		$where 	= m('admin')->getjoinstr('a.`receid`', $this->adminid, 1);
+		$sql 	= 'select a.`name`,a.`wtype`,b.`filepath`,b.`id` from `[Q]wordxie` a left join `[Q]file` b on a.`fileid`=b.`id` where a.`fenlei`=\''.$fenlei.'\' and a.`isgk`=1 and ('.$where.')';
+		$rows 	= $this->db->getall($sql);
+		foreach($rows as $k=>$rs){
+			$data[] = array(
+				'value' => $rs['id'],
+				'name' => $rs['name'],
+				'subname' => $rs['wtype'],
+			);
+		}
+		return $data;
+	}
+	public function getmfilvAction()
+	{
+		$fileid = (int)$this->get('fileid','0');
+		$frs 	= m('file')->getone($fileid);
+		if(!$frs)return returnerror('不存在');
+		
+		$lujing	= $frs['filepathout'];
+		if(isempt($lujing)){
+			$lujing = $frs['filepath'];
+			if(substr($lujing,0,4)!='http' && !file_exists($lujing))return returnerror('文件不存在了');
+		}
+		$fileext = $frs['fileext'];
+		
+		$fname = $this->jm->base64decode($this->get('fname'));
+		$fname = (isempt($fname)) ? $frs['filename'] : ''.$fname.'.'.$fileext.'';
+		
+		$filepath = ''.UPDIR.'/'.date('Y-m').'/'.date('d').'_rocktpl'.rand(1000,9999).'_'.$fileid.'.'.$fileext.'';
+		$this->rock->createtxt($filepath, file_get_contents($lujing));
+		
+		$uarr = array(
+			'filename' => $fname,
+			'fileext' => $fileext,
+			'filepath' => $filepath,
+			'filesize' => filesize($filepath),
+			'filesizecn' => $this->rock->formatsize(filesize($filepath)),
+			'optid' 	=> $this->adminid,
+			'optname' 	=> $this->adminname,
+			'adddt' 	=> $this->rock->now,
+			'ip' 		=> $this->rock->ip,
+			'web' 		=> $this->rock->web,
+		);
+		$uarr['id'] = m('file')->insert($uarr);
+	
+		return returnsuccess($uarr);
+	}
 }

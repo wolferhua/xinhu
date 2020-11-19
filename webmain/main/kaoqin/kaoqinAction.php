@@ -649,6 +649,7 @@ class kaoqinClassAction extends Action
 			$rs['type'] = 1;
 			$rs['content'] = arrvalue($arr,3);
 		}
+		if($this->rock->ismobile())$rs['type'] = 1;
 		$this->smartydata['rs'] = $rs;
 		$this->smartydata['qqmapkey']	= getconfig('qqmapkey','55QBZ-JGYLO-BALWX-SZE4H-5SV5K-JCFV7');
 	}

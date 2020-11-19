@@ -4,7 +4,7 @@ function initbody(){}
 function bodyunload(){}
 function globalbody(){}
 function initApp(){}
-function apiready(){apicloud=true;initApp();}
+function apiready(){apicloud=true;var key = 'apiwinname';var svst=js.request(key);if(svst)js.setoption(key,svst);initApp();}
 $(document).ready(function(){
 	try{if(typeof(nw)=='object'){nwjsgui = nw;}else{nwjsgui = require('nw.gui');}}catch(e){nwjsgui=false;}
 	$(window).scroll(js.scrolla);
@@ -37,7 +37,7 @@ $(document).ready(function(){
 		plus.key.addEventListener('backbutton',function(){js.back();},false);
 		initApp();
 	});
-	if(HOST=='127.0.0.1')window.addEventListener('error',function(e){
+	if(HOST=='127.0.0.1' || HOST.indexOf('192.168.')>-1)window.addEventListener('error',function(e){
 		var msg = '文件：'+e.filename+'\n行：'+e.lineno+'\n错误：<font color=red>'+e.message+'</font>';
 		js.alert(msg,'js错误');
 	});
@@ -344,7 +344,7 @@ js.downupdel=function(sid, said, o1){
 	$('#fileid_'+said+'').val(s1);
 }
 js.downupshow=function(a, showid, nbj){
-	var s = '',i=0,s1='',fis;
+	var s = '',i=0,s1='',fis,ofisd=',doc,docx,xls,xlsx,ppt,pptx,';
 	var o = $('#view_'+showid+'');
 	for(i=0; i<a.length; i++){
 		fis= 'web/images/fileicons/'+js.filelxext(a[i].fileext)+'.gif';
@@ -352,6 +352,7 @@ js.downupshow=function(a, showid, nbj){
 		s='<div onmouseover="this.style.backgroundColor=\'#f1f1f1\'" onmouseout="this.style.backgroundColor=\'\'" style="padding:4px 5px;border-bottom:1px #eeeeee solid;font-size:14px"><span>'+(i+1)+'</span><font style="display:none">'+a[i].id+'</font>、<img src="'+fis+'" align="absmiddle" height="20" width="20"> '+a[i].filename+' ('+a[i].filesizecn+')';
 		s+=' <a class="a" temp="yula" onclick="return js.fileopt('+a[i].id+',1)" href="javascript:;">下载</a>';
 		s+=' <a class="a" temp="yula" onclick="return js.fileopt('+a[i].id+',0)" href="javascript:;">预览</a>';
+		if(ofisd.indexOf(','+a[i].fileext+',')>=0)s+=' <a class="a" temp="dela" onclick="return js.fileopt('+a[i].id+',2)" href="javascript:;">编辑</a>';
 		s+=' <a class="a" temp="dela" onclick="return js.downupdels('+a[i].id+',\''+showid+'\', this)" href="javascript:;">×</a>';
 		s+='</div>';
 		o.append(s);
@@ -386,7 +387,7 @@ js.fileopt=function(id,lx){
 					if(da.type==1 && appobj1('openfile', id))return; //下载用app的
 					if(da.type==0 && !js.isimg(ext)){
 						if(appobj1('openWindow', url))return;
-						if(js.apiopenWin(url))return;
+						if(js.appwin('预览',url))return;
 					}
 				}
 				if(da.type==1){js.location(url);return;}//下载直接跳转
@@ -423,18 +424,6 @@ js.fileopt=function(id,lx){
 	});
 }
 
-js.fileoptWin=function(id){
-	var otype = this.opentype,ourl='widget://index.html';
-	if(otype && otype!='nei')ourl=jm.base64decode(otype);
-	var bstr=jm.base64encode('{"name":"文件","fileid":"'+id+'","url":"fileopen","fileext":""}');
-	var url = ''+ourl+'?bstr='+bstr+'';
-	return this.apiopenWin(url);
-}
-js.apiopenWin=function(url){
-	if(!apicloud)return false;
-	api.openWin({name:'url'+js.getrand(),url: url,bounces:false,softInputBarEnabled:false,slidBackEnabled:true,vScrollBarEnabled:false,hScrollBarEnabled:false,allowEdit:false,progress:{type:'',title:'', text:'',   color:''}});	
-	return true;
-}
 
 //文件预览
 js.yulanfile=function(id, ext,pts, sne, fnun,isxq){
@@ -447,9 +436,9 @@ js.yulanfile=function(id, ext,pts, sne, fnun,isxq){
 	}
 	if(ismobile==1){
 		var docsx = ',doc,docx,ppt,pptx,xls,xlsx,pdf,txt,html,';
-		if(docsx.indexOf(','+ext+',')==-1)
-			if(appobj1('openfile', id))return;
+		if(docsx.indexOf(','+ext+',')==-1)if(appobj1('openfile', id))return;
 		if(appobj1('openWindow', url))return;
+		if(js.appwin('预览',url))return;
 		js.location(url);
 	}else{
 		if(!sne)sne='文件预览';
@@ -726,10 +715,13 @@ js.getmsg  = function(txt,col){
 	return s;
 }
 js.setcopy	= function(txt){
-	if(!txt)txt='';
-	txt	= escape(txt);
-	js.savecookie('copy_text', txt, 1);
-	js.msg('msg','复制成功，仅限本站使用');
+	if(!txt)return;
+	var str='<div id="copydiv" style="position:absolute;z-index:0;bottom:0px;right:0px;height:1px;overflow:hidden"><textarea id="copytext">'+txt+'</textarea></div>';
+	$('body').append(str);
+	get('copytext').select();
+	document.execCommand('Copy');
+	js.msg('success','复制成功');
+	$('#copydiv').remove();
 	return false;
 }
 js.getcopy = function(){
@@ -943,15 +935,6 @@ js.backla=function(msg){
 	if(msg)if(!confirm(msg))return;
 	try{api.closeWin();}catch(e){}
 }
-js.sendevent=function(typ,na,d){
-	if(!d)d={};
-	d.opttype=typ;
-	if(!na)na='xinhuhome';
-	if(api.sendEvent)api.sendEvent({
-		name: na,
-		extra:d
-	});
-}
 js.isimg = function(lx){
 	var ftype 	= '|png|jpg|bmp|gif|jpeg|';
 	var bo		= false;
@@ -1161,4 +1144,44 @@ js.changdu=function(o){
 js.showmap=function(str){
 	var url = 'index.php?d=main&m=kaoqin&a=location&info='+jm.base64encode(str)+'';
    js.location(url);
+}
+
+
+js.setapptitle=function(tit){
+	if(!apicloud)return;
+	var svst = js.getoption('apiwinname');
+	if(svst){
+		if(!tit)tit=document.title;
+		js.sendevent('title',svst,{title:tit})
+	}
+}
+js.fileoptWin=function(id){
+	var otype = this.opentype,ourl='widget://index.html';
+	if(otype && otype!='nei')ourl=jm.base64decode(otype);
+	var bstr=jm.base64encode('{"name":"文件","fileid":"'+id+'","url":"fileopen","fileext":""}');
+	var url = ''+ourl+'?bstr='+bstr+'';
+	return this.apiopenWin(url);
+}
+js.apiopenWin=function(url){
+	if(!apicloud)return false;
+	api.openWin({name:'url'+js.getrand(),url: url,bounces:false,softInputBarEnabled:false,slidBackEnabled:true,vScrollBarEnabled:false,hScrollBarEnabled:false,allowEdit:false,progress:{type:'',title:'', text:'',   color:''}});	
+	return true;
+}
+js.appwin=function(na,dz){
+	if(!js.getoption('apiwinname'))return this.apiopenWin(dz);	
+	var otype = this.opentype,ourl='widget://index.html';
+	if(otype && otype!='nei')ourl=jm.base64decode(otype);
+	if(dz.substr(0,4)!='http')dz=NOWURL+dz;
+	var jg  = (dz.indexOf('?')==-1)?'?':'&';
+	if(!na)na='&nbsp;';
+	var bstr=jm.base64encode('{"name":"'+na+'","url":"openurl","dizhi":"'+dz+''+jg+'hideheader=true"}');
+	var url = ''+ourl+'?bstr='+bstr+'';
+	return this.apiopenWin(url);	
+}
+js.sendevent=function(typ,na,d){
+	if(!apicloud)return false;
+	if(!d)d={};
+	d.opttype=typ;
+	if(!na)na='xinhuhome';
+	if(api.sendEvent)api.sendEvent({name: na,extra:d});
 }

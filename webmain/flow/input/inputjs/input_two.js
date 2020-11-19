@@ -257,7 +257,7 @@ var inputtwo={
 		});
 		this.selectmapdata={sna:sna,snall:snall};
 		this._temsel=[24.51036967209648,118.17883729934692,12];
-		if(snall && form(snall))this._temsel = form(snall).value.split(',');
+		if(snall && form(snall) && form(snall).value)this._temsel = form(snall).value.split(',');
 		if(!this.showmapbo){js.importjs(url);}else{this.showmap()}
 		$('#selectmap_btn0').click(function(){
 			c.selectmapque();
@@ -274,7 +274,7 @@ var inputtwo={
 		var center = new qq.maps.LatLng(parseFloat(this._temsel[0]),parseFloat(this._temsel[1]));
 		map = new qq.maps.Map(get('selectmap'),{
 			center: center,
-			zoom: parseFloat(this._temsel[2]) 
+			zoom: parseFloat(this._temsel[2])
 		});
 		qq.maps.event.addListener(map, 'click', function(event) {
 			marker.setPosition(event.latLng);
@@ -328,5 +328,29 @@ var inputtwo={
 		}
 		var center 	= new qq.maps.LatLng(lat, lng);
 		this.geocoderObj.getAddress(center);
+	},
+	xuanfile:function(fid,lx,fname,o1){
+		if(!fname)fname='';
+		$.selectdata({
+			title:fname+'(模版选择)',fid:fid,
+			url:'api.php?m=upload&a=getmfile&fenlei='+jm.base64encode(lx)+'',
+			checked:false,nameobj:false,idobj:false,
+			onselect:function(seld,sna,sid){
+				if(sid)c.xuanfiles(this.fid,sid,fname,o1);
+			}
+		});
+	},
+	xuanfiles:function(fid,sid,fname,o1){
+		js.loading('生成文件中...');if(!fname)fname='';
+		js.ajax('api.php?m=upload&a=getmfilv',{fileid:sid,fname:jm.base64encode(fname)},function(ret){
+			if(ret.success){
+				js.unloading();
+				c.showfileup(fid,ret.data);
+				c.showupid(fid);
+				if(o1)$(o1).remove();
+			}else{
+				js.msgerror(ret.msg);
+			}
+		},'get,json');
 	}
 }

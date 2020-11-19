@@ -19,12 +19,7 @@ $(document).ready(function(){
 	
 //[自定义区域start]
 
-c.setcolumns('fengmian',{
-	renderer:function(v){
-		if(!v)return '&nbsp;';
-		return '<img src="'+v+'" height="60">';
-	}
-});
+
 
 //[自定义区域end]
 

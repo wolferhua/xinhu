@@ -184,7 +184,7 @@ class htmlChajian extends Chajian{
 	public function htmlremove($str)
 	{
 		$str = preg_replace("/<[^>]*>/si",'',$str);
-		$str = str_replace(array(' ','	',"\n"),array('','',''), $str);
+		$str = str_replace(array('	',"\n"),'', $str);
 		return $str;
 	}
 	

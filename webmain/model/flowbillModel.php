@@ -420,12 +420,12 @@ class flowbillClassModel extends Model
 		if($custids=='')return;
 		$custids	= substr($custids, 1);
 		$mxxus		= 99999;
-		$rows 		= $this->getall('`isturn`=1 and `status`=0 and ((`nowcourseid` in('.$custids.')) or (`nowcourseid`>'.$mxxus.' and ((`nowcourseid`-`nowcheckid`)/'.$mxxus.') in('.$custids.')) )');
+		$rows 		= $this->getall('`isturn`=1 and `status`=0 and `isdel`=0 and ((`nowcourseid` in('.$custids.')) or (`nowcourseid`>'.$mxxus.' and ((`nowcourseid`-`nowcheckid`)/'.$mxxus.') in('.$custids.')) )');
 		//echo $this->db->nowsql;
 		if(!$rows)return;
 		$modeids 	= '';
 		foreach($rows as $k=>$rs)$modeids.=','.$rs['modeid'].'';
-		$modearr 	= $this->db->getarr('[Q]flow_set','id in('.substr($modeids, 1).')','`num`');
+		$modearr 	= $this->db->getarr('[Q]flow_set','id in('.substr($modeids, 1).')','`num`,`table`');
 		
 		foreach($rows as $k=>$rs){
 			if(isempt($rs['nowcheckid']))continue;
@@ -440,6 +440,13 @@ class flowbillClassModel extends Model
 			if(isempt($updt))$updt = $rs['optdt'];
 			$nowcheckida1 	= explode(',', $rs['nowcheckid']);
 			$nowcheckida2 	= explode(',', $rs['nowcheckname']);
+			
+			$table	= $modrs['table'];
+			$ors 	= $this->db->getone('[Q]'.$table.'','`id`='.$rs['mid'].'');
+			if(!$ors){
+				$this->update('`isdel`=1', $rs['id']);
+				continue;
+			}
 			
 			$this->rock->adminid 	= arrvalue($nowcheckida1,0);
 			$this->rock->adminname 	= arrvalue($nowcheckida2,0);

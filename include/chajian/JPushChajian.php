@@ -28,7 +28,8 @@ class JPushChajian extends Chajian{
 				'uids'  => $uids,
 				'title' => $this->rock->jm->base64encode($title),
 				'cont'  => $this->rock->jm->base64encode($cont),
-				'desc'  => $desc
+				'desc'  => $desc,
+				'systype'=> getconfig('systype')
 			);
 			$runurl = c('xinhu')->geturlstr('jpushplat', $arr);
 			return  c('curl')->getcurl($runurl);

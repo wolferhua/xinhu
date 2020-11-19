@@ -162,7 +162,9 @@ class upfileChajian extends Chajian{
 		if(!$cfile==''){
 			$file_newname=''.$cfile.'.'.$file_ext.'';
 		}else{
-			$randname	= ''.date('d_His').''.rand(10,99).'';
+			$_oldval 	 = m('option')->getval('randfilename');
+			$randname	 = $this->getrandfile(1, $_oldval);
+			m('option')->setval('randfilename', $randname);
 			$file_newname=''.$randname.'.'.$file_ext.'';
 		}
 		
@@ -205,6 +207,13 @@ class upfileChajian extends Chajian{
 		}else{
 			return '上传失败：'.$this->geterrmsg($file_error).'';
 		}
+	}
+	
+	private function getrandfile($xu, $val)
+	{
+		$randname	= ''.date('d_His').''.rand(10,99*$xu).'';
+		if($val==$randname)return $this->getrandfile($xu+1, $val);
+		return $randname;
 	}
 	
 	private function geterrmsg($code)

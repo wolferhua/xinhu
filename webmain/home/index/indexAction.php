@@ -42,6 +42,20 @@ class indexClassAction extends Action{
 				$this->option->setval($_key.'@-102', $usedt);
 			}
 			$arr['usedt']	= $usedt;
+		
+			if(DB_USER=='root'){
+				$sqld = $this->db->getall('select @@global.sql_mode as total');
+				if($sqld){
+					$sqlmodel = $sqld[0]['total'];
+					$arr['sqlmodel']	= $sqlmodel;
+					$sqlsr	= explode(',', $sqlmodel);
+					$kes 	= 'ONLY_FULL_GROUP_BY';
+					$nstr	= array();
+					if(in_array($kes, $sqlsr))foreach($sqlsr as $_kt)if($_kt!=$kes)$nstr[]=$_kt;
+					if($nstr)$this->db->query("set @@global.sql_mode ='".join(',', $nstr)."'",false);
+				}
+			}
+			
 		}
 		$s = $s1 = '';
 		if($loadci==0){

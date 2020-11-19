@@ -51,12 +51,15 @@ js.datechange=function(o1,lx){
 		'view':lx
 	});
 }
+function initApp(){
+	js.setapptitle(moders.name);
+}
 </script>
 <style>
 .datesss{background:url(mode/icons/date.png) no-repeat right;cursor:pointer}
 input,textarea,select,*{font-size:16px}
 .lurim{text-align:right;padding-left:5px}
-.tablesub td{height:25px;text-align:center;border:1px #888888 solid;}
+.tablesub td{height:25px;text-align:center;border:0.5px #888888 solid;}
 .tablesub .inputs{border:none;padding:0px;margin:0px;width:100%}
 
 .status{position: absolute;right:15px;top:2px;display:none;width:70px;height:70px;overflow:hidden; border:2px red solid;border-radius:50%;font-size:16px;text-align:center;line-height:70px;color:red;transform:rotate(-45deg);-o-transform:rotate(-45deg);-webkit-transform:rotate(-45deg);-ms-transform:rotate(-45deg)}
@@ -70,7 +73,7 @@ input,textarea,select,*{font-size:16px}
 
 <body class="mbody">
 <?php 
-if($showheader==1)echo '<div id="header_title" class="header"><span onclick="js.back()" class="header-back"></span>'.$da['title'].'</div><div style="height:46px;overflow:hidden"></div>';
+if($showheader==1)echo '<div id="header_title" style="padding-top:'.$cenghei.'px" class="header"><span onclick="js.back()" class="header-back"></span>'.$da['title'].'</div><div style="height:'.($cenghei+50).'px;overflow:hidden"></div>';
 ?>
 
 <div  style="position:relative">

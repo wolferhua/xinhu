@@ -14,6 +14,7 @@ class mode_userractClassAction extends inputAction{
 		if(isempt($tqenddt)){
 			
 		}
+	
 		$barr['company'] = m('company')->getmou('name', (int)$arr['companyid']);
 		return array(
 			'rows' => $barr
@@ -23,6 +24,15 @@ class mode_userractClassAction extends inputAction{
 	
 	protected function saveafter($table, $arr, $id, $addbo){
 		
+		//替换word里的变量
+		$htfid 	= (int)arrvalue($arr,'htfid','0');
+		$uobj	= m('userinfo')->getone('`id`='.$arr['uid'].'');
+		m('word')->replaceWord($htfid, array(
+			'company' => $arr['company'],
+			'name' 	  => $arr['uname'],
+			'idnum'   =>$uobj['idnum'],
+			'mobile'  =>$uobj['mobile'],
+		));
 	}
 	
 	//签署公司数据源

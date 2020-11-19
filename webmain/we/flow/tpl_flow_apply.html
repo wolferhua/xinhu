@@ -20,16 +20,19 @@ function xuantype(o1){
 		js.backto('typelx'+val+'');
 	}
 }
+function initApp(){
+	js.setapptitle();
+}
 </script>
 </head>
 <body>
 <?php if($showheader==1){?>
 <div>
-	<div class="r-header">
+	<div class="r-header" style="padding-top:<?=$cenghei?>px" >
 		<div onclick="location.reload()" id="header_title" class="r-header-text"><?=$da['title']?></div>
 		<span onclick="js.back()" class="r-position-left r-header-btn"><i class="icon-chevron-left"></i></span>
 	</div>
-	<div class="blank50"></div>
+	<div class="blank50" id="header_line" style="height:<?=($cenghei+50)?>px"></div>
 </div>
 <?php }?>
  

@@ -83,6 +83,10 @@ class Action extends mainAction
 		$this->smartydata['adminuser']	= $this->adminuser;
 		$this->smartydata['adminname']	= $this->adminname;
 		$this->smartydata['logintime']	= $this->getsession('logintime');
+		$cenghei	= (int)$this->get('cenghei','0');
+		if($cenghei==0)$cenghei = $this->getsession('cenghei','0');
+		$this->assign('cenghei', $cenghei);
+		$this->rock->savesession(array('cenghei' => $cenghei));
 	}
 	
 	private function iszclogin()

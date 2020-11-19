@@ -31,6 +31,14 @@ bootparams.celleditor = true;//开启可编辑
 c.setcolumns('daima',{editor:true});//对应字段设置可编辑
 c.setcolumns('haoma',{editor:true});
 
+sendpiaoemail=function(d){
+	js.loading('发送中...');
+	js.ajax(c.getacturl('sendemail'), {id:d.id},function(ret){
+		if(ret.success)js.msgok(ret.data);
+		if(!ret.success)js.msgerror(ret.msg);
+	},'get,json');
+}
+
 //[自定义区域end]
 
 	js.initbtn(c);

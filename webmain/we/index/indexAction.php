@@ -16,7 +16,7 @@ class indexClassAction extends ActionNot{
 			if($rs1['num']=='auther_yuming')$yuming = $rs1['value'];
 			if($rs1['num']=='auther_enddt')$enddt = $rs1['value'];
 		}
-		if(isempt($yuming) || isempt($enddt) || isempt($authkey))return $this->bd6('57O757uf5pyq562!5o6I5LiN6IO95L2.55So');
+		if(isempt($yuming) || isempt($enddt) || isempt($authkey))return $this->bd6('57O757uf5pyq562!5o6I5LiN6IO95L2.55So77yM562!5o6I5piv5YWN6LS555qE77yMPGEgaHJlZj0iaHR0cDovL3d3dy5yb2Nrb2EuY29tL3ZpZXdfYXV0aGVyLmh0bWwiPueci!W4ruWKqeiuvue9rjwvYT4:');
 		if($this->jm->uncrypt($enddt)<$this->date)return $this->bd6('57O757uf562!5o6I5bey5Yiw5pyf');
 		$ym 	= $this->jm->uncrypt($yuming);
 		$ho		= $this->bd6('LDEyNy4wLjAuMSxsb2NhbGhvc3Qs');

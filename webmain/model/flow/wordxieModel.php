@@ -14,6 +14,9 @@ class flow_wordxieClassModel extends flowModel
 			if($this->adminmodel->containjoin($xienameid, $this->adminid))
 				$rs['xiebool'] = true;
 		}
+		$str = '';
+		if(arrvalue($rs,'isgk')=='1')$str='<font color=green>可做模版</font>';
+		$rs['isgk'] = $str;
 		return $rs;
 	}
 	

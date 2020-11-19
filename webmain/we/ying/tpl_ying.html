@@ -40,9 +40,6 @@ body,html{background-color:#f1f1f1;overflow:hidden}
 .notrecord{text-align:center;font-size:20px;padding-top:50px;color:#aaaaaa}
 .r-border:after{border-radius:5px}
 </style>
-<?php 
-if($da['web']=='iPhone')echo '<script src="js/fastclick.min.js"></script>';
-?>
 <script>
 var json = <?=json_encode($arr)?>;
 ismobile = 1,openfrom='<?=$openfrom?>';
@@ -55,7 +52,23 @@ function initbody(){
 	admintoken = '<?=$xhrock->admintoken?>';
 	yy.init();
 	yingyonginit();
-	if(typeof(FastClick)!='undefined')FastClick.attach(document.body);
+}
+function initApp(){
+	js.setapptitle(json.name);
+	js.location=function(dz){
+		if(js.appwin('',dz))return;
+		location.href = dz;
+	}
+	var nowlist = 'yingyong_mode_'+json.num+'';
+	js.setoption('nowListener', nowlist);
+	api.addEventListener({
+		name: nowlist
+	}, function(ret, err) {
+		if(ret){
+			var lx = ret.value.opttype;
+			if(lx=='reload')yy.reload();
+		}
+	});
 }
 function callPhone(o1){
 	if(typeof(o1)!='string')o1 = $(o1).text();
@@ -66,13 +79,6 @@ function callPhone(o1){
 		return false;
 	}else{
 		return true;
-	}
-}
-js.location22=function(url){
-	if(!apicloud){
-		location.href = url;
-	}else{
-		api.openWin({name:'url'+js.getrand(),url: url,bounces:false,softInputBarEnabled:false,slidBackEnabled:true,vScrollBarEnabled:false,delay:0,hScrollBarEnabled:false,allowEdit:true,progress:{ type:'default',title:'', text:'',   color:''}});
 	}
 }
 <?php if(isset($arr['leixing'])){ ?>
@@ -97,14 +103,14 @@ yy.onshowdata=function(da){
 <body>
 <?php if($showheader==1){?>
 <div>
-	<div class="r-header">
+	<div class="r-header" style="padding-top:<?=$cenghei?>px" >
 		<div class="r-header-text" onclick="location.reload()" id="header_title"><?=$da['title']?></div>
 		<?php if($rock->get('openfrom')!='reim'){?>
-		<span onclick="js.back()" class="r-position-left r-header-btn"><i class="icon-chevron-left"></i></span>
+		<span ontouchend="js.back()" class="r-position-left r-header-btn"><i class="icon-chevron-left"></i></span>
 		<?php }?>
 		<span onclick="yy.clad()" class="r-position-right r-header-btn"><i class="icon-plus"></i></span>
 	</div>
-	<div class="blank50"></div>
+	<div class="blank50" id="header_line" style="height:<?=($cenghei+50)?>px"></div>
 </div>
 <?php }?>
 
