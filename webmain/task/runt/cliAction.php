@@ -29,4 +29,15 @@ class cliClassAction extends runtAction
 		echo '------';
 		echo $id;
 	}
+	
+	/**
+	*	(异步用)REIM即时通讯平台应用提醒
+	*/
+	public function reimplatsendAction()
+	{
+		$body = $this->getparams('body');
+		if(!$body)return;
+		$cans = json_decode($this->jm->base64decode($body),true);
+		return m('reimplat:agent')->sendxiao($cans['touid'],$cans['agentname'],$cans['wxarr'],true);
+	}
 }

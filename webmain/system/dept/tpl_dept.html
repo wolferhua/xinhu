@@ -203,6 +203,10 @@ var c = {
 				s='';
 				js.msg('msg','多单位模式下不能选择最高的顶级部门');
 			}
+			if(this.changerange && id==1){
+				s='';
+				js.msg('msg','不能选最顶级部门');
+			}
 		}
 		if(lx=='g'){
 			d = this.grouparr[oi];

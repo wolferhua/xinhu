@@ -80,6 +80,12 @@ $(document).ready(function(){
 					js.setmsg(ret.msg,'',mvd);
 				}
 			},'get,json');
+		},
+		tongbudw:function(){
+			js.loading();
+			js.ajax(js.getajaxurl('tongbudw','{mode}','{dir}'),false, function(ret){
+				js.msgok(ret);
+			},'get');
 		}
 	};
 	js.initbtn(c);
@@ -120,6 +126,9 @@ $(document).ready(function(){
 			<button click="save" id="savebtn{rand}" style="display:none" class="btn btn-success" type="button"><i class="icon-key"></i> 提交验证</button>&nbsp;&nbsp;
 			<button click="wenyz" id="savewen{rand}" style="display:none" class="btn btn-primary" type="button"><i class="icon-file"></i> 文件验证</button>
 			<button click="savedel" id="savedel{rand}" style="display:none" class="btn btn-danger" type="button"><i class="icon-key"></i> 删除签授</button>
+			<?php
+			if(!COMPANYNUM && getconfig('platdwnum'))echo '&nbsp;&nbsp;<button click="tongbudw" class="btn btn-primary" type="button">同步到单位数据</button>';
+			?>
 			&nbsp;<span id="msgview{rand}"></span></td>
 		</tr>
 	</table>

@@ -376,12 +376,12 @@ $(document).ready(function(){
 
 		<tr>
 			<td  align="right" >审核动作：</td>
-			<td class="tdinput" colspan="3"><input name="courseact" class="form-control"><div style="padding-top:0px" class="tishi"><a href="javascript:;" click="setstatus">[设置]</a>默认是：同意,不同意。多个,分开</div></td>
+			<td class="tdinput" colspan="3"><input name="courseact" placeholder="默认是：同意,不同意。多个,分开" class="form-control"></td>
 		</tr>
 		
 		<tr>
 			<td  align="right" >审核处理表单：</td>
-			<td class="tdinput" colspan="3"><input name="checkfields" class="form-control"><div style="padding-top:0px" class="tishi">需要处理表单元素必须在【表单元素管理】上，输入字段名如：title,dt|stitle，其中格式：必填字段|选填字段</div></td>
+			<td class="tdinput" colspan="3"><input name="checkfields" placeholder="写主表字段名，不支持子表字段" class="form-control"><div style="padding-top:0px" class="tishi">需要处理表单元素必须在【表单元素管理】上，输入字段名如：title,dt|stitle，其中格式：必填字段|选填字段</div></td>
 		</tr>
 		
 		

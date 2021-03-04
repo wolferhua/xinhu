@@ -110,18 +110,14 @@ class flow_leaveClassModel extends flowModel
 		$jbuse 	= (int)$dbs->getval('kqjiabanuse', 0); //加班
 		$njuse 	= (int)$dbs->getval('kqnianjiause', 0);
 		$db 	= m('kqinfo');
-		if($jbuse==0){
-			$db->update('enddt=null',"`kind`='加班'");
-		}else{
+		if($jbuse>0){
 			$key  = "CONCAT(date_format(date_add(stime,interval ".$jbuse." month),'%Y-%m-%d'),' ','23:59:59')";
-			$db->update('enddt='.$key.'',"`kind`='加班'"); //兑换调休的
+			$db->update('enddt='.$key.'',"`kind`='加班' and `enddt` is null"); //兑换调休的
 		}
 		
-		if($njuse==0){
-			$db->update('enddt=null',"`kind`='增加年假'");
-		}else{
+		if($njuse>0){
 			$key  = "CONCAT(date_format(date_add(stime,interval ".$njuse." month),'%Y-%m-%d'),' ','23:59:59')";
-			$db->update('enddt='.$key.'',"`kind`='增加年假'");
+			$db->update('enddt='.$key.'',"`kind`='增加年假' and `enddt` is null");
 		}
 	}
 }

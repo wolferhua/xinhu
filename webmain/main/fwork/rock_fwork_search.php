@@ -10,7 +10,7 @@ $(document).ready(function(){
 			for(lx in a){
 				d=a[lx];s1='';j++;len=d.length;
 				s1 ='<div align="left" style="margin:20px;width:230px" class="list-group">';
-				s1+='<div class="list-group-item  list-group-item-success"><i class="icon-plus"></i> '+lx+'('+len+')</div>';
+				s1+='<div class="list-group-item  list-group-item-success"><i class="icon-star-empty"></i> '+lx+'('+len+')</div>';
 				for(i=0;i<len;i++){
 					s1+='<a style="TEXT-DECORATION:none" onclick="opencoluske_{rand}(\''+d[i].name+'\',\''+d[i].num+'\',\''+d[i].atype+'\')" class="list-group-item">'+d[i].name+'</a>';
 				}

@@ -14,6 +14,8 @@ class flow_gongClassModel extends flowModel
 		if(!isempt($fm)){
 			$cont='<div align="center"><img style="max-width:100%" src="'.$this->rock->gethttppath($fm).'"></div>'.$cont.'';
 		}
+		$url	= $this->rs['url'];
+		if(!isempt($url))$cont.='<div><a href="'.$url.'">打开相应地址&gt;&gt;</a></div>';
 		$this->rs['content'] = $cont;
 	}
 	

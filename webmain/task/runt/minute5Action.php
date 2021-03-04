@@ -12,8 +12,7 @@ class minute5ClassAction extends runtAction
 		$this->enddt	= date('Y-m-d H:i:s', $time2);
 		$this->enddtss	= date('Y-m-d H:i:s', $time3);
 		$this->scheduletodo();
-		m('flow')->initflow('meet')->meettodo(); //会议提醒的
-		//$this->todologs();
+	
 		m('flowbill')->autocheck(); //自动审批作废
 		m('reim')->chatpushtowx($this->enddtss); //REIM消息
 		return 'success';
@@ -21,18 +20,14 @@ class minute5ClassAction extends runtAction
 	
 	private function scheduletodo()
 	{
-		m('schedule')->gettododata();
-		m('remind')->todorun();//单据提醒设置
+		$to = m('mode')->rows("`num`='schedule' and `status`=1");
+		if($to==1)m('schedule')->gettododata();//日程
+		
+		$to = m('mode')->rows("`num`='remind' and `status`=1");
+		if($to==1)m('remind')->todorun();//单据
+		
+		$to = m('mode')->rows("`num`='meet' and `status`=1");
+		if($to==1)m('flow')->initflow('meet')->meettodo(); //会议提醒的
 	}
 	
-	//错误日志通知给管理员提醒
-	private function todologs()
-	{
-		$opddt 	= date('Y-m-d H:i:s',time()-5*60);
-		$rows  	= $this->db->getall("select `type`,count(1)stotal from `[Q]log` where `level`=2 and `optdt`>'$opddt' group by `type`");
-		$str 	= '';
-		foreach($rows as $k=>$rs)$str.=''.$rs['type'].'('.$rs['stotal'].'条);';
-		
-		if($str!='')m('todo')->add(1,'错误日志', $str.'请到[系统→系统工具→日志查看]下查看。');
-	}
 }

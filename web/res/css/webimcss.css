@@ -1,17 +1,19 @@
 *{font-family:微软雅黑,Verdana, Geneva, sans-serif;list-style-type:none;padding:0px;margin:0px;word-wrap:break-word;word-break:break-all;}
-body{color:#000000;margin:0px;border:0;font-size:14px}
+body{color:#000000;margin:0px;border:0;font-size:14px;}
+body{--main-color:#1389D3}
 a,.cursor{cursor:pointer;}
 p{text-indent:24pt; margin:5px 0px}
 input,textarea,a,button{resize: none;outline:none}
-.zhu{ color:#1389D3}
+
+.zhu{ color:#1389D3;color:var(--main-color)}
 .hui{ color:#888888}
 .red{ color:#ff0000}
 .blue{ color:blue}
 table{border-spacing:0;border-collapse: collapse;}
-a:link,a:visited{TEXT-DECORATION:none;color:#1389D3}
+a:link,a:visited{TEXT-DECORATION:none;color:#1389D3;color:var(--main-color)}
 a:hover{TEXT-DECORATION:none;color:red;}
 
-a.zhu{color:#1389D3}
+a.zhu{color:#1389D3;color:var(--main-color)}
 img{border:0}
 
 
@@ -50,15 +52,15 @@ input.checkbox,input.radio{ border:none;padding:0;margin-right:5px; width:16px; 
 .icon{ height:16px; width:16px;margin-right:5px}
 
 .input,.select,.textarea{height:30px; line-height:28px; border:1px #cccccc solid; padding:0px 5px;font-size:14px;}
-.input:focus{box-shadow:0px 0px 5px rgba(0,0,0,0.3); border:1px #1389D3 solid; color:#000000}
+.input:focus{box-shadow:0px 0px 5px rgba(0,0,0,0.3); border:1px #1389D3 solid; border:1px var(--main-color) solid;color:#000000}
 
-.btn{height:30px;line-height:30px; background-color:#1389D3;border:none;color:#f1f1f1;padding:0px 20px; cursor:pointer;opacity:0.9;border-radius:5px;}
+.btn{height:30px;line-height:30px; background-color:#1389D3; background-color:var(--main-color);border:none;color:#f1f1f1;padding:0px 20px; cursor:pointer;opacity:0.9;border-radius:5px;}
 .btn:hover{opacity:1;color:#ffffff;}
 .btn[disabled]{ background-color:#aaaaaa}
 .btn-danger{background:#d9534f}
 
-.webbtn:link,.webbtn:visited,.webbtn{color:#f1f1f1; opacity:0.8;background-color:#1389D3; padding:3px 8px; border:none; cursor:pointer}
-.webbtn:hover{opacity:1;color:#ffffff;}
+.webbtn:link,.webbtn:visited,.webbtn{color:#f1f1f1; opacity:1;background-color:#1389D3;background-color:var(--main-color); padding:3px 8px; border:none; cursor:pointer}
+.webbtn:hover{opacity:0.8;color:#ffffff;}
 
 
 
@@ -98,11 +100,12 @@ input.checkbox,input.radio{ border:none;padding:0;margin-right:5px; width:16px; 
 .msousou::-moz-input-placeholder{color:#dddddd}
 .msousou:focus{background-color:white;color:#333333;-webkit-animation:mymove 0.3s;-moz-animation:mymove 0.3s;width:170px;}
 
-.lists{padding:8px; border-bottom:1px #f1f1f1 solid;cursor:pointer; background-color:#f5f9ff;}
+.lists{padding:8px; border-bottom:0px #f1f1f1 solid;cursor:pointer;}
 .lists img{height:30px;width:30px;}
 .lists .close{position:absolute;right:3px;top:5px;display:none;color:#aaaaaa}
 .lists .bqs{position:absolute;right:3px;top:5px;}
-.lists:hover,.lists.active{background-color:#e3eef9}
+.lists.active{background-color:rgba(0,0,0,0.1)}
+.lists:hover{background-color:rgba(0,0,0,0.05)}
 .lists:hover .close{display:block}
 .lists:hover .bqs{display:none}
 
@@ -117,7 +120,7 @@ input.checkbox,input.radio{ border:none;padding:0;margin-right:5px; width:16px; 
 .chattitbtn{color:#aaaaaa;cursor:pointer}
 .toolsliao{height:34px; background-color:#ecf5fc;overflow:hidden;border-top:#dddddd solid 1px;color:#aaaaaa;line-height:34px;font-size:16px;padding:0px 10px}
 .toolsliao span{margin-right:10px}
-.toolsliao span:hover,.chattitbtn:hover{color:#1389D3}
+.toolsliao span:hover,.chattitbtn:hover{color:#1389D3;color:var(--main-color)}
 
 
 .progresscls{height:12px;overflow:hidden;line-height:12px;border:0px #eeeeee solid; position:relative;;width:99%;background-color:#f1f1f1;margin-top:3px}
@@ -145,7 +148,7 @@ input.checkbox,input.radio{ border:none;padding:0;margin-right:5px; width:16px; 
 .agenhclsdiv{display:inline-block}
 .agenhcls{min-width:70px;height:70px;text-align:center;cursor:pointer;float:left;padding:0px 5px;margin-left:5px;position:relative}
 .agenhcls img{height:34px;width:34px}
-.agenhcls:hover{background-color:#f1f1f1;border-radius:5px}
+.agenhcls:hover{background-color:rgba(0,0,0,0.05);border-radius:5px}
 .agenhcls span{position:absolute;right:1px;top:1px}
 
 .lefticons{position:relative;line-height:50px;height:50px;overflow:hidden;font-size:20px;color:#cccccc}

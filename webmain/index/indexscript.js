@@ -345,7 +345,7 @@ function tabsright(num,e){
 			if(lx==1){
 				var d1 = tabsarr[num],s1=''+PROJECT+'/'+d1.urlpath+'';
 				var s  = '['+d1.name+']页面地址是：'+s1+'<div style="word-wrap:break-word;">，在[系统→基础管理→菜单管理]设置URL地址为：'+d1.url+'';
-				if(HOST=='127.0.0.1')s+='&nbsp;<a onclick="_openfile(\''+jm.base64encode(s1)+'\')" href="javascript:;">[打开]</a>';
+				if(HOST=='127.0.0.1' || HOST=='localhost')s+='&nbsp;<a onclick="_openfile(\''+jm.base64encode(s1)+'\')" href="javascript:;">[打开]</a>';
 				s+='</div>';
 				js.alert(s);
 			}
@@ -393,7 +393,7 @@ function addtabs(a){
 	var s = '<td temp="tabs" oncontextmenu="tabsright(\''+num+'\',event);return false;"; nowrap onclick="changetabs(\''+num+'\',1)" id="tabs_'+num+'" class="active"><font>';
 	if(a.icons)s+='<i class="icon-'+a.icons+'"></i>  ';
 	s+=a.name+'</font>';
-	if(!a.hideclose)s+='<span onclick="closetabs(\''+num+'\')" class="icon-remove"></span>';
+	if(!a.hideclose)s+='<span onclick="closetabs(\''+num+'\')"><img src="images/del.png" width="12" height="12"></span>';
 	s+='</td>';
 	objtabs.append(s);
 	_changhhhsv(num);

@@ -21,9 +21,6 @@ class cogClassAction extends Action
 			'memory_limit'	=> '使用最大内存',
 			'curl'			=> '是否支持CURL',
 			'max_execution_time'			=> 'PHP执行超时时间',
-			//'disk_total_space'			=> '当前磁盘',
-			//'disk_free_space'			=> '剩余可用',
-			
 		);
 	
 		$data = array(
@@ -45,9 +42,7 @@ class cogClassAction extends Action
 			'post_max_size'			=> ini_get('post_max_size'),
 			'memory_limit'			=> ini_get('memory_limit'),
 			'max_execution_time'			=> ini_get('max_execution_time').'秒',
-			//'disk_total_space'		=> $this->rock->formatsize(disk_total_space(ROOT_PATH)),
-			//'disk_free_space'		=> $this->rock->formatsize(disk_free_space(ROOT_PATH)),
-				
+			
 		);
 		if(!function_exists('curl_init')){
 			$data['curl'] = '<font color=red>不支持</font>';
@@ -68,6 +63,7 @@ class cogClassAction extends Action
 		$arr['url'] 		= arrvalue($GLOBALS['_tempconf'],'url');
 		$arr['localurl'] 	= getconfig('localurl');
 		$arr['apptitle'] 	= getconfig('apptitle');
+		$arr['platurl'] 	= getconfig('platurl');
 		$arr['reimtitle'] 	= getconfig('reimtitle');
 		$arr['asynkey'] 	= getconfig('asynkey');
 		$arr['openkey'] 	= getconfig('openkey');
@@ -130,6 +126,7 @@ class cogClassAction extends Action
 		$arr['outurl'] 		= $this->post('outurl');
 		$arr['reimtitle'] 	= $this->post('reimtitle');
 		$arr['qqmapkey'] 	= $this->post('qqmapkey');
+		$arr['platurl'] 	= $this->post('platurl');
 		
 		$apptitle 			= $this->post('apptitle');
 		if(!isempt($apptitle))$arr['apptitle'] = $apptitle;
@@ -299,5 +296,23 @@ return array(
 	{
 		if(getconfig('systype')=='demo')return returnerror('演示上不要操作');
 		return c('xinhuapi')->autherdel();
+	}
+	public function tongbudwAjax()
+	{
+		$rows = m('company')->getall('iscreate=1');
+		foreach($rows as $k=>$rs){
+			$base = ''.DB_BASE.'_company_'.$rs['num'].'';
+			$this->sevessee($base, 'auther_aukey');
+			$this->sevessee($base, 'auther_enddt');
+			$this->sevessee($base, 'auther_yuming');
+			$this->sevessee($base, 'auther_authkey');
+		}
+		return '同步成功';
+	}
+	private function sevessee($base, $key)
+	{
+		$val = $this->option->getval($key);
+		$sql = "update ".$base.".`[Q]option` set `value`='$val',`optdt`='{$this->now}' where `num`='$key'";
+		$this->db->query($sql, false);
 	}
 }

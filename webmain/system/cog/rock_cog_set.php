@@ -24,6 +24,13 @@ $(document).ready(function(){
 			}
 			js.setselectdata(get('defstype_{rand}'),das,'value');
 		},
+		isurl:function(na,dz){
+			if(dz){
+				if(dz.substr(0,4)!='http')return ''+na+'必须http开头';
+				if(dz.substr(-1)!='/')return ''+na+'必须/结尾';
+			}
+			return '';
+		},
 		save:function(o){
 			var d={};
 			for(var i in barr){
@@ -51,7 +58,8 @@ $(document).ready(function(){
 		blurls:function(o){
 			var val = strreplace(o.value);
 			if(val=='')return;
-			var la  = val.substr(val.length-1);
+			if(val.substr(0,4)!='http')val='http://'+val+'';
+			var la  = val.substr(-1);
 			if(la!='/')val+='/';
 			o.value=val;
 		},
@@ -73,6 +81,12 @@ $(document).ready(function(){
 		c.blurls(this);
 	});
 	$('#localurl_{rand}').blur(function(){
+		c.blurls(this);
+	});
+	$('#platurl_{rand}').blur(function(){
+		c.blurls(this);
+	});
+	$('#outurl_{rand}').blur(function(){
 		c.blurls(this);
 	});
 	$('#officebj_{rand}').change(function(){
@@ -127,9 +141,10 @@ $(document).ready(function(){
 		<tr>
 			<td  align="right">系统外网地址：</td>
 			<td class="tdinput"><input id="outurl_{rand}" placeholder="不知道做啥的，就不要去设置" class="form-control"></td>
-		
-			<td  align="right"></td>
-			<td class="tdinput"></td>
+			<?php if(getconfig('platdwnum')){?>
+			<td  align="right">平台使用地址：</td>
+			<td class="tdinput"><input id="platurl_{rand}" placeholder="必须设置对" class="form-control"></td>
+			<?php }?>
 		</tr>
 		
 	
@@ -212,10 +227,10 @@ $(document).ready(function(){
 		</tr>
 		
 		<tr>
-			
-			
+			<?php if(!getconfig('platdwnum')){?>
 			<td align="right">多单位模式：</td>
 			<td class="tdinput"><select id="companymode_{rand}"  class="form-control"><option value="0">不开启</option><option value="1">开启(各单位分开数据管理)</option></select></td>
+			<?php }?>
 			
 			<td align="right">登录修改密码：</td>
 			<td class="tdinput"><select id="editpass_{rand}"  class="form-control"><option value="0">不用修改</option><option value="1">强制用户必须修改</option></select></td>

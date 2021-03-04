@@ -56,16 +56,26 @@ $(document).ready(function(){
 				title:'选择发送人/接收人'
 			};
 			js.getuser(cans);
+		},
+		qingchu:function(){
+			js.confirm('确定要清除一些记录嘛？',function(jg){
+				if(jg=='yes')c.qingchus();
+			});
+		},
+		qingchus:function(){
+			js.loading('清除中...');
+			js.ajax(js.getajaxurl('delqingchu','{mode}','{dir}'),{},function(ss){
+				js.msgok('清除成功'+ss+'天前的记录');
+				a.reload();
+			});
 		}
 	};
-	
+	a.settishi('请定时删除记录太久的记录，防止访问慢');
 	js.initbtn(c);
 });
 </script>
 
 <div>
-<ul class="floats">
-	
 	<table width="100%">
 	<tr>
 		<td nowrap>日期从&nbsp;</td>
@@ -96,13 +106,13 @@ $(document).ready(function(){
 		<td  width="90%" style="padding-left:10px"></td>
 	
 		<td align="right" id="tdright_{rand}" nowrap>
+			<button class="btn btn-default" click="qingchu" type="button">清理记录</button> &nbsp;
 			<button class="btn btn-default" click="daochu,1" type="button">导出</button> &nbsp;
 			<button class="btn btn-danger" click="del" type="button"><i class="icon-trash"></i> 删除</button>
 		</td>
 	</tr>
 	</table>
 
-</ul>
 </div>
 <div class="blank10"></div>
 <div id="veiw_{rand}"></div>

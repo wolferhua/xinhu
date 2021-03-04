@@ -432,11 +432,21 @@ PRIMARY KEY (`id`),KEY `mid` (`mid`)
 		$this->smartydata['atype'] = $atype;
 
 		$path 		= ''.P.'/flow/page/view_'.$modenum.'_'.$atype.'.html';
+		$bianhao 	= $modenum;
+		if(COMPANYNUM){
+			$path1 		= ''.P.'/flow/page/view_'.$modenum.'_'.COMPANYNUM.'_'.$atype.'.html';
+			if(file_exists($path1)){
+				$path = $path1;
+				$bianhao.='_'.COMPANYNUM.'';
+			}
+		}
+		
 		$content 	= '';
 		if(file_exists($path)){
 			$content = file_get_contents($path);
 		}
 		$this->smartydata['content'] = $content;
+		$this->smartydata['bianhao'] = $bianhao;
 	}
 	
 	
@@ -472,12 +482,20 @@ PRIMARY KEY (`id`),KEY `mid` (`mid`)
 
 		
 		$this->smartydata['fleft'] = $fleft;
-		
+		$bianhao 	= $modenum;
 		$path 		= ''.P.'/flow/page/input_'.$modenum.'.html';
+		if(COMPANYNUM){
+			$path1 		= ''.P.'/flow/page/input_'.$modenum.'_'.COMPANYNUM.'.html';
+			if(file_exists($path1)){
+				$bianhao.='_'.COMPANYNUM.'';
+				$path = $path1;
+			}
+		}
 		$content 	= '';
 		if(file_exists($path)){
 			$content = file_get_contents($path);
 		}
+		$this->smartydata['bianhao'] = $bianhao;
 		$this->smartydata['content'] = $content;
 		$apaths		= ''.P.'/flow/input/inputjs/mode_'.$modenum.'.js';
 		if(!file_exists($apaths)){
@@ -532,6 +550,7 @@ class mode_'.$modenum.'ClassAction extends inputAction{
 		$content = $this->post('content');
 		$num 	 = $this->post('num');
 		$path 	 = ''.P.'/flow/page/input_'.$num.'.html';
+		if(COMPANYNUM)$path 	 = ''.P.'/flow/page/input_'.$num.'_'.COMPANYNUM.'.html';
 		$bo 	 = $this->rock->createtxt($path, $content);
 		if(!$bo){
 			echo '无法写入文件:'.$path.'';
@@ -546,6 +565,10 @@ class mode_'.$modenum.'ClassAction extends inputAction{
 		$num 	 = $this->post('num');
 		$atype 	 = (int)$this->post('atype','0');
 		$path 	 = ''.P.'/flow/page/view_'.$num.'_'.$atype.'.html';
+		if(COMPANYNUM){
+			$path 		= ''.P.'/flow/page/view_'.$num.'_'.COMPANYNUM.'_'.$atype.'.html';
+		}
+		
 		if(isempt($content)){
 			@unlink($path);
 			return 'success';

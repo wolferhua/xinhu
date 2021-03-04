@@ -783,6 +783,7 @@ class adminClassModel extends Model
 	{
 		$comid = (int)$this->rock->session('companyid','0');
 		if($comid==0)$comid = $this->getcompanyinfo($uid,2);
+		if(!$comid)$comid=1;
 		return $comid;
 	}
 	
@@ -792,12 +793,12 @@ class adminClassModel extends Model
 		return $comid;
 	}
 	
-	public function getcompanywhere($lx=0, $qz='')
+	public function getcompanywhere($lx=0, $qz='',$comid=false)
 	{
 		$where = '';
 		//--start--
 		if(ISMORECOM){
-			$comid = ''.$this->getcompanyid().'';
+			if($comid===false)$comid = ''.$this->getcompanyid().'';
 			$comi2 = $comid;
 			$str11 = $this->rock->dbinstr(''.$qz.'dwid', $comid);
 			if($this->adminid==1)$comid.=',0';

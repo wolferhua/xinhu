@@ -11,7 +11,8 @@
 <script type="text/javascript" src="js/js.js"></script>
 <script type="text/javascript" src="js/jswx.js"></script>
 <script type="text/javascript" src="js/base64-min.js"></script>
-<script type="text/javascript" src="webmain/we/index/tpl_index.mini.js"></script>
+<script type="text/javascript" src="js/jsmain.js"></script>
+<script type="text/javascript" src="webmain/we/index/tpl_index.mini.js?<?=time()?>"></script>
 <style>
 html,body{overflow:hidden;background-color:#fbf9fe}
 .weui_tabbar_icon{text-align:center;color:#888888;font-size:20px;height:24px;width:24px;overflow:hidden;margin-top:2px}
@@ -41,7 +42,7 @@ html,body{overflow:hidden;background-color:#fbf9fe}
 </style>
 </head>
 <script>
-xhauthkey = jm.base64decode('<?=$xhauthkey?>');
+xhauthkey = '<?=$xhauthkey?>';
 </script>
 <body scroll="no" style="overflow:hidden">
 <?php if($showheader==1){?>

@@ -147,4 +147,21 @@ class deptClassModel extends Model
 		if($lx==1)m('login')->uplastdt('pc', $this->rock->session('admintoken'));
 	}
 	
+	
+	public function getheadman($did)
+	{
+		$rs 	= $this->getone($did);
+		$headid = '';
+		$headids = '';
+		if($rs){
+			$headid  = $rs['headid'];
+			$headids = $rs['headman'];
+			if(isempt($headid) && $rs['pid']>0){
+				$sars= $this->getheadman($rs['pid']);
+				$headid  = $sars[0];
+				$headids = $sars[1];
+			}
+		}
+		return array($headid, $headids);
+	}
 }

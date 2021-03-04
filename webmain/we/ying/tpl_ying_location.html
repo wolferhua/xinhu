@@ -189,6 +189,7 @@ function addkaoqin(){
 	if(!iskqbo){js.wx.alert('当前位置距离考勤点有'+kqjuli+'米,考勤设置误差不能超过'+slju+'米，故不能添加考勤打卡！');return;}
 	
 	if(!addbo){js.wx.alert('已打卡过了，请重新定位后在打卡');return;}
+	if(kqrs.ispz=='1' && !ispzs){js.wx.alert('请使用相机拍照才能打卡');return;}
 	adddkjl(1,'打卡');
 }
 
@@ -199,15 +200,21 @@ function initupload(){
 		inputfile:'cameraInput',
 		fileview:'fileview',
 		autoup:false,
+		urlparams:{noasyn:'yes'},
 		onsuccess:function(f,str){
 			var a=js.decode(str);
-			
 		},
 		onchange:function(f){
 			$('#paizhaoimg').parent().show();
 			get('paizhaoimg').src = f.imgviewurl;
 			get('pzbtnicons').className='icon-remove';
 			ispzs = true;
+		},
+		onchangebefore:function(f){
+			if(f.lastModified){
+				var btune = js.now('time')-f.lastModified;
+				if(btune>10*1000)return '请使用相机拍照';
+			}
 		},
 		onprogress:function(f,bl){
 			$('#tisssa').html('上传图中('+bl+'%)');
@@ -248,7 +255,7 @@ function showimgs(o1){
 <div>
 	<div class="r-header" style="padding-top:<?=$cenghei?>px" >
 		<div class="r-header-text" onclick="location.reload()" id="header_title"><?=$da['title']?></div>
-		<span ontouchend="js.back()" class="r-position-left r-header-btn"><i class="icon-chevron-left"></i></span>
+		<span onclick="js.back()" class="r-position-left r-header-btn"><i class="icon-chevron-left"></i></span>
 	</div>
 	<div class="blank50" id="header_line" style="height:<?=($cenghei+50)?>px"></div>
 </div>

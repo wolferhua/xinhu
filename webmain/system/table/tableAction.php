@@ -95,10 +95,11 @@ class tableClassAction extends Action
 	public function tablerecord_before()
 	{
 		$stable = $this->post('stable','', 1);
-		$key = (int)$this->post('key','0');
+		$key = $this->post('key');
+		$fid = $this->post('fields','id');
 		$this->nowtablename = $stable;
 		$where = '';
-		if($key>0)$where=" and `id`={$key}";
+		if(!isempt($key))$where=" and `$fid`='$key'";
 		return array(
 			'table' => $stable,
 			'order' => 'id desc',

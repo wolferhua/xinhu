@@ -118,10 +118,7 @@ final class rockClass
 	
 	public function request($name,$dev='', $lx=0)
 	{
-		$val  = '';
-		if(isset($_REQUEST[$name]))$val=$_REQUEST[$name];		
-		if($this->isempt($val))$val=$dev;
-		return $this->jmuncode($val, $lx, $name);
+		return $this->post($name,$dev,$lx);
 	}
 	
 	//get和post参数处理$lx=1:rockjm，6:basejm, 3:判断是否rockjm
@@ -310,11 +307,11 @@ final class rockClass
 	}
 	
 	/**
-	*	判断类型0微信,1钉钉,2安卓原生app,3企业微信,4华为welink,5苹果,6QQ
+	*	判断类型0微信,1钉钉,2安卓原生app,3企业微信,4华为welink,5苹果,6QQ,7REIM平台
 	*/
 	public function iswebbro($lx=0)
 	{
-		$lxar = array('micromessenger','dingtalk','xinhuapp','wxwork','huawei-anyoffice','iphone','mqqbrowser');
+		$lxar = array('micromessenger','dingtalk','xinhuapp','wxwork','huawei-anyoffice','iphone','mqqbrowser','reimplat');
 		return contain(strtolower($this->HTTPweb), $lxar[$lx]);
 	}
 		

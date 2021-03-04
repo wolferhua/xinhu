@@ -160,6 +160,7 @@ function addkaoqin(o1, lbos){
 	}
 	
 	if(isfenwein()){
+		if(kqrs.ispz=='1' && !ispzs){js.wx.alert('请使用相机拍照才能打卡');return;}
 		adddk('打卡',1);
 	}else{
 		adddk('保存',0);
@@ -240,15 +241,21 @@ function initupload(){
 		inputfile:'cameraInput',
 		fileview:'fileview',
 		autoup:false,
+		urlparams:{noasyn:'yes'},
 		onsuccess:function(f,str){
 			var a=js.decode(str);
-			
 		},
 		onchange:function(f){
 			$('#paizhaoimg').parent().show();
 			get('paizhaoimg').src = f.imgviewurl;
 			get('pzbtnicons').className='icon-remove';
 			ispzs = true;
+		},
+		onchangebefore:function(f){
+			if(f.lastModified){
+				var btune = js.now('time')-f.lastModified;
+				if(btune>10*1000)return '请使用相机拍照';
+			}
 		},
 		onprogress:function(f,bl){
 			$('#tisssa').html('上传中('+bl+'%)');
@@ -312,7 +319,7 @@ var yy={
 <div>
 	<div class="r-header" style="padding-top:<?=$cenghei?>px" >
 		<div class="r-header-text" onclick="location.reload()" id="header_title"><?=$da['title']?></div>
-		<span ontouchend="js.back()" class="r-position-left r-header-btn"><i class="icon-chevron-left"></i></span>
+		<span onclick="js.back()" class="r-position-left r-header-btn"><i class="icon-chevron-left"></i></span>
 		<span onclick="yy.clickadd()" class="r-position-right r-header-btn"><i class="icon-plus"></i></span>
 	</div>
 	<div class="blank50" id="header_line" style="height:<?=($cenghei+50)?>px"></div>

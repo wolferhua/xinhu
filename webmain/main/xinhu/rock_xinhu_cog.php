@@ -109,8 +109,7 @@ $(document).ready(function(){
 			<td  align="right"></td>
 			<td class="tdinput">
 			<button click="kuanshu1" class="btn btn-info" type="button">快速设置(推荐)</button>&nbsp;&nbsp;
-			<button click="kuanshu2" class="btn btn-default" type="button">自定义设置</button>&nbsp;&nbsp;
-			<button click="dengji" class="btn btn-default" type="button">登记系统地址</button>
+			<button click="kuanshu2" class="btn btn-default" type="button">自定义设置</button>
 			</td>
 		</tr>
 	

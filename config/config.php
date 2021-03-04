@@ -70,6 +70,10 @@ if(file_exists($_confpath)){
 	$config['authorkey'] = require($_confpath);
 }
 
+$_confpath	= ''.ROOT_PATH.'/config/xinhuplat.php';
+if(file_exists($_confpath))include_once($_confpath);
+if(!defined('COMPANYNUM'))define('COMPANYNUM', '');
+
 define('DEBUG', $config['debug']);
 error_reporting(DEBUG ? E_ALL : 0);
 

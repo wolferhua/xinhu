@@ -129,4 +129,15 @@ class recordClassAction extends Action
 		}
 		backmsg();
 	}
+	
+	public function delqingchuAjax()
+	{
+		$tas = (int)m('option')->getval('chatrecorddt','0');
+		if($tas<=0)$tas = 180;
+		$dt  = date('Y-m-d H:i:s', time()-$tas*24*3600);
+		m('im_mess')->delete("`optdt`<='$dt'");
+		m('im_history')->delete("`optdt`<='$dt'");
+		m('im_messzt')->delete("`mid` not in(select `id` from `[Q]im_mess`)");
+		echo $tas;
+	}
 }

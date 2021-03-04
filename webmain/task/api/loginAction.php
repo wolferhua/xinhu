@@ -157,7 +157,8 @@ class loginClassAction extends apiAction
 	{
 		$call = $this->get('callback');
 		$barr['title'] 	= getconfig('reimtitle','REIM');
-		//$this->showreturn($barr);
+		$barr['stype'] 	= 'new';
+		$barr['version']= VERSION;
 		echo ''.$call.'('.json_encode($barr).')';
 	}
 	
@@ -165,26 +166,29 @@ class loginClassAction extends apiAction
 	{
 		$call = $this->get('callback');
 		$barr['host'] 		= HOST;
-		//$key  = $this->get('key', $this->jm->getRandkey());
-		//$barr['mykey'] 	= $this->jm->encrypt(getconfig('randkey'), $key);
 		echo ''.$call.'('.json_encode($barr).')';
 	}
 	
-	//获取二维码
+
 	public function getewmAction()
 	{
 		$randkey = $this->get('randkey');
+		if(isempt($randkey))return;
 		$dfrom   = $this->get('dfrom');
-		$this->option->setval($randkey, '');
+		$key 	 = md5($randkey);
+		c('cache')->set($key,'-2',70);
+
 		header("Content-type:image/png");
-		$url = ''.getconfig('outurl', URL).'?m=logn&d=we&randkey='.$randkey.'&dfrom='.$dfrom.'';
+		$url = ''.getconfig('outurl', URL).'?m=logn&d=we&randkey='.$key.'&dfrom='.$dfrom.'';
+		if(COMPANYNUM)$url.='&dwnum='.COMPANYNUM.'';
 		$img = c('qrcode')->show($url);
 		echo $img;
 	}
 	public function checkewmAction()
 	{
 		$randkey 		= $this->get('randkey');
-		$val 	 		= $this->option->getval($randkey);
+		$key 			= md5($randkey);
+		$val 	 		= c('cache')->get($key);
 		
 		$data['val'] 	= $val;
 		if(isempt($randkey))$this->showreturn($data);
@@ -198,8 +202,8 @@ class loginClassAction extends apiAction
 				$data['user'] = $urs['user'];
 				$data['face'] = $dbs->getface($urs['face']);
 				$data['pass'] = md5($urs['pass']);
+				c('cache')->del($key);
 			}
-			$this->option->delete("`num`='$randkey'");
 		}
 		$data['val'] 	= $val;
 		$this->showreturn($data);
@@ -234,5 +238,13 @@ class loginClassAction extends apiAction
 			$barr['explain']  = getconfig('app_verremark','完善推送功能');
 		}
 		echo json_encode($barr);
+	}
+	
+	/**
+	*	reim平台快捷登录到oa
+	*/
+	public function reimplatloginAction()
+	{
+		return m('reimplat:oauth')->login();
 	}
 }

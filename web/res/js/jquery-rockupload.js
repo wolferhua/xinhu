@@ -10,7 +10,7 @@
 	maxupgloble = 0;
 	function rockupload(opts){
 		var me 		= this;
-		var opts	= js.apply({inputfile:'',initpdbool:false,initremove:true,uptype:'*',maxsize:5,onchange:function(){},onprogress:function(){},urlparams:{},updir:'',onsuccess:function(){},quality:0.7,xu:0,fileallarr:[],autoup:true,oldids:'',
+		var opts	= js.apply({inputfile:'',initpdbool:false,initremove:true,uptype:'*',maxsize:5,onchange:function(){},onchangebefore:function(){},onprogress:function(){},urlparams:{},updir:'',onsuccess:function(){},quality:0.7,xu:0,fileallarr:[],autoup:true,oldids:'',
 		onerror:function(){},fileidinput:'fileid',
 		onabort:function(){},
 		allsuccess:function(){}
@@ -92,6 +92,8 @@
 					return;
 				}
 			}
+			var nstr 	 = this.onchangebefore(f);
+			if(nstr){js.msg('msg',nstr);return;}
 			
 			a.fileext	 = fileext;
 			a.isimg		 = js.isimg(fileext);

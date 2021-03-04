@@ -74,6 +74,10 @@ class mode_custractClassAction extends inputAction{
 		//同步更新收款单合同编号
 		$htnum = arrvalue($arr,'num');
 		m('custfina')->update("`htnum`='$htnum'", "`htid`='$id'");
+		
+		//替换word里的变量
+		$htfileid 	= (int)arrvalue($arr,'htfileid','0');
+		m('word')->replaceWord($htfileid, $arr);
 	}
 	
 	public function remoneyAjax()

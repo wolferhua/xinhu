@@ -4,7 +4,7 @@ function initbody(){}
 function bodyunload(){}
 function globalbody(){}
 function initApp(){}
-function apiready(){apicloud=true;var key = 'apiwinname';var svst=js.request(key);if(svst)js.setoption(key,svst);initApp();}
+function apiready(){apicloud=true;var key = 'apiwinname';var svst=js.request(key);if(svst)sessionStorage.setItem(key,svst);js.setapptitle();initApp();}
 $(document).ready(function(){
 	try{if(typeof(nw)=='object'){nwjsgui = nw;}else{nwjsgui = require('nw.gui');}}catch(e){nwjsgui=false;}
 	$(window).scroll(js.scrolla);
@@ -31,13 +31,8 @@ $(document).ready(function(){
 	});
 	var openfrom = js.request('openfrom',js.getoption('openfrom','', true));
 	js.setoption('openfrom', openfrom, true);
-	document.addEventListener('plusready', function(){
-		plus.navigator.setStatusBarBackground('#1389D3');
-		isapp = true;
-		plus.key.addEventListener('backbutton',function(){js.back();},false);
-		initApp();
-	});
-	if(HOST=='127.0.0.1' || HOST.indexOf('192.168.')>-1)window.addEventListener('error',function(e){
+	
+	if(HOST=='127.0.0.1' || HOST=='localhost' || HOST.indexOf('192.168.0')>-1)window.addEventListener('error',function(e){
 		var msg = '文件：'+e.filename+'\n行：'+e.lineno+'\n错误：<font color=red>'+e.message+'</font>';
 		js.alert(msg,'js错误');
 	});
@@ -89,6 +84,7 @@ js.gethost=function(){
 	this.opentype = this.getoption('opentype');
 	var otype= this.request('opentype','',url);
 	if(otype){this.setoption('opentype', otype);this.opentype = otype;}
+	this.reimapplx = 0;var llq = navigator.userAgent;if(llq.indexOf('REIMPLAT_APP')>0)this.reimapplx=1;
 	return sau;
 }
 function winHb(){
@@ -1149,7 +1145,7 @@ js.showmap=function(str){
 
 js.setapptitle=function(tit){
 	if(!apicloud)return;
-	var svst = js.getoption('apiwinname');
+	var svst = sessionStorage.getItem('apiwinname');
 	if(svst){
 		if(!tit)tit=document.title;
 		js.sendevent('title',svst,{title:tit})
@@ -1167,8 +1163,7 @@ js.apiopenWin=function(url){
 	api.openWin({name:'url'+js.getrand(),url: url,bounces:false,softInputBarEnabled:false,slidBackEnabled:true,vScrollBarEnabled:false,hScrollBarEnabled:false,allowEdit:false,progress:{type:'',title:'', text:'',   color:''}});	
 	return true;
 }
-js.appwin=function(na,dz){
-	if(!js.getoption('apiwinname'))return this.apiopenWin(dz);	
+js.appwin=function(na,dz){	
 	var otype = this.opentype,ourl='widget://index.html';
 	if(otype && otype!='nei')ourl=jm.base64decode(otype);
 	if(dz.substr(0,4)!='http')dz=NOWURL+dz;

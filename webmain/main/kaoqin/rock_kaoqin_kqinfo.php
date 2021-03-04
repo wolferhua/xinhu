@@ -7,8 +7,6 @@ $(document).ready(function(){
 		tablename:'kqinfo',params:{'atype':atype},celleditor:true,fanye:true,modedir:'{mode}:{dir}',
 		storeafteraction:'kqinfoaftershow',storebeforeaction:'kqinfobeforeshow',
 		columns:[{
-			text:'',dataIndex:'caozuo'
-		},{
 			text:'部门',dataIndex:'deptname',align:'left'
 		},{
 			text:'姓名',dataIndex:'name'
@@ -32,6 +30,10 @@ $(document).ready(function(){
 			text:'状态',dataIndex:'status'
 		},{
 			text:'操作人',dataIndex:'optname'
+		},{
+			text:'截止使用',dataIndex:'enddt',sortable:true
+		},{
+			text:'',dataIndex:'caozuo'
 		}],
 		load:function(d){
 			$('#kqtong{rand}').html(d.totalstr);

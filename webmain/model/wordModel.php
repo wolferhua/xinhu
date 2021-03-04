@@ -255,7 +255,7 @@ class wordClassModel extends Model
 			
 			$cont = "{$this->adminname}在“{$cprs['name']}”上传了{$zongs}个文件“{$names}”";
 			$flow = m('flow')->initflow('word');
-			$flow->push($receid,'文档', $cont, ''.$this->adminname.'上传了文件',0, array(
+			if(arrvalue($flow->moders,'pctx')=='1')$flow->push($receid,'文档', $cont, ''.$this->adminname.'上传了文件',0, array(
 				'wxurl' => $flow->getwxurl(),
 				'id' => $id
 			));

@@ -50,6 +50,7 @@ abstract class mainAction{
 		$this->rock		= $GLOBALS['rock'];
 		$this->smarty	= $GLOBALS['smarty'];
 		$this->jm		= c('jm', true);
+		$_obj = c('lang');if($_obj!=NULL && method_exists($_obj,'initLang'))$_obj->initLang();
 		$this->now		= $this->rock->now();
 		$this->date		= $this->rock->date;
 		$this->ip		= $this->rock->ip;
@@ -117,6 +118,7 @@ abstract class mainAction{
 		if($this->rock->iswebbro(0)
 			|| $this->rock->iswebbro(1)
 			|| $this->rock->iswebbro(4)
+			|| $this->rock->iswebbro(7)
 			|| $hide=='true'
 			|| $this->get('headerhide')=='true'
 			|| $this->rock->iswebbro(2))$showheader = 0; //隐藏头部

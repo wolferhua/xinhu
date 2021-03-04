@@ -9,7 +9,7 @@ class beifenClassAction extends Action
 		if(getconfig('systype')=='demo')return '演示请勿操作';
 		if($myext!='-1')return '只有管理员才可以用';
 		
-		$tabstr 	= 'daily,file,files,flow_log,flow_todos,flow_checks,im_history,im_mess,im_messzt,infor,infors,log,logintoken,meet,reads,sjoin,work,todo,flow_chao,flow_bill,flow_remind,goodm,goodss,goods,kqanay,kqdkjl,kqerr,kqout,kqinfo,location,official,officialfa,officialhong,schedule,scheduld,project,userinfo,userinfos,userract,hrpositive,word,hrredund,hrsalary,customer,custsale,custract,custfina,custappy,assetm,book,bookborrow,carm,carms,carmang,carmrese,email_cont,emailm,emails,sealapl,vcard,tovoid,editrecord,wouser,dailyfx,knowtraim,knowtrais,fininfom,fininfos,hrtrsalary,hrtransfer,hrdemint,reward,offyuebd,repair,knowtiku,kqdisv,knowledge,kqjcmd,kqjuser,kqjsn,hrcheck,receipt,hrcheckn,hrchecks,hrkaohem,hrkaohes,hrkaohen,demo,finpiao,wordxie,wordeil,subscribe,subscribeinfo,news,finzhang,finkemu,finount,finjibook,custplan,wenjuan,wenjuat,wenjuau,dangan,danganjy';
+		$tabstr 	= 'daily,file,files,flow_log,flow_todos,flow_checks,im_history,im_mess,im_messzt,infor,infors,log,logintoken,meet,reads,sjoin,work,todo,flow_chao,flow_bill,flow_remind,goodm,goodn,goodss,goods,kqanay,kqdkjl,kqerr,kqout,kqinfo,location,official,officialfa,officialhong,schedule,scheduld,project,userinfo,userinfos,userract,hrpositive,word,hrredund,hrsalary,customer,custsale,custract,custfina,custappy,assetm,book,bookborrow,carm,carms,carmang,carmrese,email_cont,emailm,emails,sealapl,vcard,tovoid,editrecord,wouser,dailyfx,knowtraim,knowtrais,fininfom,fininfos,hrtrsalary,hrtransfer,hrdemint,reward,offyuebd,repair,knowtiku,kqdisv,knowledge,kqjcmd,kqjuser,kqjsn,hrcheck,receipt,hrcheckn,hrchecks,hrkaohem,hrkaohes,hrkaohen,demo,finpiao,wordxie,wordeil,subscribe,subscribeinfo,news,finzhang,finkemu,finount,finjibook,custplan,wenjuan,wenjuat,wenjuau,dangan,danganjy,wotpl,seal,godepot';
 		$mrows		= m('mode')->getall('`id`>=108');
 		foreach($mrows as $k1=>$rs1){
 			if(!isempt($rs1['table']))$tabstr.=','.$rs1['table'].'';
@@ -29,9 +29,11 @@ class beifenClassAction extends Action
 			}
 		}
 		$this->option->delpid('-2,-102'); //收信的清空
-		m('company')->delete('id>1');
-		$sql2 = "alter table `[Q]company` AUTO_INCREMENT=1";
-		$this->db->query($sql2, false);
+		if(!getconfig('platdwnum')){
+			m('company')->delete('id>1');
+			$sql2 = "alter table `[Q]company` AUTO_INCREMENT=1";
+			$this->db->query($sql2, false);
+		}
 		echo 'ok';
 	}
 	

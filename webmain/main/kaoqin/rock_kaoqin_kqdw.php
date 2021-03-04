@@ -20,6 +20,8 @@ $(document).ready(function(){
 		},{
 			text:'无固定地点',dataIndex:'iswgd',editor:true,type:'checkbox'
 		},{
+			text:'拍照打卡',dataIndex:'ispz',editor:true,type:'checkbox'
+		},{
 			text:'关联其他位置ID',dataIndex:'dwids',editor:true
 		},{
 			text:'ID',dataIndex:'id'

@@ -56,16 +56,21 @@ class homeitemsClassModel extends Model
 			}
 		}
 		
+		$nubar = array();
+		$nuarr = m('menu')->getall('`status`=1 and num is not null');
+		foreach($nuarr as $k=>$rs)$nubar[] = $rs['num'];
+		
 		if(!isset($arr['daiban']))$arr['daiban']		= $bidb->daibanshu($uid);
 		if(!isset($arr['applywtg']))$arr['applywtg']	= $bidb->applymywgt($uid);
 		if(!isset($arr['daiturn']))$arr['daiturn'] 		= $bidb->daiturntotal($uid);
 		if(!isset($arr['danerror']))$arr['danerror']	= $bidb->errortotal();
-		if(!isset($arr['workwwc']))$arr['workwwc']		= m('work')->getwwctotals($uid);
-		if(!isset($arr['email']))$arr['email']			= m('emailm')->wdtotal($uid);
-		if(!isset($arr['flowtodo']))$arr['flowtodo']	= m('flowtodo')->getwdtotals($uid);
-		if(!isset($arr['cropt']))$arr['cropt']			= m('goods')->getdaishu(); //出入库操作数
-		if(!isset($arr['receiptmy']))$arr['receiptmy']	= m('flow:receipt')->getweitotal($uid);
-		if(!isset($arr['myhong']))$arr['myhong'] 		= m('official')->rows('`uid`='.$uid.' and `type`=0 and `status`=1 and `thid`=0');//统计未套红的
+		if(in_array('workwwc', $nubar) && !isset($arr['workwwc']))$arr['workwwc']		= m('work')->getwwctotals($uid);
+		if(in_array('email', $nubar) && !isset($arr['email']))$arr['email']			= m('emailm')->wdtotal($uid);
+		if(in_array('flowtodo', $nubar) && !isset($arr['flowtodo']))$arr['flowtodo']	= m('flowtodo')->getwdtotals($uid);
+		if(in_array('cropt', $nubar) && !isset($arr['cropt']))$arr['cropt']			= m('goods')->getdaishu(); //出入库操作数
+		if(in_array('receiptmy', $nubar) && !isset($arr['receiptmy']))$arr['receiptmy']	= m('flow:receipt')->getweitotal($uid);
+		if(in_array('myhong', $nubar) && !isset($arr['myhong']))$arr['myhong'] 		= m('official')->rows('`uid`='.$uid.' and `type`=0 and `status`=1 and `thid`=0');//统计未套红的
+		if(in_array('officidus', $nubar) && !isset($arr['officidus']))$arr['officidus'] = m('officidu')->rows('`status` in(0,3) and `isturn`=1 and '.$this->rock->dbinstr('runrenid',$uid).'');
 
 		return $arr;
 	}
@@ -86,6 +91,8 @@ class homeitemsClassModel extends Model
 	//会议
 	public function get_meet_arr()
 	{
+		$to = m('mode')->rows("`num`='meet' and `status`=1");
+		if($to==0)return array();
 		return m('meet')->getmeethome($this->rock->date, $this->adminid);
 	}
 	
@@ -98,6 +105,8 @@ class homeitemsClassModel extends Model
 	//考勤打卡的
 	public function get_kqdk_arr()
 	{
+		$to = m('mode')->rows("`num`='kqdkjl' and `status`=1");
+		if($to==0)return array('sbarr'=>array(),'dkarr'=>array());
 		$kq 	= m('kaoqin');
 		$dt 	= $this->rock->date;
 		if($this->rock->get('atype')=='daka')$kq->kqanay($this->adminid, $dt);
@@ -113,6 +122,8 @@ class homeitemsClassModel extends Model
 	//读取我查阅公文,5是读取条数
 	public function get_officic_arr()
 	{
+		$to = m('mode')->rows("`num`='officic' and `status`=1");
+		if($to==0)return array();
 		return m('flow')->initflow('officic')->getflowrows($this->adminid,'my',5);
 	}
 	
@@ -131,6 +142,8 @@ class homeitemsClassModel extends Model
 	//考勤情况统计
 	public function get_kqtotal_arr()
 	{
+		$to = m('mode')->rows("`num`='kqdkjl' and `status`=1");
+		if($to==0)return array();
 		return m('flow')->initflow('kqdkjl')->homekqtotal();
 	}
 	

@@ -145,6 +145,7 @@ function optmenuclass(o1,num,id,obj,mname,oi, cola){
 	this.columns= cola;
 	this.optmenudatas= {};
 	var me 		= this;
+	xrockcd={inputblur:function(){},selectdata:function(){js.msg('msg','此功能未开发')}}
 	this._init=function(){
 		if(typeof(optmenuobj)=='object')optmenuobj.remove();
 		this.callbackstr = '';
@@ -268,8 +269,9 @@ function optmenuclass(o1,num,id,obj,mname,oi, cola){
 				}
 			},'','<div align="left" id="showmenusss" style="padding:10px">加载中...</div>', uostr);
 			var url='index.php?a=lus&m=input&d=flow&num='+d.modenum+'&menuid='+d.optmenuid+'&mid='+d.mid+'';
-			$.get(url, function(s){
-				var s='<form name="myformsbc">'+s+'</form>';
+			$.get(url, function(s1){
+				s1=s1.replace(/c\./gi, 'xrockcd.');
+				var s='<form name="myformsbc">'+s1+'</form>';
 				$('#showmenusss').html(s);
 				js.tanoffset('confirm');
 			});

@@ -15,6 +15,8 @@ js.dw = {
 	
 	//开始定位
 	init:function(isgzh){
+		var dws = navigator.userAgent;
+		if(dws.indexOf('REIMPLAT')>0)return;
 		if(openfrom=='nppandroid' || openfrom=='nppios')return;
 		if(isgzh==1){
 			js.jssdkwxgzh();
@@ -72,6 +74,7 @@ js.dw = {
 		}
 		
 		if(api.startLocation){
+			js.msg();
 			if(api.systemType=='ios'){
 				this.wait(''+api.systemType+'APP定位中...');
 				api.startLocation({},function(ret,err){
@@ -79,16 +82,31 @@ js.dw = {
 				});
 				return;
 			}else if(lx==0){
-				if(!this.baiduLocation)this.baiduLocation = api.require('baiduLocation');
 				this.wait(''+api.systemType+'百度地图定位中...');
-				this.baiduLocation.startLocation({
-					autoStop: false
-				}, function(ret, err) {
-					js.dw.baiduLocationSuc(ret,err);
-				});
-				//this.baiduLocation.getLocation(function(ret, err) {
-				//	js.dw.baiduLocationSuc(ret,err);
-				//});
+				if(!this.baiduLocation)this.baiduLocation = api.require('baiduLocation');
+				if(this.baiduLocation){
+					this.baiduLocation.startLocation({
+						autoStop: false
+					}, function(ret, err) {
+						js.dw.baiduLocationSuc(ret,err);
+					});
+				}else{
+					if(!this.bmLocation)this.bmLocation = api.require('bmLocation');
+					if(this.bmLocation){
+						this.bmLocation.configManager({
+							coordinateType:'BMK09LL',accuracy:'hight_accuracy'
+						});
+						this.bmLocation.singleLocation({reGeocode:false},function(ret,err){
+							var dtes = {};
+							dtes.status = ret.status;
+							if(ret.status){
+								dtes.longitude = ret.location.longitude;
+								dtes.latitude = ret.location.latitude;
+							}
+							js.dw.baiduLocationSuc(dtes,err);
+						});
+					}
+				}
 				return;
 			}
 		}
@@ -240,14 +258,22 @@ js.dw = {
 				address:address,
 				addressinfo:addressinfo,
 				detail:result.detail,
-				center:result.detail.location
+				center:center
 			});
 		});
 		
 		this.geocoderObj.setError(function() {
-			var msg = '无法获取位置';
-			js.msg('msg', msg);
-			js.dw.ondwerr(msg);
+			//var msg = '无法获取位置';js.msg('msg', msg);js.dw.ondwerr(msg);
+			js.msg();
+			js.dw.ondwcall({
+				latitude:lat,
+				longitude:lng,
+				accuracy:jid,
+				address:'未知位置',
+				addressinfo:'定位成功未知位置',
+				detail:'未知位置',
+				center:center
+			});
 		});
 	}
 };

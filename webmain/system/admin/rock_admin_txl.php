@@ -35,16 +35,6 @@ $(document).ready(function(){
 			text:'邮箱',dataIndex:'email'
 		},{
 			text:'排序号',dataIndex:'sort',sortable:true
-		},{
-			text:'在线状态',dataIndex:'online',sortable:true,renderer:function(v){
-				var s = '<span class="label label-default">离线</span>';
-				if(v=='1')s = '<span class="label label-success">在线</span>';
-				return s;
-			}
-		},{
-			text:'',dataIndex:'optdt',renderer:function(s,d){
-				return '<button onclick="openchat('+d.id+',0,\''+d.face+'\')" class="btn btn-primary btn-xs"><i class="icon-comment-alt"></i> 发消息</button>';
-			}
 		}],
 		load:function(d){
 			if(d.deptdata){

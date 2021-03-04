@@ -108,13 +108,13 @@ $(document).ready(function(){
 				if(s.indexOf('success')>=0){
 					if(s!='success'){
 						js.msg();
-						js.alert('运行成功，而你可能用记事本修改系统文件了，请到群里《@信呼客服 记事本》查看帮助');
+						js.alert(jm.base64decode('6L!Q6KGM5oiQ5Yqf77yM6ICM5L2g5Y!v6IO955So6K6w5LqL5pys5L!u5pS557O757uf5paH5Lu25LqG77yM6K!35Yiw5L!h5ZG85a6Y572R5pCc57Si4oCc6K6w5LqL5pys4oCd5p!l55yL5biu5Yqp'));
 					}else{
 						js.msg('success','运行成功');
 					}
 					a.reload();
 				}else{
-					js.msg('msg','运行失败');
+					js.msg('msg','运行失败：'+s+'');
 				}
 			});
 		},
@@ -140,6 +140,9 @@ $(document).ready(function(){
 		},
 		openqueue:function(){
 			js.open('?a=queue&m=task&d=system');
+		},
+		qidong:function(){
+			this.start(0);
 		}
 	};
 	
@@ -150,21 +153,6 @@ $(document).ready(function(){
 		get('yun_{rand}').disabled = bo;
 	}
 	js.initbtn(c);
-	
-	$('#randkstrt_{rand}').rockmenu({
-		width:220,top:35,donghua:false,
-		data:[{
-			name:'使用我自己REIM服务端<font color=green>启动</font>',lx:'0'
-		}/*,{
-			name:'使用官网服务<font color=green>启动</font>(VIP专用)',lx:'1'
-		},{
-			name:'<font color=red>停止</font>用官网的计划任务',lx:'2'
-		}*/],
-		itemsclick:function(d, i){
-			c.start(d.lx);
-		}
-	});
-	if(ISDEMO)get('randkstrt_{rand}').disabled=true;
 });
 </script>
 
@@ -177,12 +165,15 @@ $(document).ready(function(){
 		<button class="btn btn-primary" click="clickwin,0" type="button"><i class="icon-plus"></i> 新增</button> &nbsp; 
 		<button class="btn btn-default" click="refresh" type="button"><i class="icon-refresh"></i> 刷新</button> &nbsp; 
 		<button class="btn btn-default" click="clearzt" type="button">清空状态</button> &nbsp; 
-		<button class="btn btn-success" id="randkstrt_{rand}" type="button"><i class="icon-stop"></i> 启动计划任务 <i class="icon-angle-down"></i></button>
+		<?php if(!COMPANYNUM){?>
+		<button class="btn btn-success" click="qidong" type="button"><i class="icon-stop"></i> 启动计划任务</button>
+		<?php }?>
 	</td>
 	
 	
-	
+	<?php if(!COMPANYNUM){?>
 	<td width="80%">&nbsp;&nbsp;<a href="javascipt:;" click="openanz">[查看计划任务安装]</a>&nbsp;&nbsp;<a href="javascipt:;" click="openqueue">[计划任务队列]</a>&nbsp;&nbsp;<a href="<?=URLY?>view_taskrun.html"target="_blank">[帮助]</a></td>
+	<?php }?>
 	<td align="right" nowrap>
 		
 		<button class="btn btn-default" id="yun_{rand}" click="yunx" disabled type="button">运行</button> &nbsp; 

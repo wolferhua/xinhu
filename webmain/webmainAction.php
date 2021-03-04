@@ -25,8 +25,10 @@ class Action extends mainAction
 		$this->admintoken	= $this->getsession('admintoken');
 		$this->companyid	= $this->getsession('companyid');
 		$this->setNowUser($this->adminid, $this->adminname, $this->adminuser);
-		$agid	= $this->rock->get('agentid');
+		$agid	 = $this->rock->get('agentid');
 		if($agid!='')$this->rock->savesession(array('wxqyagentid' => $agid));
+		$platsign= $this->rock->get('platsign');
+		if($platsign!='')$this->rock->savesession(array('platsign' => $platsign));
 		if($lx==0)$this->logincheck();
 	}
 

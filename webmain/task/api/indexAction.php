@@ -94,7 +94,7 @@ class indexClassAction extends apiAction
 		$val 	 = $this->adminid;
 		$lxarr 	 = array('已取消','已确认');
 		if($lx==0)$val='-1';
-		$this->option->setval($randkey, $val);
+		c('cache')->set($randkey,$val,60);
 		$this->showreturn($lxarr[$lx]);
 	}
 	

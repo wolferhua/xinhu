@@ -29,6 +29,10 @@ $(document).ready(function(){
 		},{
 			text:'操作时间',dataIndex:'optdt',sortable:true
 		},{
+			text:'截止使用',dataIndex:'enddt',sortable:true,textmsg:'超过这个时间不能在使用',editor:true,editorbefore:function(d){
+				return (d.kind=='加班' || d.kind.substr(0,2)=='增加');
+			}
+		},{
 			text:'',dataIndex:'caozuo'
 		}],
 		itemdblclick:function(d){
@@ -55,9 +59,14 @@ $(document).ready(function(){
 		},
 		addnianjia:function(){
 			var dt = get('dt1_{rand}').value;
-			if(isempt(dt)){js.msg('msg','请先选择日期从');return;}
+			if(isempt(dt)){js.msg('msg','请先选择日期从，直接选今日就可以');return;}
+			js.confirm('一键添加年假：入职日期满整年才会添加，如2017-12-20入职，今年要到<?=date('Y')?>-12-20才会添加年假，如添加去年开始日期你可以选去年<?=(date('Y')-1)?>-12-31。', function(jg){
+				if(jg=='yes')c.addnianjias();
+			});
+		},
+		addnianjias:function(){
 			js.msg('wait','处理中...');
-			js.ajax(js.getajaxurl('addnianjia','{mode}','{dir}'),{dt:dt},function(s){
+			js.ajax(js.getajaxurl('addnianjia','{mode}','{dir}'),{dt:get('dt1_{rand}').value},function(s){
 				js.msg('success', s);
 				a.reload();
 			});

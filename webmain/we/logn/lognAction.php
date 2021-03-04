@@ -19,8 +19,8 @@ class lognClassAction extends ActionNot{
 		$urs['face'] = $db->getface($urs['face']);
 		$urs['randkey'] = $randkey;
 		
-		$this->option->setval($randkey, '0');
-		
+		c('cache')->set($randkey,'0',60);
+
 		$this->assign('urs', $urs);
 		$this->assign('dfrom', $dfrom);
 		

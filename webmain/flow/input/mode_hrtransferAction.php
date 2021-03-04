@@ -15,7 +15,7 @@ class mode_hrtransferClassAction extends inputAction{
 	public function chenguserAjax()
 	{
 		$sid = $this->post('sid','0');
-		$rs  = m('admin')->getone($sid, 'ranking,deptname');
+		$rs  = m('admin')->getone($sid, 'ranking,deptname,workdate');
 		$this->returnjson($rs);
 	}
 }	

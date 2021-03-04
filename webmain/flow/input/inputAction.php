@@ -504,6 +504,10 @@ class inputAction extends Action
 			$zbshu	 = count($tableas);
 		}
 		$path 			= ''.P.'/flow/page/input_'.$num.'.html';
+		if(COMPANYNUM){
+			$path1 		= ''.P.'/flow/page/input_'.$num.'_'.COMPANYNUM.'.html';
+			if(file_exists($path1))$path = $path1;
+		}
 		$pclucont 		= '';
 		if(file_exists($path))$pclucont 	= file_get_contents($path);
 		

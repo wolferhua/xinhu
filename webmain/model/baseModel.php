@@ -19,6 +19,7 @@ class baseClassModel extends Model
 		if($uid==0)$uid = (int)arrvalue($GLOBALS,'adminid','0');
 		if($uid==0)$uid = 1;//必须要有个值
 		$runurl 	.= 'api.php?m='.$m.'&a='.$a.'&adminid='.$uid.'&asynkey='.$key.'';
+		if(COMPANYNUM)$runurl.='&dwnum='.COMPANYNUM.'';
 		if(is_array($can))foreach($can as $k=>$v)$runurl.='&'.$k.'='.$v.'';
 		return $runurl;
 	}
@@ -42,7 +43,7 @@ class baseClassModel extends Model
 			$urs	= $this->usrr[$ckey];
 		}else{
 			$urs 	= $this->db->getone('`[Q]admin`','`id`='.$uid.'');
-			$companyid = arrvalue($urs,'companyid');
+			$companyid = arrvalue($urs,'companyid','1');
 			if(ISMORECOM){
 				$comid	= arrvalue($urs, 'comid','0');
 				if($comid>'0')$companyid = $comid;

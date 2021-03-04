@@ -260,6 +260,10 @@ class taskClassModel extends Model
 				$option->setval($keynum, $len);
 			}
 			$barr	= c('rockqueue')->push($url, array('rtype'=>'queue','runtime'=>$runtime), $runtime, $len);
+			if(!COMPANYNUM && getconfig('platdwnum')){
+				$creaar = m('company')->getall('`iscreate`=1');
+				foreach($creaar as $k=>$rs)$barr = c('rockqueue')->push($url, array('dwnum'=>$rs['num'],'runtime'=>$runtime), $runtime, $len+1+$k);
+			}
 		}else{
 			$url 	= ''.$turl.'task.php?m=runt&a=getlist';
 			$barr 	= m('reim')->pushserver('starttask', array(

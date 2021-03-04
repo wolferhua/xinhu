@@ -201,9 +201,10 @@ class indexreimClassAction extends apiAction
 		$arr['admintoken']  = $this->admintoken;
 		$arr['companyinfo']  = $dbs->getcompanyinfo($this->adminid, 1);
 		$arr['companymode']	 = ISMORECOM;
-		$bdwx	= m('wouser')->getone('`uid`='.$this->adminid.'','nickname,headimgurl');
-		$arr['bdwx'] 		= $bdwx;
-		
+		if(m('reim')->installwx(3)){
+			$bdwx	= m('wouser')->getone('`uid`='.$this->adminid.'','nickname,headimgurl');
+			$arr['bdwx'] 		= $bdwx;
+		}
 		$this->showreturn($arr);
 	}
 	

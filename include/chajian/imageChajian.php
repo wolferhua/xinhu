@@ -181,6 +181,19 @@ class imageChajian extends Chajian
 		return imagecolorallocate($img, $r, $g, $b);
 	}
 	
+	
+	public function colorTorgb($color)
+	{
+		if(!empty($color)&&(strlen($color)==7)){
+			$r=hexdec(substr($color,1,2));
+			$g=hexdec(substr($color,3,2));
+			$b=hexdec(substr($color,5));
+		}else{
+			$r=$g=$b='00';
+		}
+		return array($r, $g, $b);
+	}
+	
 	/**
 		注销图片
 	*/

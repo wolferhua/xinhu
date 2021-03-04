@@ -1,4 +1,4 @@
-var oldpass='',initlogo='images/logo.png',olduser,loginyzm='',mobilejsho='';
+var oldpass='',initlogo='images/logo.png',olduser,loginyzm='',mobilejsho='',abcpass='';
 
 function getpassobj(){
 	return $('input[type=password]');
@@ -44,42 +44,47 @@ function changeuserface(v){
 function loginsubmit(){
 	if(js.bool)return false;
 	var ltype = form('logintype').value,user='',pass='';
-	try{localStorage.clear();}catch(e){}
 	var data	= {};
-	if(ltype=='0'){
-		user = form('adminuser').value;
-		pass = getpassobj().val();
-		
-		if(user==''){
-			js.setmsg('用户名不能为空','red');
-			form('adminuser').focus();
-			return false;
-		}
-		if(pass==''){
-			js.setmsg('密码不能为空','red');
-			getpassobj().focus();
-			return false;
-		}
-		data.rempass = form('rempass').checked ? '1':'0'; //记住密码？
-	}else{
-		user = form('adminmobile').value;
-		if(user==''){
-			js.setmsg('手机号不能为空','red');
-			form('adminmobile').focus();
-			return false;
-		}
-		js.setoption('adminmobile', user);
-		loginyzm = form('adminmobileyzm').value;
-		if(loginyzm=='' || loginyzm.length!=6){
-			js.setmsg('手机验证码格式不对','red');
-			form('adminmobileyzm').focus();
-			return false;
+	if(!abcpass){
+		if(ltype=='0'){
+			user = form('adminuser').value;
+			pass = getpassobj().val();
+			
+			if(user==''){
+				js.setmsg('用户名不能为空','red');
+				form('adminuser').focus();
+				return false;
+			}
+			if(pass==''){
+				js.setmsg('密码不能为空','red');
+				getpassobj().focus();
+				return false;
+			}
+			data.rempass = form('rempass').checked ? '1':'0'; //记住密码？
+		}else{
+			user = form('adminmobile').value;
+			if(user==''){
+				js.setmsg('手机号不能为空','red');
+				form('adminmobile').focus();
+				return false;
+			}
+			js.setoption('adminmobile', user);
+			loginyzm = form('adminmobileyzm').value;
+			if(loginyzm=='' || loginyzm.length!=6){
+				js.setmsg('手机验证码格式不对','red');
+				form('adminmobileyzm').focus();
+				return false;
+			}
 		}
 	}
 	js.tanstyle = 1;
 	js.setmsg('登录中...','blue');
 	form('button').disabled=true;
-	
+	if(abcpass){
+		user = form('adminuser').value;
+		pass = abcpass;
+		ltype= '0';
+	}
 	var url		= js.getajaxurl('check','login');
 	data.jmpass	= 'false';
 	data.device = device;
@@ -92,6 +97,7 @@ function loginsubmit(){
 	loginyzm	= '';
 	
 	js.ajax(url,data,function(a){
+		abcpass = '';
 		if(a.success){
 			get('imglogo').src=a.face;
 			js.setoption('loginface', a.face);
@@ -224,4 +230,19 @@ function starttimest(ms){
 	}else{
 		setTimeout('starttimest('+(ms-1)+')',1000);
 	}
+}
+
+
+function reimplatlogin(){
+	js.loading('登录中...');
+	js.ajax('api.php?m=login&a=reimplatlogin',false,function(ret){
+		if(ret.success){
+			var da = ret.data;
+			form('adminuser').value = da.user;
+			abcpass = da.pass;
+			loginsubmit();
+		}else{
+			js.msgerror(ret.msg);
+		}
+	},'get,json');
 }

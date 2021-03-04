@@ -248,3 +248,44 @@ if (!function_exists('getallheaders')){
         return $headers;
     }
 }
+
+function getparams($key, $dev='')
+{
+	if(PHP_SAPI != 'cli'){
+		return arrvalue($_GET,$key,$dev);
+	}
+	$arr = arrvalue($GLOBALS, 'argv');
+	$sss = '';
+	if($arr)for($i=2;$i<count($arr);$i++){
+		$str = $arr[$i];
+		if(!isempt($str)){
+			$stra = explode('=', $str);
+			if($stra[0]=='-'.$key.''){
+				$sss  = arrvalue($stra, 1);
+				break;
+			}
+		}
+	}
+	if(isempt($sss))$sss = $dev;
+	return $sss;
+}
+
+/**
+*	多语言返回
+*/
+function lang($key)
+{
+	$data = arrvalue($GLOBALS,'langdata');
+	$val  = '';
+	if(!$data)return $val;
+	if(strpos($key,'.')>0){
+		$skad = explode('.', $key);
+		$key1 = $skad[0];
+		$key2 = $skad[1];
+		$sdat = arrvalue($data[LANG], $key1);
+		if($sdat)$val = arrvalue($sdat, $key2);
+	}else{
+		$val = arrvalue($data[LANG], $key);
+	}
+	return $val;
+}

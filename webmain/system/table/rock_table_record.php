@@ -18,7 +18,10 @@ $(document).ready(function(){
 		loadbefore:function(d){
 			if(!bool){
 				a.setColumns(d.fieldsarr);
+				var str = '',i;
+				for(i=0;i<d.fieldsarr.length;i++)str+='<option value="'+d.fieldsarr[i].dataIndex+'">'+d.fieldsarr[i].text+'</option>';
 				bool = true;
+				$('#fields_{rand}').html(str);
 			}
 		}
 	});
@@ -30,7 +33,8 @@ $(document).ready(function(){
 		
 		search:function(){
 			a.setparams({
-				key:get('key_{rand}').value
+				key:get('key_{rand}').value,
+				fields:get('fields_{rand}').value
 			},true);
 		}
 	};
@@ -43,7 +47,12 @@ $(document).ready(function(){
 	<table width="100%">
 	<tr>
 	<td >
-		<input class="form-control" style="width:180px" id="key_{rand}"  placeholder="只能搜索ID">
+		<select class="form-control" style="width:180px" id="fields_{rand}" >
+		<option value="id">ID</option>
+		</select>
+	</td>
+	<td >
+		<input class="form-control" style="width:180px" id="key_{rand}"  placeholder="等于值">
 	</td>
 	
 	<td  style="padding-left:10px">

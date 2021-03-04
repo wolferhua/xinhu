@@ -1572,7 +1572,7 @@ function chatcreate(cans){
 		if(o1.className.indexOf('right')>0 && chehui>0){
 			var t1 = js.now('time', this.rightdata.optdt),t2 = js.now('time');
 			var t3 = (t2-t1)*0.001;
-			if(t3<chehui)d.push({name:'撤回',lx:2});
+			if(t3<chehui*60)d.push({name:'撤回',lx:2});
 		}
 		this.rightqipaoobj.setData(d);
 		this.rightqipaoobj.showAt(e.clientX,e.clientY);

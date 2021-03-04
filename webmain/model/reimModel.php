@@ -65,6 +65,10 @@ class reimClassModel extends Model
 			if($this->optiondb->getval('wxgzh_tplmess')=='1')$bo=true;
 			return $bo;
 		}
+		if($lx==5){
+			if(!isempt($this->optiondb->getval('reimplat_cnum')))$bo=true;
+			return $bo;
+		}
 		return false;
 	}
 	
@@ -708,7 +712,7 @@ class reimClassModel extends Model
 		
 		$wdtotal= 0;
 		$where1	= "`type`='$type' and `zt`=0 and `receid`='$uid' and `sendid`='$receid' and $whes";
-		if($lastdt=='')$wdtotal= $this->rows($where1);
+		if($lastdt=='' && $this->rock->get('laiyuan')!='not')$wdtotal= $this->rows($where1);
 		
 		if($wdtotal > 0){
 			$where	= "$where1 order by `id` desc limit 10";
@@ -721,7 +725,8 @@ class reimClassModel extends Model
 				$where .= ' and `id`<'.$minid.' order by `id` desc limit 10';
 			}
 		}
-		$rows 	= $this->getall($where, 'optdt,zt,id,cont,sendid,fileid,type');
+		$rows 	= $this->getall($where, 'SQL_CALC_FOUND_ROWS optdt,zt,id,cont,sendid,fileid,type');
+		$total  = $this->db->found_rows();
 		$len	= 0;
 		$suids	= '0';
 		$ids 	= '0';
@@ -734,10 +739,12 @@ class reimClassModel extends Model
 		$rows 		= $this->ivaregarr($suids, $rows);
 		if($ids!='0')$this->setyd($ids, $uid);
 		if($wdtotal<0)$wdtotal=0;
-		
+		$total	= $total-$len;
+		if($total<=0)$total = 0;
 		return array(
 			'rows' 		=> $rows,
-			'wdtotal' 	=> $wdtotal
+			'wdtotal' 	=> $wdtotal,
+			'systotal'  => $total,
 		);
 	}
 	
@@ -747,10 +754,10 @@ class reimClassModel extends Model
 		$order 		= '';
 		$type		= 'group';
 		$wdtotal	= 0;
-		if($lastdt=='')$wdtotal	= $this->getweitotal($uid, $type, $receid);
-		
-		$wdwhere	= $this->getweitotal($uid, $type, $receid, 1);
+		if($lastdt=='' && $this->rock->get('laiyuan')!='not')$wdtotal	= $this->getweitotal($uid, $type, $receid);
+	
 		if($wdtotal > 0){
+			$wdwhere	= $this->getweitotal($uid, $type, $receid, 1);
 			$zwhere = " $wdwhere order by `id` desc limit 10";
 		}else{
 			$zwhere = " `receid`='$receid' and `type`='$type' and $whes";
@@ -761,7 +768,8 @@ class reimClassModel extends Model
 				$zwhere .= ' and `id`<'.$minid.' order by `id` desc limit 10';
 			}
 		}
-		$rows	= $this->getall($zwhere, 'optdt,zt,id,cont,sendid,fileid');
+		$rows	= $this->getall($zwhere, 'SQL_CALC_FOUND_ROWS optdt,zt,id,cont,sendid,fileid');
+		$total  = $this->db->found_rows();
 		$ids 	= '0';
 		$suids	= '0';
 		$len 	= 0;
@@ -774,9 +782,12 @@ class reimClassModel extends Model
 		$rows 	= $this->ivaregarr($suids, $rows);
 		if($ids!='0')$this->setyd($ids, $uid);
 		if($wdtotal<0)$wdtotal=0;
+		$total	= $total-$len;
+		if($total<=0)$total = 0;
 		return array(
 			'rows' 		=> $rows,
-			'wdtotal' 	=> $wdtotal
+			'wdtotal' 	=> $wdtotal,
+			'systotal' => $total,
 		);
 	}
 	
@@ -1568,6 +1579,7 @@ class reimClassModel extends Model
 	*/
 	public function chatpushtowx($dt='')
 	{
+		if(getconfig('platdwnum'))return false;
 		if($dt=='')$dt = date('Y-m-d H:i:s', time()-5*60);
 		//$bowx 	= $this->installwx(0);
 		$bowxqy	= $this->installwx(1);
@@ -1656,21 +1668,24 @@ class reimClassModel extends Model
 	{
 		$chehui = (int)$this->optiondb->getval('reimchehuisystem',0);
 		if($chehui<=0)return '没有开启此功能';
-		$rs = $this->getone('`id`='.$id.'');
+		$rs = $this->getone('`id`='.$id.' and `sendid`='.$this->adminid.'');
 		if(!$rs)return '记录不存在了';
 		$t3 = time()-strtotime($rs['optdt']);
 		if($t3>$chehui*60)return '已经超过'.$chehui.'分钟无法撤回';
 		
-		$msg1= '已撤回';
+		$msg1= '<del style="color:gray">已撤回</del>';
 		$msg = $this->rock->jm->base64encode($msg1);
+		$msg2 = $this->rock->jm->base64encode($this->adminname.':');
 		$this->update("`cont`='$msg',`fileid`=0", $id);
-		$this->hisobj->update("`cont`='$msg'", "`messid`='$id'");
+		$this->hisobj->update("`cont`='".$msg2.$msg."',`optdt`='{$this->rock->now}'", "`messid`='$id'");
 		
 		$pusharr 	= array(
 			'cont' 	=> $msg,
 			'type' 	=> 'chehui',
 			'messid' => $id,
 		);
+		$this->sendpush($this->adminid, $rs['receuid'], $pusharr);
+		$pusharr['atype'] = 'sendapp';
 		$this->sendpush($this->adminid, $rs['receuid'], $pusharr);
 		return array(
 			'receid' => $rs['receuid'],

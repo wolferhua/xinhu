@@ -8,6 +8,7 @@ class chatClassAction extends ActionNot{
 	
 	public function defaultAction()
 	{
+		//if(getconfig('platdwnum'))return '平台模式请使用REIM通信平台会话';
 		$type 	= $this->get('type');
 		$uid  	= (int)$this->get('uid');
 		$db 	= m('reim');

@@ -63,14 +63,18 @@ class indexClassAction extends Action{
 		$this->smartydata['styledev']	= $styys;
 		
 		//读取单位
-		if(ISMORECOM){
-			$companyinfo = m('admin')->getcompanyinfo($this->adminid, 1);
-			$this->title = arrvalue($companyinfo, 'oaname', TITLE);
-			$this->smartydata['logo'] = arrvalue($companyinfo, 'logo');
-			$this->smartydata['icon'] = $this->smartydata['logo'];
-		}else{
-			$this->smartydata['logo'] = 'images/xh829.png';
-			$this->smartydata['icon'] = 'favicon.ico';
+		$this->smartydata['logo'] = 'images/xh829.png';
+		$this->smartydata['icon'] = 'favicon.ico';
+		$companyinfo = false;
+		if(COMPANYNUM)$companyinfo = m('company')->getone(1);
+		if(ISMORECOM)$companyinfo  = m('admin')->getcompanyinfo($this->adminid, 1);
+		if($companyinfo){
+			$this->title = $companyinfo['name'];	
+			if(!isempt($companyinfo['oaname']))$this->title = $companyinfo['oaname'];
+			if(!isempt($companyinfo['logo'])){
+				$this->smartydata['logo'] = $companyinfo['logo'];
+				$this->smartydata['icon'] = $this->smartydata['logo'];
+			}
 		}
 	}
 	

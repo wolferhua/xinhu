@@ -15,7 +15,8 @@ class loginClassAction extends ActionNot{
 		$ptoken		= $this->get('ptoken');
 		$loginyzm	= (int)getconfig('loginyzm','0');
 		if(!isempt($ptoken))$loginyzm = 0;
-		$this->assign('loginyzm', $loginyzm); //登录类型	
+		$this->assign('loginyzm', $loginyzm); //登录类型
+		$this->smartydata['platsign']		= $this->getsession('platsign');		
 	}
 	
 	//判断当前使用微信啥的

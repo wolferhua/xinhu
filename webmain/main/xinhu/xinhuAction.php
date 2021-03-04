@@ -9,12 +9,12 @@ class xinhuClassAction extends Action
 	
 	public function setsaveAjax()
 	{
-		$this->option->setval('reimhostsystem', $this->post('host'));
-		$this->option->setval('reimrecidsystem', $this->post('receid'));
-		$this->option->setval('reimpushurlsystem', $this->post('push'));
-		$this->option->setval('reimchehuisystem', $this->post('chehui'));
-		$this->option->setval('reimservertype', $this->post('servertype'));
-		$this->option->setval('reimappwxsystem', $this->post('reimappwx'));
+		$this->option->setval('reimhostsystem@-8', $this->post('host'));
+		$this->option->setval('reimrecidsystem@-8', $this->post('receid'));
+		$this->option->setval('reimpushurlsystem@-8', $this->post('push'));
+		$this->option->setval('reimchehuisystem@-8', $this->post('chehui'));
+		$this->option->setval('reimservertype@-8', $this->post('servertype'));
+		$this->option->setval('reimappwxsystem@-8', $this->post('reimappwx'));
 		$this->backmsg();
 	}
 	
