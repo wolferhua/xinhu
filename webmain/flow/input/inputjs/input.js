@@ -21,6 +21,7 @@ var ismobile=0,firstrs={},alldata={},isxiang=0,
 	submitparams={},//要提交提交的参数
 	subdataminlen=[];//子表至少行数
 function initbodys(){};
+function initother(){};
 function savesuccess(){};
 function saveerror(){};
 function eventaddsubrows(){}
@@ -38,6 +39,7 @@ function initbody(){
 	});
 }
 function initbody_tmp(){
+	initother();
 	$('body').keydown(function(et){
 		var code	= et.keyCode;
 		if(code==27){
@@ -766,6 +768,19 @@ var c={
 			}
 		}
 		oninputblur(nae,zb, o1,ans[0],ans[1]);
+		if(o1.selectedIndex){
+			var o2= o1.options[o1.selectedIndex];
+			if(o2.text=='其它..'){
+				js.prompt('新的选项','请输入...', function(jg,txt){
+					if(jg=='yes' && txt){
+						$.post('?m=input&a=saveoption&d=flow',{num:o1.value,name:txt}); 
+						o2.text = txt;o2.value = txt;
+					}else{
+						o1.value = '';
+					}
+				});
+			}
+		}
 	},
 	splitgongs:function(gongsi){
 		if(gongsi.indexOf(']')<0)gongsi = '['+gongsi+']';

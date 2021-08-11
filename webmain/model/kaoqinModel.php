@@ -1083,7 +1083,7 @@ class kaoqinClassModel extends Model
 			}
 		}*/
 		//$this->rock->number
-		return array($tian, $ysb, $tian-$ysb);
+		return array(round($tian,1), round($ysb,1), round($tian-$ysb,1));
 	}
 	
 	/**

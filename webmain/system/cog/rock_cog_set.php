@@ -143,7 +143,7 @@ $(document).ready(function(){
 			<td class="tdinput"><input id="outurl_{rand}" placeholder="不知道做啥的，就不要去设置" class="form-control"></td>
 			<?php if(getconfig('platdwnum')){?>
 			<td  align="right">平台使用地址：</td>
-			<td class="tdinput"><input id="platurl_{rand}" placeholder="必须设置对" class="form-control"></td>
+			<td class="tdinput"><input id="platurl_{rand}" placeholder="不能跟当前地址一样" class="form-control"></td>
 			<?php }?>
 		</tr>
 		

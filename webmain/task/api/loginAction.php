@@ -247,4 +247,24 @@ class loginClassAction extends apiAction
 	{
 		return m('reimplat:oauth')->login();
 	}
+	
+	/**
+	*	验证小程序地址
+	*/
+	public function yzxcyAction()
+	{
+		$openid = $this->get('openid');
+		$mobile = $this->get('mobile');
+		if(!$openid || !$mobile)return returnerror('err');
+		$mobile = $this->jm->base64decode($mobile);
+		$where  = "`mobile`='$mobile'";
+		if(m('admin')->rows($where)==0 && m('customer')->rows($where)==0 )return retuenerror('此手机号没在我们系统登记过');
+		$na =  getconfig('titleout');
+		if(!$na)$na = TITLE;
+		return returnsuccess(array(
+			'name' => $na,
+			'key'  => md5(getconfig('openkey')),
+			'logo' => 'images/logo.png'
+		));
+	}
 }

@@ -11,7 +11,7 @@ $(document).ready(function(){
 	{params}
 	var modenum = 'schedule',modename='日程',isflow=0,modeid='12',atype = params.atype,pnum=params.pnum,modenames='',listname='c2NoZWR1bGU:';
 	if(!atype)atype='';if(!pnum)pnum='';
-	var fieldsarr = [{"name":"\u7533\u8bf7\u4eba","fields":"base_name"},{"name":"\u7533\u8bf7\u4eba\u90e8\u95e8","fields":"base_deptname"},{"name":"\u5355\u53f7","fields":"sericnum"},{"fields":"title","name":"\u6807\u9898","fieldstype":"text","ispx":"0","isalign":"1","islb":"1"},{"fields":"startdt","name":"\u63d0\u9192\u65f6\u95f4","fieldstype":"datetime","ispx":"1","isalign":"0","islb":"1"},{"fields":"rate","name":"\u91cd\u590d","fieldstype":"select","ispx":"0","isalign":"0","islb":"1"},{"fields":"rateval","name":"\u91cd\u590d\u503c","fieldstype":"checkboxall","ispx":"0","isalign":"0","islb":"0"},{"fields":"explain","name":"\u8bf4\u660e","fieldstype":"textarea","ispx":"0","isalign":"0","islb":"1"},{"fields":"optname","name":"\u8bb0\u4e8b\u4eba","fieldstype":"text","ispx":"1","isalign":"0","islb":"1"},{"fields":"enddt","name":"\u622a\u6b62\u65f6\u95f4","fieldstype":"datetime","ispx":"0","isalign":"0","islb":"1"},{"fields":"txsj","name":"\u63d0\u9192","fieldstype":"select","ispx":"1","isalign":"0","islb":"1"},{"fields":"recename","name":"\u63d0\u9192\u7ed9","fieldstype":"changedeptusercheck","ispx":"0","isalign":"0","islb":"1"},{"fields":"status","name":"\u72b6\u6001","fieldstype":"select","ispx":"1","isalign":"0","islb":"1"},{"fields":"isdai","name":"\u521b\u5efa\u5f85\u529e","fieldstype":"checkbox","ispx":"1","isalign":"0","islb":"1"}],fieldsselarr= [],chufarr= [];
+	var fieldsarr = [],fieldsselarr= [],chufarr= [];
 	
 	<?php
 	include_once('webmain/flow/page/rock_page.php');
@@ -20,7 +20,7 @@ $(document).ready(function(){
 //[自定义区域start]
 
 c.initpage=function(){
-	$('#key_{rand}').parent().before('<td style="padding-right:10px;"><input onclick="js.datechange(this,\'date\')" style="width:110px" placeholder="日期" readonly class="form-control datesss" id="dt_{rand}" ></td>');
+	$('#key_{rand}').parent().before('<td><input onclick="js.datechange(this,\'date\')" style="width:110px;border-radius:0;border-left:0;'+datesss+'" placeholder="日期" readonly class="form-control" id="dt_{rand}" ></td>');
 }
 c.searchbtn=function(){
 	var dt = get('dt_{rand}').value;
@@ -41,7 +41,7 @@ c.setcolumns('isdai',{
 });
 
 //[自定义区域end]
-
+	c.initpagebefore();
 	js.initbtn(c);
 	var a = $('#view'+modenum+'_{rand}').bootstable(bootparams);
 	c.init();
@@ -54,19 +54,21 @@ c.setcolumns('isdai',{
 	<table width="100%">
 	<tr>
 		<td style="padding-right:10px;" id="tdleft_{rand}" nowrap><button id="addbtn_{rand}" class="btn btn-primary" click="clickwin,0" disabled type="button"><i class="icon-plus"></i> 新增</button></td>
-		<td>
-			<input class="form-control" style="width:160px" id="key_{rand}" placeholder="关键字">
+		
+		<td><select class="form-control" style="width:110px;border-top-right-radius:0;border-bottom-right-radius:0;padding:0 2px" id="fields_{rand}"></select></td>
+		<td><select class="form-control" style="width:60px;border-radius:0px;border-left:0;padding:0 2px" id="like_{rand}"><option value="0">包含</option><option value="1">等于</option><option value="2">大于等于</option><option value="3">小于等于</option><option value="4">不包含</option></select></td>
+		<td><select class="form-control" style="width:130px;border-radius:0;border-left:0;display:none;padding:0 5px" id="selkey_{rand}"><option value="">-请选择-</option></select><input class="form-control" style="width:130px;border-radius:0;border-left:0;padding:0 5px" id="keygj_{rand}" placeholder="关键词"><input class="form-control" style="width:130px;border-radius:0;border-left:0;padding:0 5px;display:none;" id="key_{rand}" placeholder="关键字">
 		</td>
-		<td style="padding-left:10px"><select class="form-control" style="width:120px" id="selstatus_{rand}"><option value="">-全部状态-</option><option style="color:green" value="1">启用</option><option style="color:#888888" value="0">停用</option></select></td>
-		<td style="padding-left:10px">
+		<td><select class="form-control" style="width:120px;border-left:0;border-radius:0;" id="selstatus_{rand}"><option value="">-全部状态-</option><option style="color:green" value="1">启用</option><option style="color:#888888" value="0">停用</option></select></td>
+		<td>
 			<div style="white-space:nowrap">
-			<button style="border-right:0;border-top-right-radius:0;border-bottom-right-radius:0" class="btn btn-default" click="searchbtn" type="button">搜索</button><button class="btn btn-default" id="downbtn_{rand}" type="button" style="padding-left:8px;padding-right:8px;border-top-left-radius:0;border-bottom-left-radius:0"><i class="icon-angle-down"></i></button> 
+			<button style="border-right:0;border-radius:0;border-left:0" class="btn btn-default" click="searchbtn" type="button">搜索</button><button class="btn btn-default" id="downbtn_{rand}" type="button" style="padding-left:8px;padding-right:8px;border-top-left-radius:0;border-bottom-left-radius:0"><i class="icon-angle-down"></i></button> 
 			</div>
 		</td>
 		<td  width="90%" style="padding-left:10px"><div id="changatype{rand}" class="btn-group"></div></td>
 	
 		<td align="right" id="tdright_{rand}" nowrap>
-			<button class="btn btn-default" style="display:none" id="daobtn_{rand}" disabled click="daochu" type="button">导出 <i class="icon-angle-down"></i></button> 
+			<span style="display:none" id="daoruspan_{rand}"><button class="btn btn-default" click="daoru,1" type="button">导入</button>&nbsp;&nbsp;&nbsp;</span><button class="btn btn-default" style="display:none" id="daobtn_{rand}" disabled click="daochu" type="button">导出 <i class="icon-angle-down"></i></button> 
 		</td>
 	</tr>
 	</table>

@@ -137,8 +137,8 @@
 			var tmp1=lunar.sTerm(gY, gm*2-2);
 			var tmp2=lunar.sTerm(gY, gm*2-1);
 			this.sterma={};
-			this.sterma[''+this.sa(gm)+''+this.sa(tmp1)+'']=lunar.solarTerm[gm*2-2];
-			this.sterma[''+this.sa(gm)+''+this.sa(tmp2)+'']=lunar.solarTerm[gm*2-1];
+			//this.sterma[''+this.sa(gm)+''+this.sa(tmp1)+'']=lunar.solarTerm[gm*2-2];
+			//this.sterma[''+this.sa(gm)+''+this.sa(tmp2)+'']=lunar.solarTerm[gm*2-1];
 
 			this.nobj=null;
 			var xqarr=[0,0,0,0,0,0,0];
@@ -160,7 +160,8 @@
 				}
 				var jie		= '';
 				var jiec	= this.getJie(gY,gm,j1,lun[1]+sn);
-				var jiec1	= this.sterma[''+this.sa(gm)+''+this.sa(j1)+''];
+				//var jiec1	= this.sterma[''+this.sa(gm)+''+this.sa(j1)+''];
+				var jiec1	= lun[3];
 				var jiec2	= this.tsarr[''+this.sa(gm)+''+xqarr[oci]+''+oci+''];//年第几个星期
 				
 				if(j1==this.nd){

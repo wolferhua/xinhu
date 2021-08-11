@@ -164,7 +164,22 @@ function check(lx){
 		}
 	}
 	
-	if(!da.zynameid && da.zt!='2'){
+	//加签
+	if(da.zt=='25' || da.zt=='26'){
+		if(!form('sys_yushenname')){
+			js.setmsg('无效使用加签');
+			return;
+		}
+		da.sys_yushenname   = form('sys_yushenname').value;
+		da.sys_yushennameid = form('sys_yushenname_id').value;
+		da.sys_yushennamezt = form('sys_yushennamezt').value;
+		if(da.sys_yushennameid==''){
+			js.setmsg('请选择加签处理人');
+			return;
+		}
+	}
+	
+	if(!da.zynameid && da.zt!='2' && da.zt!='25' && da.zt!='26'){
 		var fobj=$('span[fieidscheck]'),i,fid,flx,fiad,val,isbt;
 		var subdat = js.getformdata();
 		for(i=0;i<fobj.length;i++){
@@ -191,8 +206,14 @@ function check(lx){
 	js.ajax(url,da,function(a){
 		if(a.success){
 			js.setmsg(a.data,'green');
-			c.callback(a.data);
-			if(get('autocheckbox'))if(get('autocheckbox').checked)c.close();
+			if(da.zt=='26'){
+				js.alert('后加签成功，请继续审批','', function(){
+					js.reload();
+				});
+			}else{
+				c.callback(a.data);
+				if(get('autocheckbox'))if(get('autocheckbox').checked)c.close();
+			}
 		}else{
 			js.setmsg(a.msg);
 			o1.disabled = false;
@@ -435,6 +456,13 @@ var c={
 				$('#sys_nextcoursediv0').hide();
 				$('#sys_nextcoursediv1').hide();
 			}
+		}
+		if(zt=='25' || zt=='26'){
+			$('#sys_yushennamediv').show();
+			$('#sys_yushennamediv1').show();
+		}else{
+			$('#sys_yushennamediv').hide();
+			$('#sys_yushennamediv1').hide();
 		}
 	},
 	changenextbool:true,

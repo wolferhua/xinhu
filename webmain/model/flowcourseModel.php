@@ -15,7 +15,7 @@ class flowcourseClassModel extends Model
 	{
 		$this->courserows = array();
 		if($fields=='')$fields = '`id`,`name`,`checktype`,`checktypename`,`whereid`,`where`,`status`,`mid`,`pid`,`recename`,`explain`,`optdt`,`nid`';
-		$rows 	= $this->getall("`setid`='$setid'",$fields,'`pid`,`sort`');
+		$rows 	= $this->getall("`setid`='$setid' and `mid`>=0",$fields,'`pid`,`sort`');
 		$isinit = false;
 		$time 	= '2017-08-10 00:00:00';
 		foreach($rows as $k=>$rs){
@@ -156,4 +156,13 @@ class flowcourseClassModel extends Model
 		);
 	}
 	
+	
+	/**
+	*	读取临时步骤
+	*/
+	public function getcoursetemp($setid, $djid)
+	{
+		$rows 	= $this->getall("`setid`='$setid' and `mid` in(-1,-2) and whereid='$djid'",'*','optdt asc');
+		return $rows;
+	}
 }

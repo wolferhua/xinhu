@@ -42,7 +42,8 @@ class flow_dailyClassModel extends flowModel
 	protected function flowsubmit($na, $sm)
 	{
 		$uparr = m('admin')->getsuperman($this->uid);
-		$recid = $this->rock->arrvalue($uparr, 0);
+		$recid = arrvalue($uparr, 0);
+		if(!$recid || $recid==0)return;
 		$typea = $this->typearr[$this->rs['type']];
 		$title = ''.$this->rs['optname'].'的'.$typea.'';
 		$cont  = c('html')->substrstr($this->rs['content'],0, 100);

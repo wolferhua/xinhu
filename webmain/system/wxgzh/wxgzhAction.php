@@ -67,6 +67,21 @@ class wxgzhClassAction extends Action
 			'rows' => $rows
 		);
 	}
+	
+	public function wxxcyus_after($table, $rows)
+	{
+		$dm = getconfig('systype');
+		foreach($rows as $k=>$rs){
+			if(!isempt($rs['mobile'])){
+				$rows[$k]['mobile'] = substr($rs['mobile'],0,3).'****'.substr($rs['mobile'],-4);
+				if($dm=='demo')$rows[$k]['mobile']='已绑定';
+			}
+			
+		}
+		return array(
+			'rows' => $rows
+		);
+	}
 	public function gettpleditAjax()
 	{
 		$id = (int)$this->get('id','0');

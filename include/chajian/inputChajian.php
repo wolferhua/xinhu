@@ -237,9 +237,9 @@ class inputChajian extends Chajian
 			$str = '<'.$lx.' id="div_'.$fname.'" class="divinput">'.$str.'</'.$lx.'>';
 			if($ism==1 && $iszb==0){
 				if($iszhang){
-					$str = '<tr style="border-bottom:1px #EBEBEB solid;border-top:1px #EBEBEB solid"><td colspan="2"><div style="padding-left:10px;padding-top:10px">'.$fnams.'</div>'.$str.'</td></tr>';
+					$str = '<tr class="lumtr"><td colspan="2"><div style="padding-left:10px;padding-top:10px">'.$fnams.'</div>'.$str.'</td></tr>';
 				}else{
-					$str = '<tr style="border-bottom:0px #EBEBEB solid"><td class="lurim" nowrap>'.str_replace(' ','<br>', $fnams).'</td><td width="90%">'.$str.'</td></tr>';
+					$str = '<tr class="lumtr"><td class="lurim" nowrap>'.str_replace(' ','<br>', $fnams).'</td><td width="90%">'.$str.'</td></tr>';
 				}
 			}
 		}
@@ -307,6 +307,12 @@ class inputChajian extends Chajian
 			}
 		}
 		
+		//2021-02-26新增新的数据源,开头
+		if(substr($datanum,0,1)==','){
+			return $this->sqlstore($datanum);
+		}
+		
+		
 		//用:读取model上的数据
 		if(!$fopt && !isempt($datanum) && contain($datanum,':')){
 			$tata = explode(',', $datanum);
@@ -345,8 +351,16 @@ class inputChajian extends Chajian
 			$fvad = 'name';
 			if(isset($_ars[1])&&($_ars[1]=='value'||$_ars[1]=='id'||$_ars[1]=='num'))$fvad=$_ars[1];
 			
-			if($fopt)foreach($fopt as $k=>$rs){
-				$fopt[$k]['value'] = $rs[$fvad];
+			if($fopt){
+				foreach($fopt as $k=>$rs){
+					$fopt[$k]['value'] = $rs[$fvad];
+				}
+				if($type=='rockcombo' && $fvad=='name' && M=='input'){
+					$fopt[] = array(
+						'name'  => '其它..',
+						'value' => $_ars[0],
+					);
+				}
 			}
 		}
 		if(!$fopt && ($type=='select' || $type=='checkboxall' || $type=='radio')){
@@ -361,5 +375,48 @@ class inputChajian extends Chajian
 			$fopt = $barr;
 		}
 		return $fopt;
+	}
+	
+	/**
+	*	新的获取数据源方法
+	*/
+	public function sqlstore($actstr1)
+	{
+		$rows = array();
+		$acta = explode(',', $actstr1);
+		if(count($acta)>=3){
+			if($acta[1]){
+				$cats = explode(','.$acta[1].',', $actstr1);
+				$sqlw = $cats[1];
+			}else{
+				$sqlw = substr($actstr1,2);
+			}
+			$sqla = explode('|', $sqlw);
+			$wher = arrvalue($sqla,2,'1=1');
+			if(contain($wher,'{'))$wher = m('where')->getstrwhere($wher,$this->adminid);
+			$wher = str_replace('$','"', $wher);
+			$rowa = m($sqla[0])->getall($wher,$sqla[1]);
+			$ndf  = 'name';
+			$vdf  = 'id';
+			if($rowa)foreach($rowa as $k=>$rs1){
+				if($k==0){
+					if(!isset($rs1[$ndf])){
+						foreach($rs1 as $k1=>$v1){$ndf = $k1;break;}
+					}
+					if(!isset($rs1[$vdf])){
+						$xus = 0;
+						foreach($rs1 as $k1=>$v1){
+							$xus++;
+							$vdf = $k1;
+							if($xus>=2)break;
+						}
+					}
+				}
+				$rs1['name']  = $rs1[$ndf];
+				$rs1['value'] = $rs1[$vdf];
+				$rows[] = $rs1;
+			}
+		}
+		return $rows;
 	}
 }                                              

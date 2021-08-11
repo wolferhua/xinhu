@@ -116,7 +116,7 @@ class flow_hrcheckClassModel extends flowModel
 			);
 		}
 		
-		$herstr = 'xuhaos,,center@itemname,考核内容@fenshu,分值';
+		$herstr = 'xuhaos,,center@itemname,考核内容,left@fenshu,分值';
 		foreach($pars as $k1=>$v1)$herstr.='@pfzd'.$k1.','.$v1.'';
 		
 		$pfrowsstr 	= c('html')->createrows($srows, $herstr,'#dddddd');
@@ -154,8 +154,9 @@ class flow_hrcheckClassModel extends flowModel
 		foreach($pfrows as $k=>&$rs){
 			$rs['xuhaos'] = $k+1;
 			$rs['defenstr'] = '<input type="number" min="0" max="'.$rs['fenshu'].'" class="inputs" onfocus="js.focusval=this.value" name="pingfen_'.$rs['id'].'" onblur="js.number(this)">';
+			$rs['itemname'] = '<div style="max-width:200px">'.$rs['itemname'].'</div>';
 		}
-		$pfrowsstr 	= c('html')->createrows($pfrows, 'xuhaos,,center@itemname,考核内容@pfname,评分名称@fenshu,总分数@defenstr,评分分数','#dddddd');
+		$pfrowsstr 	= c('html')->createrows($pfrows, 'xuhaos,,center@itemname,考核内容,left@pfname,评分名称@fenshu,总分数@defenstr,评分分数','#dddddd');
 		return array(
 			'pfrows' => $pfrows,
 			'pfrowsstr' => $pfrowsstr,

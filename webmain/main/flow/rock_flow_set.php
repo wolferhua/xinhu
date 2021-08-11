@@ -3,7 +3,7 @@
 $(document).ready(function(){
 	var qianss='';
 	var a = $('#view_{rand}').bootstable({
-		tablename:'flow_set',dir:'asc',sort:'sort',celleditor:true,
+		tablename:'flow_set',dir:'asc',sort:'sort',celleditor:true,checked:true,
 		url:publicstore('{mode}','{dir}'),fanye:true,pageSize:10,storeafteraction:'modeafter',storebeforeaction:'modebefore',
 		columns:[{
 			text:'类型',dataIndex:'type',sortable:true,editor:true
@@ -194,6 +194,11 @@ $(document).ready(function(){
 		},
 		tongbuss:function(nk){
 			js.loading('拉取同步中...');
+		},
+		shengsheng:function(){
+			var sid = a.getchecked();
+			addtabs({'name':'创建安装包',url:'main,flow,createinstall,sid='+jm.base64encode(sid)+'',num:'createinstall'});
+			
 		}
 	};
 	js.initbtn(c);
@@ -241,6 +246,7 @@ $(document).ready(function(){
 		
 	</td>
 	<td align="right" nowrap>
+		<button class="btn btn-default" click="shengsheng" type="button">生成安装包</button>&nbsp; 
 		<button class="btn btn-default" id="copy_{rand}" click="copy,1" disabled type="button">复制</button>&nbsp; 
 		<button class="btn btn-info" id="edit_{rand}" click="clickwin,1" disabled type="button"><i class="icon-edit"></i> 编辑 </button>&nbsp; 
 		<button class="btn btn-danger" click="del" disabled id="del_{rand}" type="button"><i class="icon-trash"></i> 删除</button>

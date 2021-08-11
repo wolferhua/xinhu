@@ -10,7 +10,7 @@ class logClassModel extends Model
 		$arr['optid']	= $this->adminid;
 		$arr['optname']	= $this->adminname;
 		$arr['remark']	= $remark;
-		$arr['url']		= $this->rock->nowurl();
+		//$arr['url']		= $this->rock->nowurl();//不记录这个没用
 		foreach($sarr as $k=>$v)$arr[$k]=$v;
 		$this->insert($arr);
 	}

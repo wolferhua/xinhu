@@ -23,6 +23,8 @@ $(document).ready(function(){
 		},{
 			text:'MAC地址',dataIndex:'mac'
 		},{
+			text:'打卡位置',dataIndex:'address'
+		},{
 			text:'说明',dataIndex:'explain',align:'left'
 		},{
 			text:'图片',dataIndex:'imgpath',renderer:function(v){

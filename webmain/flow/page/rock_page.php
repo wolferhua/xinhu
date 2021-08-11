@@ -18,7 +18,17 @@
 		search:function(cans){
 			var s=get('key_{rand}').value,zt='';
 			if(get('selstatus_{rand}'))zt=get('selstatus_{rand}').value;
-			var canss = js.apply({key:s,keystatus:zt,search_value:''}, cans);
+			var dke   = {key:s,keystatus:zt,search_value:'',xhfields:''},szd='';
+			if(get('fields_{rand}'))szd = get('fields_{rand}').value;
+			if(szd){
+				dke.xhfields = szd;
+				dke.xhlike   = get('like_{rand}').value;
+				dke.xhkeygj  = get('keygj_{rand}').value;
+				if(this.soutype=='select' || this.soutype=='rockcombo')dke.xhkeygj = get('selkey_{rand}').value;
+				dke.xhkeygj  = jm.base64encode(dke.xhkeygj);
+				dke.key 	 = '';
+			}
+			var canss = js.apply(dke, cans);
 			a.setparams(canss,true);
 		},
 		searchhigh:function(){
@@ -31,6 +41,7 @@
 		},
 		searchhighb:function(d){
 			d.key='';
+			d.xhfields='';
 			d.search_value='';
 			get('key_{rand}').value='';
 			a.setparams(d,true);
@@ -49,7 +60,7 @@
 		searchunames:function(d,sna,sid){
 			get('key_{rand}').value=sna;
 			this.search_value = sid;
-			var cs = {key:'','search_fields':d.fields,'search_value':sid};
+			var cs = {key:'',xhfields:'','search_fields':d.fields,'search_value':sid};
 			a.setparams(cs,true);
 		},
 		daochu:function(o1,lx,lx1,e){
@@ -77,6 +88,9 @@
 			$('#key_{rand}').keyup(function(e){
 				if(e.keyCode==13)c.searchbtn();
 			});
+			$('#keygj_{rand}').keyup(function(e){
+				if(e.keyCode==13)c.searchbtn();
+			});
 			this.initpage();
 			this.soudownobj = $('#downbtn_{rand}').rockmenu({
 				width:120,top:35,donghua:false,
@@ -88,12 +102,34 @@
 					if(d.lx==3)c.searchuname(d);
 				}
 			});
+			$('#fields_{rand}').change(function(){
+				c.changefields();
+			});
 		},
 		initpage:function(){
 			
 		},
+		initpagebefore:function(){
+			
+		},
+		onloadbefore:function(){},
+		loaddatabefore:function(d){
+			var das = d.listinfo;
+			if(das){
+				isflow    = das.isflow;
+				modename  = das.modename;
+				modenames = das.modenames;
+				fieldsarr = das.fieldsarr;
+				this.fieldzarr = das.fieldzarr; //子表搜索
+				fieldsselarr = das.fieldsselarr;
+				chufarr = das.chufarr;
+				this.initcolumns(true);
+			}
+			this.onloadbefore(d);
+		},
 		loaddata:function(d){
 			this.setdownsodata(d.souarr);
+			if(d.modeid)modeid = d.modeid;
 			if(modeid>101 && d.loadci==1 && (!d.atypearr || d.atypearr.length==0))js.confirm('列表页没设置好，数据无法显示，没有可切换选择卡，去看帮助设置',function(){window.open('<?=URLY?>view_columns.html')});
 			if(!d.atypearr)return;
 			get('addbtn_{rand}').disabled=(d.isadd!=true);
@@ -119,7 +155,9 @@
 			ddata.push({name:'打印',lx:1});
 			this.soudownobj.setData(ddata);
 		},
+		setcinfo:{},
 		setcolumns:function(fid, cnas){
+			this.setcinfo[fid]=cnas;
 			var d = false,i,ad=bootparams.columns,len=ad.length,oi=-1;
 			for(i=0;i<len;i++){
 				if(ad[i].dataIndex==fid){
@@ -138,7 +176,7 @@
 			addtabs({num:'daoruuser',url:'flow,input,daoru,modenum='+modenum+'',icons:'plus',name:'导入'+modename+''});
 		},
 		initcolumns:function(bots){
-			var num = 'columns_'+modenum+'_'+pnum+'',d=[],d1,d2={},i,len=fieldsarr.length,bok;
+			var num = 'columns_'+modenum+'_'+pnum+'',d=[],d1,d2={},i,len=fieldsarr.length,bok,sa=[{name:'默认搜索',fields:'','inputtype':'dev'}];
 			var nstr= fieldsselarr[num];if(!nstr)nstr='';
 			if(nstr)nstr=','+nstr+',';
 			if(nstr=='' && isflow>0){
@@ -162,13 +200,59 @@
 					if(d1.isalign=='2')d2.align='right';
 					d.push(d2);
 				}
+				if(d1['issou']=='1'){
+					d2={name:d1.name,fields:d1.fields,inputtype:d1.fieldstype,store:d1.store};
+					sa.push(d2);
+				}
 			}
 			if(isflow>0)d.push({text:'状态',dataIndex:'statustext'});
 			if(nstr=='' || nstr.indexOf(',caozuo,')>=0)d.push({text:'',dataIndex:'caozuo',callback:'opegs{rand}'});
-			if(!bots){
-				bootparams.columns=d;
+			for(i=0;i<d.length;i++)if(this.setcinfo[d[i].dataIndex])d[i] = js.apply(d[i],this.setcinfo[d[i].dataIndex]);
+			bootparams.columns = d;
+			if(bots)a.setColumns(d);
+			d1 = this.fieldzarr;
+			if(d1){
+				for(i=0;i<d1.length;i++){
+					sa.push({name:d1[i].name,fields:d1[i].fields,inputtype:d1[i].fieldstype,store:d1[i].store});
+				}
+			}
+			this.souarr = sa;
+			get('fields_{rand}').length=0;
+			js.setselectdata(get('fields_{rand}'),sa,'fields');
+			this.changefields();
+			return d;
+		},
+		changefields:function(){
+			var o1 = get('fields_{rand}');
+			if(!o1)return;
+			var val = o1.value;
+			var i,xa=false,len=this.souarr.length;
+			for(i=0;i<len;i++){
+				if(this.souarr[i].fields==val)xa=this.souarr[i];
+			}
+			if(!xa)return;
+			var o2 = get('like_{rand}');
+			o2.disabled=false;
+			this.soutype = xa.inputtype;
+			if(xa.inputtype=='dev'){
+				$('#keygj_{rand}').hide();
+				$('#key_{rand}').show();
+				$('#selkey_{rand}').hide();
+				o2.value='0';
+				o2.disabled=true;
+			}else if(xa.inputtype=='select' || xa.inputtype=='rockcombo'){
+				$('#keygj_{rand}').hide();
+				$('#key_{rand}').hide();
+				$('#selkey_{rand}').show();
+				o2.value='1';
+				var o3 = get('selkey_{rand}');
+				$(o3).html('<option value="">-请选择-</option>');
+				js.setselectdata(o3,xa.store,'value');
 			}else{
-				a.setColumns(d);
+				$('#keygj_{rand}').show();
+				$('#selkey_{rand}').hide();
+				$('#key_{rand}').hide();
+				o2.value='0';
 			}
 		},
 		setparams:function(cs){
@@ -217,6 +301,9 @@
 		},
 		load:function(d){
 			c.loaddata(d);
+		},
+		loadbefore:function(d){
+			c.loaddatabefore(d);
 		}
 	};
 	c.initcolumns(false);

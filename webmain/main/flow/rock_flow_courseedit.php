@@ -268,6 +268,17 @@ $(document).ready(function(){
 		c.changetype(1);
 	});
 	
+	$(h.form.changezbsseas).change(function(){
+		var o1= this.options[this.selectedIndex];
+		h.form.zbrangeame.value=o1.text;
+		h.form.zbrangeid.value=this.value;
+	});
+	$(h.form.changezbsseas1).change(function(){
+		var o1= this.options[this.selectedIndex];
+		h.form.csfwname.value=o1.text;
+		h.form.csfwid.value=this.value;
+	});
+	
 	$(h.form.iszf).change(function(){
 		if(this.value>0){
 			$('#zbdiv_{rand}').show();
@@ -432,13 +443,18 @@ $(document).ready(function(){
 			<td  align="right" nowrap >转办的范围：</td>
 		
 			<td class="tdinput" colspan="3">
-				<div style="width:100%" class="input-group">
+				<div  class="input-group">
 					<input readonly class="form-control" placeholder="不选就可转办给任何人" name="zbrangeame" >
 					<input type="hidden" name="zbrangeid" >
 					<span class="input-group-btn">
+						<select class="btn btn-default" name="changezbsseas" style="width:150px">
+						<option value="">-选择-</option>
+						<option value="dept">本部门</option>
+						<option value="deptall">本部门(含下级部门)</option>
+						<option value="down">直属下级</option>
+						<option value="downall">直属下级(含下级的下级)</option>
+						</select>
 						<button class="btn btn-default" click="getzbraremoves,1" type="button"><i class="icon-remove"></i></button>
-						<button class="btn btn-default" click="getzbraben,1" type="button">本部门</button>
-						<button class="btn btn-default" click="getzbrabens,1" type="button">本部门(含下级)</button>
 						<button class="btn btn-default" click="getzbrangeame,1" type="button"><i class="icon-search"></i></button>
 					</span>
 				</div>
@@ -482,13 +498,18 @@ $(document).ready(function(){
 			<td  align="right" nowrap >抄送的范围：</td>
 		
 			<td class="tdinput" colspan="3">
-				<div style="width:100%" class="input-group">
+				<div class="input-group">
 					<input readonly class="form-control" placeholder="不选就可抄送给任何人" name="csfwname" >
 					<input type="hidden" name="csfwid" >
 					<span class="input-group-btn">
+						<select class="btn btn-default" name="changezbsseas1" style="width:150px">
+						<option value="">-选择-</option>
+						<option value="dept">本部门</option>
+						<option value="deptall">本部门(含下级部门)</option>
+						<option value="down">直属下级</option>
+						<option value="downall">直属下级(含下级的下级)</option>
+						</select>
 						<button class="btn btn-default" click="getzbraremoves,2" type="button"><i class="icon-remove"></i></button>
-						<button class="btn btn-default" click="getzbraben,2" type="button">本部门</button>
-						<button class="btn btn-default" click="getzbrabens,2" type="button">本部门(含下级)</button>
 						<button class="btn btn-default" click="getzbrangeame,2" type="button"><i class="icon-search"></i></button>
 					</span>
 				</div>

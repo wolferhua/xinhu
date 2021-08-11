@@ -45,19 +45,20 @@ class beifenClassModel extends Model
 	}
 	
 	
-	public function updatefabric($cont)
+	public function updatefabric($cont, $ylx=0)
 	{
-		$bos 	= $this->updatefabricfile($cont);
+		$bos 	= $this->updatefabricfile($cont, $ylx);
 		if(!$bos)return 'dberr:'.$this->db->lasterror();
 		return 'ok';
 	}
 	
-	public function updatefabricfile($cont='')
+	public function updatefabricfile($cont='', $ylx=0)
 	{
 		if($cont=='')return false;
 		$data = json_decode($cont, true);
 		foreach($data as $tabe=>$da){
 			$table 	= str_replace('xinhu_', PREFIX, $tabe);
+			if($ylx==1)$table = PREFIX.$tabe;
 			$fields = $da['fields'];
 			$nowfiel= $this->getfieldsa($table);   
 			$str 	= '';

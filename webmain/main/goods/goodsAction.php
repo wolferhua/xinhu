@@ -26,6 +26,10 @@ class goodsClassAction extends Action
 				if($rs['stock']<0)$rows[$k]['ishui']=1;
 			}
 			$rows = $this->pandian($aid, $rows);
+		}else{
+			if($mid>0){
+				m('goodm')->update('state=1', $mid);
+			}
 		}
 		if($this->loadci==1){
 			$type	= (int)$this->post('type');

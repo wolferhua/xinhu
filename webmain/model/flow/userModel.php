@@ -38,7 +38,7 @@ class flow_userClassModel extends flowModel
 		}
 		return array(
 			'fields'=> '`name`,`id`,`id` as uid,`face`,`sort`,`deptallname`,deptpath,`ranking`,`tel`,`mobile`,`email`,`user`,num,workdate,sex,deptname,deptnames,superman,status,type,online,lastonline,isvcard,`companyid`',
-			'order' => 'sort',
+			'order' => '`status` desc,`sort`',
 			'where' => $where
 		);
 	}

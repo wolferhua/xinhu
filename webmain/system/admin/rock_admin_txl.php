@@ -104,7 +104,7 @@ $(document).ready(function(){
 			</div>	
 		</td>
 		<td align="right" nowrap>
-			<button class="btn btn-default" click="daochu,1" type="button">导出</button>
+			<!-- <button class="btn btn-default" click="daochu,1" type="button">导出</button>-->
 		</td>
 	</tr>
 	</table>

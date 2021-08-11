@@ -393,7 +393,14 @@ js.fileopt=function(id,lx){
 					if(ismobile==0){
 						js.open(url,screen.width-200,screen.height-200);
 					}else{
-						js.location(url);
+						js.location(url);return;
+						var str = '<div id="rockeditdiv" style="background:white;position:fixed;z-index:99;top:0px;left:0px;width:100%;height:'+winHb()+'px"><iframe src="'+url+'" width="100%" height="100%" frameborder="0"></iframe></div>';
+						$('body').append(str);
+						js.location('#rockedit');
+						window.onhashchange=function(){
+							var has = location.hash;
+							if(has.indexOf('#rockedit')==-1)$('#rockeditdiv').remove();
+						}
 					}
 				}else if(ext=='rockoffice'){
 					js.sendeditoffices(url);
@@ -1056,15 +1063,19 @@ js.replacecn=function(o1){
 }
 
 js.setselectdata = function(o, data, vfs, devs){
-	var i,ty = data,sv;
+	var i,ty = data,sv,str='';
 	if(!data)return;	
 	if(!vfs)vfs='name';	
-	if(typeof(devs)=='undefined')devs=-1;
+	if(typeof(devs)=='undefined')devs='&nbsp;';
 	for(i=0;i<ty.length;i++){
-		o.options.add(new Option(ty[i].name,ty[i][vfs]));
-		if(i==devs || ty[i].checked)sv=ty[i][vfs];
+		if(ty[i].optgroup){
+			if(ty[i].optgroup=='start')str+='<optgroup label="'+ty[i].name+'">';
+			if(ty[i].optgroup=='end')str+='</optgroup>';
+		}else{
+			str+='<option value="'+ty[i][vfs]+'">'+ty[i].name+'</option>';
+		}
 	}
-	if(sv)o.value=sv;
+	$(o).append(str);
 }
 //是否app上接口
 function appobj1(act, can1){

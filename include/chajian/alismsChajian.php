@@ -27,6 +27,8 @@ class alismsChajian extends Chajian{
 		if(!$mbarr['success'])return $mbarr;
 		$tplcont = $mbarr['data']['TemplateContent'];
 		
+		if(isset($cans['url']))$cans['url'] = c('xinhuapi')->urlsmall($cans['url']); //如果有短域名用这个生成，不要就删掉这行
+		
 		//把没用参数删掉
 		$csarr	= $this->rock->matcharr($tplcont);
 		foreach($csarr as $cs1)if(!isset($cans[$cs1]))return returnerror('模版里有{'.$cs1.'}参数，发送必须传');

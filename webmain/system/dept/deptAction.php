@@ -68,7 +68,7 @@ class deptClassAction extends Action
 		$name 	= $cans['name'];
 		$db 	= m('admin');
 		$db->update("deptname='$name'", "`deptid`=$id");
-		$db->updateinfo();
+		$db->updateinfo("and instr(a.`deptpath`,'[$id]')>0");
 	}
 	
 	public function deptuserdataAjax()

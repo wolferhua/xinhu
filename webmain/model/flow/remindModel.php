@@ -260,6 +260,8 @@ class flow_remindClassModel extends flowModel
 				
 				if(!isempt($receid)){
 					$receid = $this->adminmodel->gjoins($receid);
+					//$flow->id = $rs1['id'];
+					//$flow->push($receid, '', $tostrs, $title);
 					$receida= explode(',', $receid);
 					foreach($receida as $ruid){
 						if(!isset($sanda[$ruid]))$sanda[$ruid] = array();

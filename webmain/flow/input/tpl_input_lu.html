@@ -50,7 +50,7 @@ var editor,arr=<?=$da['fieldsjson']?>,moders=<?=json_encode($da['moders'])?>,gon
 		<div class="status"></div>
 		<div style="padding-bottom:15px;"><span id="inputtitle" onclick="location.reload()" style="font-size:24px"><?=$da['title']?></span></div>
 		<div class="tdcont" align="left">
-			<form name="myform">
+			<form name="myform" autocomplete="off">
 			<input name="id" type="hidden" value="<?=$da['mid']?>">
 			<?php 
 			$firstrs 	= array();
@@ -118,7 +118,7 @@ var editor,arr=<?=$da['fieldsjson']?>,moders=<?=json_encode($da['moders'])?>,gon
 		<?php echo $coursestr;?>
 		<div style="height:60px; overflow:hidden"></div>
 	</div>
-	<div align="right" style="background:#eeeeee;border-top:1px #aaaaaa solid;padding:10px 0px; position:fixed;width:100%;bottom:0px;left:0px">
+	<div align="right" style="background:#eeeeee;border-top:1px #aaaaaa solid;padding:10px 0px; position:fixed;width:100%;bottom:0px;left:0px;z-index:10">
 		<span id="msgview"></span>&nbsp; 
 		<span id="AltSspan" style="display:none" >
 		<?php
@@ -130,11 +130,11 @@ var editor,arr=<?=$da['fieldsjson']?>,moders=<?=json_encode($da['moders'])?>,gon
 <script>
 firstrs=<?=json_encode($firstrs)?>;
 </script>
-<script type="text/javascript" src="<?=$da['p']?>/flow/input/inputjs/mode_<?=$da['moders']['num']?>.js"></script>
+<script type="text/javascript" src="<?=$da['p']?>/flow/input/inputjs/mode_<?=$da['moders']['num']?>.js?<?=$da['logintime']?>"></script>
 <script type="text/javascript" src="web/res/js/jquery-rockupload.js"></script>
 <script type="text/javascript" src="web/res/js/jquery-imgview.js"></script>
 <?php 
-//按需要引入js
+if($otherfile)include_once($otherfile);
 ?>
 </body>
 </html>

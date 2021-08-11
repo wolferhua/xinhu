@@ -158,7 +158,7 @@ class adminClassModel extends Model
 	*/
 	public function getsuperman($uid)
 	{
-		$b 		= array();
+		$b 		= array(0,'');
 		$urs 	= $this->getone($uid,'`superid`,`superman`,`deptid`');
 		if(!$urs)return $b;
 		$cuid 	= $urs['superid'];
@@ -451,6 +451,9 @@ class adminClassModel extends Model
 					
 					$where1 = join(' )or( ', $datsa);
 					$where1 = 'and ('.$where1.')';
+				}else if($range=='down' || $range=='downall'){
+					$where1 = 'and '.$this->rock->dbinstr('superid', $this->adminid).'';
+					if($range=='downall')$where1 = 'and instr(`superpath`,\'['.$this->adminid.']\')>0';
 				}else{
 					$where1 = $this->gjoin($range, '', 'where');
 					$where1 = 'and ('.$where1.')';
@@ -557,7 +560,7 @@ class adminClassModel extends Model
 		$cl += $this->updateuserinfo($where);
 		
 		//更新单据上flow_bill上的uname,udeptname
-		m('flowbill')->updatebill();
+		m('flowbill')->updatebill($where);
 		m('imgroup')->updategall(); //更新会话上
 		
 		return array($total, $cl);

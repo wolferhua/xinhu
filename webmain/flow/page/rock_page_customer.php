@@ -11,7 +11,7 @@ $(document).ready(function(){
 	{params}
 	var modenum = 'customer',modename='客户管理',isflow=0,modeid='7',atype = params.atype,pnum=params.pnum,modenames='',listname='Y3VzdG9tZXI:';
 	if(!atype)atype='';if(!pnum)pnum='';
-	var fieldsarr = [{"name":"\u7533\u8bf7\u4eba","fields":"base_name"},{"name":"\u7533\u8bf7\u4eba\u90e8\u95e8","fields":"base_deptname"},{"name":"\u5355\u53f7","fields":"sericnum"},{"fields":"name","name":"\u5ba2\u6237\u540d\u79f0","fieldstype":"text","ispx":"0","isalign":"0","islb":"1"},{"fields":"suoname","name":"\u6240\u5c5e\u4eba","fieldstype":"text","ispx":"0","isalign":"0","islb":"1"},{"fields":"type","name":"\u5ba2\u6237\u7c7b\u578b","fieldstype":"rockcombo","ispx":"1","isalign":"0","islb":"1"},{"fields":"laiyuan","name":"\u6765\u6e90","fieldstype":"rockcombo","ispx":"0","isalign":"0","islb":"0"},{"fields":"unitname","name":"\u5ba2\u6237\u5355\u4f4d","fieldstype":"text","ispx":"0","isalign":"0","islb":"1"},{"fields":"tel","name":"\u8054\u7cfb\u7535\u8bdd","fieldstype":"text","ispx":"0","isalign":"0","islb":"0"},{"fields":"mobile","name":"\u8054\u7cfb\u624b\u673a","fieldstype":"text","ispx":"0","isalign":"0","islb":"0"},{"fields":"email","name":"\u90ae\u7bb1","fieldstype":"text","ispx":"0","isalign":"0","islb":"0"},{"fields":"sheng","name":"\u6240\u5728\u7701","fieldstype":"selectdatafalse","ispx":"0","isalign":"0","islb":"0"},{"fields":"shi","name":"\u6240\u5728\u5e02","fieldstype":"text","ispx":"0","isalign":"0","islb":"0"},{"fields":"address","name":"\u5730\u5740","fieldstype":"ditumap","ispx":"0","isalign":"0","islb":"0"},{"fields":"addresslatlng","name":"\u5730\u5740\u7ecf\u7eac\u5ea6","fieldstype":"hidden","ispx":"0","isalign":"0","islb":"0"},{"fields":"routeline","name":"\u4ea4\u901a\u8def\u7ebf","fieldstype":"textarea","ispx":"0","isalign":"0","islb":"0"},{"fields":"shibieid","name":"\u7eb3\u7a0e\u8bc6\u522b\u53f7","fieldstype":"text","ispx":"0","isalign":"0","islb":"0"},{"fields":"openbank","name":"\u5f00\u6237\u884c","fieldstype":"text","ispx":"0","isalign":"0","islb":"0"},{"fields":"cardid","name":"\u5f00\u6237\u5e10\u53f7","fieldstype":"text","ispx":"0","isalign":"0","islb":"0"},{"fields":"shate","name":"\u5171\u4eab\u7ed9","fieldstype":"changeusercheck","ispx":"0","isalign":"0","islb":"1"},{"fields":"status","name":"\u72b6\u6001","fieldstype":"select","ispx":"0","isalign":"0","islb":"0"},{"fields":"isstat","name":"\u6807\u2605","fieldstype":"select","ispx":"1","isalign":"0","islb":"0"},{"fields":"isgys","name":"\u4f9b\u5e94\u5546","fieldstype":"checkbox","ispx":"0","isalign":"0","islb":"0"},{"fields":"linkname","name":"\u8054\u7cfb\u4eba","fieldstype":"text","ispx":"0","isalign":"0","islb":"0"},{"fields":"explain","name":"\u8bf4\u660e","fieldstype":"textarea","ispx":"0","isalign":"0","islb":"0"},{"fields":"htshu","name":"\u5408\u540c\u6570","fieldstype":"number","ispx":"1","isalign":"0","islb":"1"},{"fields":"moneyz","name":"\u9500\u552e\u603b\u989d","fieldstype":"number","ispx":"1","isalign":"0","islb":"1"},{"fields":"moneyd","name":"\u5f85\u6536\u91d1\u989d","fieldstype":"number","ispx":"1","isalign":"0","islb":"1"},{"fields":"isgh","name":"\u653e\u5165\u516c\u6d77","fieldstype":"select","ispx":"0","isalign":"0","islb":"0"},{"fields":"lastdt","name":"\u6700\u540e\u8ddf\u8fdb","fieldstype":"datetime","ispx":"1","isalign":"0","islb":"1"}],fieldsselarr= {"columns_customer_":"name,suoname,type,unitname,mobile,shate,htshu,moneyz,moneyd,lastdt,caozuo","columns_customer_all":"name,suoname,type,unitname,isstat,isgys,htshu,moneyz,moneyd,lastdt,caozuo","columns_customer_dist":"name,suoname,type,laiyuan,unitname,isgys,linkname","columns_customer_ghai":"name,suoname,type,unitname,sheng,shi,status,caozuo","columns_customer_gys":"name,suoname,type,unitname,tel,address,status,linkname,explain,caozuo","columns_customer_shate":"name,suoname,type,laiyuan,unitname,isstat,caozuo"},chufarr= [];
+	var fieldsarr = [],fieldsselarr= [],chufarr= [];
 	
 	<?php
 	include_once('webmain/flow/page/rock_page.php');
@@ -124,7 +124,7 @@ if(pnum=='gys'){
 }
 
 //[自定义区域end]
-
+	c.initpagebefore();
 	js.initbtn(c);
 	var a = $('#view'+modenum+'_{rand}').bootstable(bootparams);
 	c.init();
@@ -137,13 +137,15 @@ if(pnum=='gys'){
 	<table width="100%">
 	<tr>
 		<td style="padding-right:10px;" id="tdleft_{rand}" nowrap><button id="addbtn_{rand}" class="btn btn-primary" click="clickwin,0" disabled type="button"><i class="icon-plus"></i> 新增</button></td>
-		<td>
-			<input class="form-control" style="width:160px" id="key_{rand}" placeholder="关键字">
-		</td>
 		
-		<td style="padding-left:10px">
+		<td><select class="form-control" style="width:110px;border-top-right-radius:0;border-bottom-right-radius:0;padding:0 2px" id="fields_{rand}"></select></td>
+		<td><select class="form-control" style="width:60px;border-radius:0px;border-left:0;padding:0 2px" id="like_{rand}"><option value="0">包含</option><option value="1">等于</option><option value="2">大于等于</option><option value="3">小于等于</option><option value="4">不包含</option></select></td>
+		<td><select class="form-control" style="width:130px;border-radius:0;border-left:0;display:none;padding:0 5px" id="selkey_{rand}"><option value="">-请选择-</option></select><input class="form-control" style="width:130px;border-radius:0;border-left:0;padding:0 5px" id="keygj_{rand}" placeholder="关键词"><input class="form-control" style="width:130px;border-radius:0;border-left:0;padding:0 5px;display:none;" id="key_{rand}" placeholder="关键字">
+		</td>
+		<td><select class="form-control" style="width:120px;border-left:0;border-radius:0;" id="selstatus_{rand}"><option value="">-全部状态-</option><option style="color:blue" value="0">待处理</option><option style="color:green" value="1">已审核</option><option style="color:red" value="2">不同意</option><option style="color:#888888" value="5">已作废</option></select></td>
+		<td>
 			<div style="white-space:nowrap">
-			<button style="border-right:0;border-top-right-radius:0;border-bottom-right-radius:0" class="btn btn-default" click="searchbtn" type="button">搜索</button><button class="btn btn-default" id="downbtn_{rand}" type="button" style="padding-left:8px;padding-right:8px;border-top-left-radius:0;border-bottom-left-radius:0"><i class="icon-angle-down"></i></button> 
+			<button style="border-right:0;border-radius:0;border-left:0" class="btn btn-default" click="searchbtn" type="button">搜索</button><button class="btn btn-default" id="downbtn_{rand}" type="button" style="padding-left:8px;padding-right:8px;border-top-left-radius:0;border-bottom-left-radius:0"><i class="icon-angle-down"></i></button> 
 			</div>
 		</td>
 		<td  width="90%" style="padding-left:10px"><div id="changatype{rand}" class="btn-group"></div></td>

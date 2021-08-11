@@ -18,7 +18,7 @@ var inputtwo={
 			idobj=form(fids);
 		}
 		var gcan,dass,i,befs
-		gcan = {'act':a1[0],'acttyle':acttyle,'sysmodenum':modenum,'sysmid':mid};
+		gcan = {'act':a1[0],'actstr':jm.base64encode(s1),'acttyle':acttyle,'sysmodenum':modenum,'sysmid':mid};
 		dass = this.selectdatadata[fid];
 		befs = this.onselectdatabefore(fid,zbis,s1);
 		if(befs){

@@ -42,10 +42,12 @@ td.tdys1{border:1px #e5e5e5 solid;text-align:center;padding:0px 5px}
 .createtable{width:90%}
 .menulls{position:absolute;left:1px;top:10px}
 .menullss{position:absolute;left:1px;top:32px; background-color:white; border:1px #cccccc solid;border-bottom:0px;display:none}
+.menullss ul{list-style-type:none}
 .menullss li{padding:5px 10px;border-bottom:1px #dddddd solid;cursor:pointer}
 .menullss li:hover{ background-color:#f1f1f1}
 .pcont{line-height:27px;}
 .pcont p{text-indent:2em;margin:10px 0px}
+li p{text-indent:0em !important;}
 .pcont a{color:blue}
 .status{position: absolute;right:20px;top:10px;display:}
 
@@ -202,7 +204,7 @@ if($stype!=''){
 		<div id="checktablediv">
 			<div align="center" style="padding-bottom:5px"><b>审核处理</b> <a temp="clo" href="javascript:;" onclick="$('#checktablediv').remove();">×</a></div>
 			<div align="center">
-			<form name="myform">
+			<form name="myform" autocomplete="off">
 			<table border="0" width="90%" class="tabled1" style="border-collapse:collapse;" cellspacing="0" cellpadding="0">
 			<tr height="40" bgcolor="#E1F4F0">
 				<td width="130" class="tdys1"><div align="right" style="color:#555555">状态</div></td>
@@ -245,6 +247,11 @@ if($stype!=''){
 				?>
 				</div></td>
 			</tr>
+			
+			<?php 
+			
+			?>
+			
 			<?php
 			//是否可抄送
 			if($flowinfor['ischao']==1 || $flowinfor['ischao']==2){

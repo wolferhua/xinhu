@@ -48,7 +48,7 @@ class cacheChajian extends Chajian{
 		$key = $this->getkey($key);
 		$file= ''.ROOT_PATH.'/'.UPDIR.'/cache/'.md5($key).'';
 		$bar = glob(''.$file.'*');
-		foreach($bar as $k=>$fil1){
+		if(is_array($bar))foreach($bar as $k=>$fil1){
 			if($k==0){
 				$file = $fil1;
 			}else{

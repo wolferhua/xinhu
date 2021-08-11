@@ -9,13 +9,37 @@ class xinhuClassAction extends Action
 	
 	public function setsaveAjax()
 	{
-		$this->option->setval('reimhostsystem@-8', $this->post('host'));
-		$this->option->setval('reimrecidsystem@-8', $this->post('receid'));
-		$this->option->setval('reimpushurlsystem@-8', $this->post('push'));
+		if(!COMPANYNUM){
+			$this->option->setval('reimhostsystem@-8', $this->post('host'));
+			$this->option->setval('reimrecidsystem@-8', $this->post('receid'));
+			$this->option->setval('reimpushurlsystem@-8', $this->post('push'));
+			$this->option->setval('reimservertype@-8', $this->post('servertype'));
+			$this->option->setval('reimappwxsystem@-8', $this->post('reimappwx'));
+		}
+		
 		$this->option->setval('reimchehuisystem@-8', $this->post('chehui'));
-		$this->option->setval('reimservertype@-8', $this->post('servertype'));
-		$this->option->setval('reimappwxsystem@-8', $this->post('reimappwx'));
 		$this->backmsg();
+	}
+	
+	public function tongbudwAjax()
+	{
+		$rows = m('company')->getall('iscreate=1');
+		foreach($rows as $k=>$rs){
+			$base = ''.DB_BASE.'_company_'.$rs['num'].'';
+			$this->sevessee($base, 'reimhostsystem');
+			$this->sevessee($base, 'reimrecidsystem', $rs['num']);
+			$this->sevessee($base, 'reimchehuisystem');
+			$this->sevessee($base, 'reimservertype');
+			$this->sevessee($base, 'reimappwxsystem');
+		}
+		return '同步成功';
+	}
+	private function sevessee($base, $key, $bh='')
+	{
+		$val = $this->option->getval($key);
+		if($key=='reimrecidsystem')$val.='_'.$bh.'';
+		$sql = "update ".$base.".`[Q]option` set `value`='$val',`optdt`='{$this->now}' where `num`='$key'";
+		$this->db->query($sql, false);
 	}
 	
 	public function getsetAjax()

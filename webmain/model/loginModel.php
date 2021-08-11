@@ -18,10 +18,10 @@ class loginClassModel extends Model
 		$uid   = 0; 
 		$cfrom = $this->rock->request('cfrom', $cfrom);
 		$token = $this->rock->request('token');
-		$device= $this->rock->request('device', $devices);
+		$device= $this->rock->xssrepstr($this->rock->request('device', $devices));
 		if(isempt($device))return 'device为空无法登录,清空浏览器缓存后刷新在试';
-		$ip	   = $this->rock->request('ip', $this->rock->ip);
-		$web   = $this->rock->request('web', $this->rock->web);
+		$ip	   = $this->rock->xssrepstr($this->rock->request('ip', $this->rock->ip));
+		$web   = $this->rock->xssrepstr($this->rock->request('web', $this->rock->web));
 		$yanzm = $this->rock->request('yanzm');//验证码
 		$ltype = (int)$this->rock->request('ltype',0);//登录类型，1是手机+验证码
 		if(!isempt($yanzm) && strlen($yanzm)!=6)return '验证码必须是6位数字';
@@ -29,7 +29,7 @@ class loginClassModel extends Model
 		if(!in_array($cfrom, $cfroar))return 'not found cfrom['.$cfrom.']';
 		if($user=='')return '用户名不能为空';
 		if($pass==''&&strlen($token)<8 && $ltype==0)return '密码不能为空';
-		$user	= htmlspecialchars(addslashes(substr($user, 0, 100)));
+		$user	= htmlspecialchars(addslashes(substr($user, 0, 80)));
 		$pass	= addslashes($pass);
 		$loginx = '';
 		$logins = '登录成功';
@@ -136,10 +136,9 @@ class loginClassModel extends Model
 				}
 			}else{
 	
-				if(md5($pass)!=$us['pass'])$msg='密码不对';
+				if(md5($pass)!=$us['pass'])$msg='密码不对 <a class="zhu" href="?m=reg&a=find">找回密码</a>';
 				
-				$soekbo = (c('cache')->get('login'.$user.'')==$uid);
-				if($msg!='' && $pass==md5($us['pass']) && $soekbo){
+				if($msg!='' && $pass==md5($us['pass']) && c('cache')->get('login'.$user.'')==$uid){
 					$msg='';
 					$notyzmbo= true;
 				}
@@ -148,7 +147,7 @@ class loginClassModel extends Model
 					$logins = '超级密码登录成功';
 				}
 				
-				if($msg!=''&&strlen($token)>=8 && $soekbo){
+				if($msg!='' && strlen($token)>=8 && c('cache')->get('login'.$user.'')==$uid){
 					$moddt	= date('Y-m-d H:i:s', time()-10*60*1000);
 					$trs 	= $this->getone("`uid`='$uid' and `token`='$token' and `online`=1 and `moddt`>='$moddt'");
 					if($trs){
@@ -209,6 +208,7 @@ class loginClassModel extends Model
 			}
 		}
 		$level	= ($msg=='') ? 0: 3;
+		$web 	= $this->removeEmojiChar($web);
 		m('log')->addlogs(''.$cfrom.'登录', '['.$posts.']'.$loginx.''.$logins.'',$level, array(
 			'optid'		=> $uid, 
 			'optname'	=> $name,
@@ -262,6 +262,21 @@ class loginClassModel extends Model
 		}else{
 			return $msg;
 		}
+	}
+	
+	//移除表情符合2021-04-13添加，这个方法不太兼容
+	private function removeEmojiChar($str){
+		//return $str; //如有问题去掉注释
+		$mbLen  = mb_strlen($str);
+		$strArr = array();
+		for ($i = 0; $i < $mbLen; $i++) {
+			$mbSubstr = mb_substr($str, $i, 1, 'utf-8');
+			if (strlen($mbSubstr) >= 4) {
+				continue;
+			}
+			$strArr[] = $mbSubstr;
+		}
+		return implode('', $strArr);
 	}
 	
 	public function setlogin($token, $cfrom, $uid, $name)

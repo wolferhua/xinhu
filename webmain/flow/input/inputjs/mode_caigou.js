@@ -60,6 +60,17 @@ function eventaddsubrows(xu,oj){
 	});
 }
 
+function changesubmit(){
+	if(get('tablesub0')){
+		var da = c.getsubdata(0),d1;
+		for(var i=0;i<da.length;i++){
+			d1 = da[i];
+			if(!d1.aid)return '行['+(i+1)+']必须选择物品';
+			if(d1.count<=0)return '行['+(i+1)+']数量必须大于0';
+		}
+	}
+}
+
 
 //触发事件最新不需要
 function oninputblur22(na,zb,obj){

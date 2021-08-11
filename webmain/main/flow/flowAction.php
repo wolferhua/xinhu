@@ -1052,7 +1052,7 @@ class mode_'.$modenum.'ClassAction extends inputAction{
 		$this->option->setval($num.'@'.(-1*$modeid-1000), $str,'模块列定义');
 		$path 	= m('mode')->createlistpage($modeid);
 		$msg 	= 'ok';
-		if($path=='')$msg='已保存,但无法从新生成列表页,自定义列将不能生效';
+		//if($path=='')$msg='已保存,但无法从新生成列表页,自定义列将不能生效';
 		echo $msg;
 	}
 	
@@ -1193,16 +1193,7 @@ class mode_'.$modenum.'ClassAction extends inputAction{
 			$db1->insert($rs2);
 		}
 		//复制相关布局文件
-		$hurs[] = ''.P.'/model/flow/{bh}Model.php'; //模块接口文件
-		$hurs[] = ''.P.'/flow/input/mode_{bh}Action.php'; //模块控制器
-		$hurs[] = ''.P.'/flow/input/inputjs/mode_{bh}.js'; //模块录入js文件
-		$hurs[] = ''.P.'/flow/page/input_{bh}.html'; //PC录入模版
-		$hurs[] = ''.P.'/flow/page/view_{bh}_0.html'; //PC展示模版
-		$hurs[] = ''.P.'/flow/page/view_{bh}_1.html'; //手机展示模版
-		$hurs[] = ''.P.'/flow/page/view_{bh}_2.html'; //打印布局
-		$hurs[] = ''.P.'/flow/page/viewpage_{bh}.html'; //子模版展示
-		$hurs[] = ''.P.'/flow/page/viewpage_{bh}_0.html';//子模版PC展示
-		$hurs[] = ''.P.'/flow/page/viewpage_{bh}_1.html';//子模版手机展示
+		$hurs = $this->getfiles();
 		
 		foreach($hurs as $k=>$file){
 			$from = str_replace('{bh}',$obha,$file);
@@ -1220,5 +1211,282 @@ class mode_'.$modenum.'ClassAction extends inputAction{
 		}
 		
 		echo 'ok';
+	}
+	
+	public function getfiles()
+	{
+		$hurs[] = ''.P.'/model/flow/{bh}Model.php'; //模块接口文件
+		$hurs[] = ''.P.'/flow/input/mode_{bh}Action.php'; //模块控制器
+		$hurs[] = ''.P.'/flow/input/inputjs/mode_{bh}.js'; //模块录入js文件
+		$hurs[] = ''.P.'/flow/page/input_{bh}.html'; //PC录入模版
+		$hurs[] = ''.P.'/flow/page/view_{bh}_0.html'; //PC展示模版
+		$hurs[] = ''.P.'/flow/page/view_{bh}_1.html'; //手机展示模版
+		$hurs[] = ''.P.'/flow/page/view_{bh}_2.html'; //打印布局
+		$hurs[] = ''.P.'/flow/page/viewpage_{bh}.html'; //子模版展示
+		$hurs[] = ''.P.'/flow/page/viewpage_{bh}_0.html';//子模版PC展示
+		$hurs[] = ''.P.'/flow/page/viewpage_{bh}_1.html';//子模版手机展示
+		return $hurs;
+	}
+	
+	
+	public function loadmodeinfoAjax()
+	{
+		if(getconfig('systype')=='demo')return returnerror('演示不要操作');
+		$sid = $this->get('sid');
+		$rows = m('flow_set')->getall('`id` in('.$sid.')','*','sort asc');
+		$ids  = '';
+		$mname= '';
+		$table= '';
+		$file = '';
+		$hurs = $this->getfiles();
+		$hurs[] = ''.P.'/flow/page/rock_page_{bh}.php';
+		foreach($rows as $k=>$rs){
+			$ids.=','.$rs['id'].'';
+			$table.=','.$rs['table'].'';
+			if(!isempt($rs['tables']))$table.=','.$rs['tables'].'';
+			$mname.=''.$rs['name'].'('.$rs['num'].') &nbsp;';
+			
+			foreach($hurs as $k=>$wj){
+				$wjs = str_replace('{bh}',$rs['num'],$wj);
+				if(file_exists($wjs))$file.=','.$wjs.'';
+			}
+		}
+		if($ids)$ids  	= substr($ids,1);
+		if($table)$table  = substr($table,1);
+		if($file)$file  = substr($file,1);
+		$barr['mode']  = $ids;
+		$barr['mname'] = $mname;
+		$barr['table'] = $table;
+		$barr['file'] = $file;
+		
+		return returnsuccess($barr);
+	}
+	
+	public function loadoteinAjax()
+	{
+		if(getconfig('systype')=='demo')return returnerror('演示不要操作');
+		$lx  = $this->post('lx');
+		$sid = $this->post('sid');
+		$barr = array();
+		$stsa = explode(',', $sid);
+		if($lx==1){
+			$alltabls 	= $this->db->getalltable();
+			foreach($stsa as $tab){
+				if(!in_array(''.PREFIX.$tab.'', $alltabls))return returnerror(''.$tab.'表不存在');
+			}
+			$barr['table'] = $sid;
+		}
+		if($lx==2){
+			foreach($stsa as $tab)if(!file_exists($tab))return returnerror(''.$tab.'文件不存在');
+			$barr['file'] = $sid;
+		}
+		
+		if($lx==3){
+			$rows = m('menu')->getall('`id` in('.$sid.') and `status`=1');
+			$ids = '';
+			$mname= '';
+			foreach($rows as $k=>$rs){
+				$ids.=','.$rs['id'].'';
+				$mname.=''.$rs['name'].'('.$rs['url'].') &nbsp;';
+			}
+			if($ids){
+				$barr['menu'] = substr($ids,1);
+				$barr['menu_str'] = $mname;
+			}
+		}
+		
+		if($lx==4){
+			$rows = m('im_group')->getall('`id` in('.$sid.') and `valid`=1 and `type`=2');
+			$ids = '';
+			$mname= '';
+			$fstr = '';
+			foreach($rows as $k=>$rs){
+				$ids.=','.$rs['id'].'';
+				$mname.='<img src="'.$rs['face'].'" align="absmiddle" width="20px" height="20px">'.$rs['name'].' &nbsp;';
+				$fstr.=','.$rs['face'].'';
+				
+				$fled = 'webmain/we/ying/yingyong/'.$rs['num'].'.html';
+				if(file_exists($fled))$fstr.=','.$fled.'';
+				$fled = 'webmain/we/ying/yingyong/'.$rs['num'].'.js';
+				if(file_exists($fled))$fstr.=','.$fled.'';
+				$fled = 'webmain/we/ying/yingyong/ying_'.$rs['num'].'Class.php';
+				if(file_exists($fled))$fstr.=','.$fled.'';
+				$fled = 'webmain/model/agent/'.$rs['num'].'Model.php';
+				if(file_exists($fled))$fstr.=','.$fled.'';
+			}
+			if($ids){
+				$barr['agent'] = substr($ids,1);
+				$barr['agent_str'] = $mname;
+			}
+			if($fstr)$barr['file'] = substr($fstr,1);
+		}
+		
+		return returnsuccess($barr);
+	}
+	
+	public function createinstseAjax()
+	{
+		if(!class_exists('ZipArchive'))return returnerror('没有zip扩展无法使用');
+		$name = $this->post('name');
+		if(!$name)$name=TITLE.'_生成包';
+		$signstr = '';
+		$str = "<?php
+//安装包的配置文件		
+return array(
+	'name' => '$name', //名称
+	'ver' => '".$this->post('ver')."', //版本
+	'minver'=>'".VERSION."',
+	'zuozhe' => '".$this->post('zuozhe')."', //作者
+	'explain' => '".$this->post('explain')."', //说明
+	'updatedt'=> '$this->now', //时间
+	'signstr' => '$signstr', //这个是签名
+);";
+		$path = ''.UPDIR.'/logs/xhazbao_'.time().'';
+		$this->rock->createtxt(''.$path.'/installconfig/xinhuoa_config.php', $str);
+		
+		//复制文件
+		$file = $this->post('file');
+		if($file){
+			$filea = explode(',', $file);
+			foreach($filea as $fid1){
+				if(file_exists($fid1)){
+					$this->rock->createdir($path.'/'.$fid1);
+					copy(ROOT_PATH.'/'.$fid1, ROOT_PATH.'/'.$path.'/'.$fid1);
+				}
+			}
+		}
+		
+		$data 	= array();
+		$modeid = $this->post('mode');
+		$menuid = $this->post('menu');
+		$tabless = $this->post('table');
+		$agentid = $this->post('agent');
+		if($menuid){
+			$rows = $this->db->getall("select * from `[Q]menu` where id in($menuid)");
+			$data['menu'] = $this->shangxiajich($rows,'pid');
+		}
+		
+		if($modeid){
+			//创建模块文件
+			$mode = $this->db->getall("select * from `[Q]flow_set` where `id` in($modeid)");
+			$cdata= array();
+			foreach($mode as $k=>$rs){
+				$id = $rs['id'];
+				
+				//元素
+				$flow_element = $this->db->getall("select * from `[Q]flow_element` where mid='$id'");
+				
+				
+				//权限
+				$flow_extent = $this->db->getall("select * from `[Q]flow_extent` where modeid='$id'");
+				
+				
+				//单据操作菜单
+				$flow_menu = $this->db->getall("select * from `[Q]flow_menu` where setid='$id'");
+				
+				
+				//模块条件
+				$flow_where = $this->db->getall("select * from `[Q]flow_where` where setid='$id'");
+				
+				
+				//审核步骤，有上下级关系
+				$flow_courses = $this->db->getall("select * from `[Q]flow_course` where setid='$id'");
+				$flow_course = $this->shangxiajich($flow_courses,'mid');
+				
+				
+				//单据通知设置
+				$flow_todo = $this->db->getall("select * from `[Q]flow_todo` where setid='$id'");
+				
+				//unset($rs['id']);
+				if($rs['isflow']>2)$rs['isflow']='1';
+				$cdata[$rs['num']] = array(
+					'flow_set'		=> $rs,
+					'flow_element' 	=> $flow_element,
+					'flow_extent' 	=> $flow_extent,
+					'flow_menu' 	=> $flow_menu,
+					'flow_where' 	=> $flow_where,
+					'flow_course' 	=> $flow_course,
+					'flow_todo' 	=> $flow_todo,
+				);
+			}
+			
+			$data['mode'] = $cdata;
+		}
+		
+		//应用的数据
+		if($agentid){
+			$yyrows 	  = $this->db->getall("select * from `[Q]im_group` where valid=1 and type=2 and id in($agentid)");
+			$yydata 	  = array();
+			foreach($yyrows as $k=>$rs){
+				$menu 	  = $this->db->getall("select * from `[Q]im_menu` where mid='".$rs['id']."'");
+				$yydata[] = array(
+					'data' => $rs,
+					'menu' => $this->shangxiajich($menu,'pid', 'menusub')
+				);
+			}
+			$data['yydata']= $yydata;
+		}
+		
+		if($data){
+			$this->rock->createtxt($path.'/installconfig/xinhuoa_data.json', json_encode($data));
+		}
+		
+		//数据库
+		if($tabless){
+			$data = array();
+			$yaotable = explode(',', $tabless);
+			foreach($yaotable as $tabs){
+				$fields	= $this->db->gettablefields(PREFIX.$tabs);
+				$shwdat = array(
+					'fields' 	=> $fields,
+				);
+				
+				$sqla 	   = $this->db->getall('show create table `'.PREFIX.$tabs.'`');
+				$createsql = $sqla[0]['Create Table'];
+				$crse 		= explode('ENGINE', $createsql);
+				$createsql  = $crse[0].'ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8';
+				$shwdat['createsql'] = str_replace('`'.PREFIX.$tabs.'`','`[Q]'.$tabs.'`', $createsql);
+				
+				$data[$tabs] = $shwdat;
+			}
+			if($data)$this->rock->createtxt($path.'/installconfig/xinhuoa_mysql.json', json_encode($data));
+		}
+		
+		
+		$topath = UPDIR.'/logs/xinhuoa_install_'.time().'.zip';
+		$this->rock->createtxt($topath, '');
+		c('zip')->packzip($path, $topath);
+		
+		return returnsuccess('生成成功，点我<a href="'.$topath.'">下载</a>。');
+	}
+	
+	//上下级处理
+	public function shangxiajich($rows, $fid, $ds='children')
+	{
+		$this->rsxiada = array();
+		$sarrr = array();
+		foreach($rows as $k=>$rs){
+			$children = $this->shangxiajichs($rows, $fid, $rs['id']);
+			if($children)$rs[$ds] = $children;
+			$sarrr[]= $rs;
+		}
+		$barr = array();
+		foreach($sarrr as $k=>$rs){
+			if(!isset($this->rsxiada[$rs['id']]))$barr[] = $rs;
+		}
+		return $barr; 
+	}
+	public function shangxiajichs($rows, $fid, $pid)
+	{
+		$arr = array();
+		foreach($rows as $k=>$rs){
+			if($rs[$fid]==$pid){
+				$this->rsxiada[$rs['id']] = $rs['id'];
+				$children = $this->shangxiajichs($rows, $fid, $rs['id']);
+				if($children)$rs['children'] = $children;
+				$arr[] = $rs;
+			}
+		}
+		return $arr;
 	}
 }

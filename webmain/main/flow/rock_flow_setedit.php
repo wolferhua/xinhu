@@ -8,7 +8,7 @@ $(document).ready(function(){
 		window:false,rand:'{rand}',tablename:'flow_set',
 		url:publicsave('{mode}','{dir}'),url:publicsave('{mode}','{dir}'),
 		params:{otherfields:'optdt={now}'},aftersaveaction:'flowsetsaveafter',beforesaveaction:'flowsetsavebefore',
-		submitfields:'name,tables,type,num,table,sort,isscl,status,where,summary,summarx,pctx,mctx,wxtx,emtx,ddtx,isflow,sericnum,receid,recename,names,statusstr,isgbjl,ispl,ishz,istxset,isup,isflowlx,isgbcy,isbxs,lbztxs,iscs,zfeitime,sortdir',
+		submitfields:'name,tables,type,num,table,sort,isscl,status,where,summary,summarx,pctx,mctx,wxtx,emtx,ddtx,isflow,sericnum,receid,recename,names,statusstr,isgbjl,ispl,ishz,isys,istxset,isup,isflowlx,isgbcy,isbxs,lbztxs,iscs,zfeitime,sortdir',
 		requiredfields:'name,type,num,table',
 		success:function(){
 			closenowtabs();
@@ -210,7 +210,8 @@ cont:
 				&nbsp; 
 				<label><input name="istxset" value="1" type="checkbox"> 开启单据提醒设置</label>
 				&nbsp; 
-				<label><input name="ishz" value="1" type="checkbox"> 开启回执确认</label>
+				<label><input name="ishz" value="1" type="checkbox"> 开启回执确认</label>&nbsp; 
+				<label><input name="isys" value="1" type="checkbox"> 开启流程加签</label>
 			</td>
 		</tr>
 		

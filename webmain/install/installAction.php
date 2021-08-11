@@ -13,7 +13,7 @@ class installClassAction extends ActionNot{
 		$this->title	= TITLE.'_安装';
 		$dbdiz = '127.0.0.1';
 		$paths = '../../mysql5.7.10/my.ini';
-		if(file_exists($paths)){
+		if(@file_exists($paths)){
 			$_conts = @file_get_contents($paths);
 			if($_conts && contain($_conts,'3307'))$dbdiz.=':3307';
 		}

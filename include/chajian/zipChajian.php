@@ -42,6 +42,36 @@ class zipChajian extends Chajian{
 		return $bos;
 	}
 	
+	/**
+	*	获取zip上文件
+	*/
+	public function zipget($filename){
+		if(!function_exists('zip_open'))return 'php未开启zip模块';
+		if(!file_exists($filename))return '文件不存在';
+		@$resource = zip_open($filename);
+		if(!$resource)return '无法打开文件';
+		$farr = array();
+		while ($dir_resource = zip_read($resource)){
+			if(zip_entry_open($resource,$dir_resource)){
+				$file_name = zip_entry_name($dir_resource);
+				$file_path = substr($file_name,0,strrpos($file_name, "/"));
+				if(!is_dir($file_name) && substr($file_name,-1)!='/'){
+					$file_size 		= zip_entry_filesize($dir_resource);
+					$file_content 	= zip_entry_read($dir_resource, $file_size);
+					if(substr($file_name,0,1)=='/')$file_name = substr($file_name,1);
+					$farr[] = array(
+						'filepath' => $file_name,
+						'filesize' => $file_size,
+						'filecontent' => base64_encode($file_content),
+					);
+				}
+				zip_entry_close($dir_resource);
+			}
+		}
+		zip_close($resource); 
+		return $farr;
+	}
+	
 	
 	private function addFileToZip($path, $zip, $wz){
 		$handler = opendir($path); 

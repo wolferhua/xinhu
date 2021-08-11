@@ -67,18 +67,40 @@ function notifyClass(opts){
 				this.opennotify();
 			}
 		}
-		var notification	= new Notification(title, can);
-		notification.onclick = function(){
-			var salx=clsfun(can);
-			if(!salx)nwjs.winshow();
+		var notification = false;
+		if(nwjsgui){
+			localStorage.setItem('xinhuoa_closelx','no');
 			this.close();
-		};
+			var url =NOWURL+'web/res/js/notification.html?'+Math.random()+'';
+			localStorage.setItem('xinhuoa_notification', JSON.stringify({icon:can.icon,title:can.title,body:can.body}));
+			var canss={"frame": false,title:"消息提醒","width": 350,resizable:false,'always_on_top':true,show:false,"height": 110,"show_in_taskbar":false}
+			nw.Window.open(url,canss,function(wis){
+				me.notification = wis;
+				wis.on('close',function(){
+					this.close(true);
+				});
+				wis.on('closed',function(){
+					if(localStorage.getItem('xinhuoa_closelx')=='yes'){
+						var salx=clsfun(can);
+						if(!salx)nwjs.winshow();
+					}
+					me.notification=false;
+				});
+			});
+		}else{
+			var notification= new Notification(title, can);
+			notification.onclick = function(){
+				var salx=clsfun(can);
+				if(!salx)nwjs.winshow();
+				this.close();
+			}
+		}
 		this.notification = notification;
 		if(can.soundbo)this.playsound(can.sound);
 	};
 	this.close = function(){
 		try{
-		if(this.notification)this.notification.close();
+		if(this.notification)this.notification.close(true);
 		}catch(e){}
 		this.notification = false;
 	};

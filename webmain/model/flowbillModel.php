@@ -374,9 +374,9 @@ class flowbillClassModel extends Model
 	/*
 	*	更新记录
 	*/
-	public function updatebill()
+	public function updatebill($whe='')
 	{
-		$rows = $this->db->getall('SELECT a.`id`,a.`uname`,a.`udeptname`,a.`status`,b.`name`,b.`deptname` FROM `[Q]flow_bill` a left join `[Q]admin` b on a.`uid`=b.id');
+		$rows = $this->db->getall('SELECT b.`id`,b.`uname`,b.`udeptname`,b.`status`,a.`name`,a.`deptname` FROM `[Q]flow_bill` b left join `[Q]admin` a on b.`uid`=a.id where b.`udeptname` is null and b.`status` not in(1,5) '.$whe.'');
 		$ztara= array(1,5);
 		foreach($rows as $k=>$rs){
 			if(isempt($rs['name']))continue;

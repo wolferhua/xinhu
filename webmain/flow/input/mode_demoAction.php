@@ -46,7 +46,7 @@ class mode_demoClassAction extends inputAction{
 	//弹出下拉选择单选
 	public function tanxuan()
 	{
-		for($i=1;$i<=100000;$i++)
+		for($i=1;$i<=10;$i++)
 			$rows[] = array(
 				'name' => '第'.$i.'个数据',
 				'value'=> ''.$i.''

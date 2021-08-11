@@ -69,7 +69,7 @@ class mode_hrsalaryClassAction extends inputAction{
 		$month 	= $this->post('month');
 		$a		= m('kaoqin')->getkqtotal($xuid, $month);
 		$lmonth	= c('date')->adddate($month.'-01','m',-1,'Y-m');
-		$sfielss= 'base,postjt,skilljt,travelbt,telbt,socials';
+		$sfielss= 'base,postjt,skilljt,travelbt,telbt';
 		
 		$flow 	= m('flow')->initflow('hrsalary');
 		
@@ -117,12 +117,14 @@ class mode_hrsalaryClassAction extends inputAction{
 		$rows = m('hrshebao')->getall("`status`=1 and `startdt`<='$month' and `enddt`>='$month'");
 		if($rows){
 			foreach($rows as $k=>$rs)$rows[$k]['xuhao']=$k;
-			$gxu = m('kaoqin')->getpipeimid($xuid, $rows, 'xuhao', 0);
-			$qrs = $rows[$gxu];
-			$a['socials'] 		= $qrs['shebaogeren'];
-			$a['socialsunit'] 	= $qrs['shebaounit'];
-			$a['gonggeren'] 	= $qrs['gonggeren'];
-			$a['gongunit'] 		= $qrs['gongunit'];
+			$gxu = m('kaoqin')->getpipeimid($xuid, $rows, 'xuhao', -1);
+			if(isset($rows[$gxu])){
+				$qrs = $rows[$gxu];
+				$a['socials'] 		= $qrs['shebaogeren'];
+				$a['socialsunit'] 	= $qrs['shebaounit'];
+				$a['gonggeren'] 	= $qrs['gonggeren'];
+				$a['gongunit'] 		= $qrs['gongunit'];
+			}
 		}
 		
 		

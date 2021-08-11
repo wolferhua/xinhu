@@ -1,6 +1,7 @@
 <?php
 class flow_workClassModel extends flowModel
 {
+	private $absfile = false;
 
 	public function initModel()
 	{
@@ -50,7 +51,22 @@ class flow_workClassModel extends flowModel
 		//$rs['status']= $str;
 		if($rs['score']==0)$rs['score']='';
 		if($rs['mark']==0)$rs['mark']='';
+		if($slx==1){
+			$zhuid = (int)arrvalue($rs,'zhuid','0');
+			$nrs   = arrvalue($rs,'file_content');
+			if($zhuid>0 && isempt($nrs)){
+				$rs['file_content'] = m('file')->getstr($this->mtable, $zhuid, 3);
+				$this->absfile = true;
+			}
+		}
 		return $rs;
+	}
+	
+	protected function flowgetfields($lx)
+	{
+		if($this->absfile){
+			return array('file_content'=>'关联文件');
+		}
 	}
 	
 	protected function flowchangedata(){

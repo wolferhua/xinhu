@@ -78,13 +78,13 @@ if($showheader==1)echo '<div id="header_title" style="padding-top:'.$cenghei.'px
 
 <div  style="position:relative">
 	<div class="status"></div>
-	<form name="myform">
+	<form name="myform" autocomplete="off">
 		<input name="id" type="hidden" value="<?=$da['mid']?>">
 		<?php 
 		for($i=0;$i<$da['zbshu'];$i++)echo '<input value="0" type="hidden" name="sub_totals'.$i.'">';
 		?>
 		<div  style="background:white;padding-top:10px;">
-		<table width="100%" border="0" cellspacing="0" cellpadding="0">
+		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="tablelum">
 		<?php if($da['mid']==0){?>
 		<tr>
 		<td class="lurim" style="color:#888888" nowrap>填写人</td>
@@ -173,9 +173,9 @@ if($showheader==1)echo '<div id="header_title" style="padding-top:'.$cenghei.'px
 <script>
 firstrs=<?=json_encode($firstrs)?>;
 </script>
-<script type="text/javascript" src="<?=$da['p']?>/flow/input/inputjs/mode_<?=$da['moders']['num']?>.js"></script>
+<script type="text/javascript" src="<?=$da['p']?>/flow/input/inputjs/mode_<?=$da['moders']['num']?>.js?<?=$da['logintime']?>"></script>
 <?php 
-//按需要引入js
+if($otherfile)include_once($otherfile);
 ?>
 </body>
 </html>

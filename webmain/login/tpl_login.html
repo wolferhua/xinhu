@@ -76,7 +76,7 @@
 			<div class="blank20"></div>
 
 			<div align="left">
-				<button type="button" onClick="loginsubmit()" style="padding:10px 30px;border-radius:5px" class="webbtn" name="button">登录</button>&nbsp;<span id="msgview"></span>
+				<button type="button" onClick="loginsubmit()" style="padding:10px 30px;border-radius:5px" class="webbtn" name="button">登录</button>&nbsp;<span id="msgview"><?php if(getconfig('regbool'))echo '<a class="zhu" href="?m=reg">注册</a>';?></span>
 			</div>
 			<div class="blank10"></div>
 		</form>

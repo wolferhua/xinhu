@@ -140,4 +140,23 @@ class flow_custractClassModel extends flowModel
 			$this->push($uid, '客户,CRM', $cont, '客户合同到期提醒');
 		}
 	}
+	
+	//对外的详情页
+	public function flowopenxiang($da, $xiangdata)
+	{
+		$zdarr = array('num','custname','type','fenlei','signdt','money','startdt','enddt','explain');
+		$slsts = array();
+		foreach($xiangdata as $k=>$rs){
+			if(in_array($rs['fields'], $zdarr)){
+				$slsts[] = $rs;
+			}
+		}
+		//相关文件
+		$filedata = array();
+		$htfileid = arrvalue($da,'htfileid');
+		if($htfileid){
+			$filedata = m('file')->getall('id in('.$htfileid.')','id,filename,filesizecn,fileext');
+		}
+		return array('xiangdata'=>$slsts,'filedata'=>$filedata);
+	}
 }

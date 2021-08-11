@@ -98,7 +98,9 @@ class modeClassAction extends ActionNot
 		}
 		$this->smartydata['inputjspath']	= $inputjspath;
 		$this->smartydata['xiangwidth']		= $this->option->getval('xiangwidth', 700);
-		$this->smartydata['issetprint']		= file_exists(''.P.'/flow/page/view_'.$num.'_2.html');
+		$issetprint = file_exists(''.P.'/flow/page/view_'.$num.'_2.html');
+		if(COMPANYNUM && !$issetprint)$issetprint = file_exists(''.P.'/flow/page/view_'.$num.'_'.COMPANYNUM.'_2.html');
+		$this->smartydata['issetprint']		= $issetprint;
 		$this->assign('inputobj', c('input'));
 	}
 	

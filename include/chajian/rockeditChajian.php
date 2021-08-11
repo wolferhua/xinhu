@@ -89,6 +89,8 @@ class rockeditChajian extends Chajian{
 		$data 		= $barr['data'];
 		$type 		= $data['type'];
 		$gokey		= $data['gokey'];
+		$gourl 		= arrvalue($data,'gourl');
+		if(isempt($gourl))$gourl = $this->updatekel;
 		$bsar		= $data;
 		if($type=='0'){
 			if($recedata=='')$recedata = $this->rock->jm->base64encode(file_get_contents($filepath));
@@ -107,7 +109,7 @@ class rockeditChajian extends Chajian{
 			$bsar['type'] = '1';
 		}
 		if($bsar['type']=='1'){
-			$url = $this->updatekey.'?m=file&a=goto&filenum='.$onlynum.'&sign='.md5($this->rock->HTTPweb).'';
+			$url = $gourl.'api.php?m=file&a=goto&filenum='.$onlynum.'&sign='.md5($this->rock->HTTPweb).'';
 			$url.= '&optid='.$this->adminid.'';
 			$url.= '&gokey='.$gokey.'';
 			$url.= '&otype='.$otype.'';

@@ -8,6 +8,8 @@ class groupClassAction extends Action
 		if($gid>0){
 			$s = " and ( id in( select `sid` from `[Q]sjoin` where `type`='gu' and `mid`='$gid') or id in( select `mid` from `[Q]sjoin` where `type`='ug' and `sid`='$gid') )";
 		}
+		
+		
 		return array(
 			'where' => $s,
 			'fields'=> 'id,user,name,deptname,ranking'
@@ -16,6 +18,11 @@ class groupClassAction extends Action
 	
 	public function groupafter($table, $rows)
 	{
+		$nosq = 'select `id` from `[Q]admin` where `status`=1';
+		m('sjoin')->delete("`type`='gu' and `sid` not in($nosq)");
+		m('sjoin')->delete("`type`='ug' and `mid` not in($nosq)");
+		
+		
 		$carr	= m('admin')->getcompanyinfo(0,5);
 		$dbs 	= m('company');
 		foreach($rows as $k=>$rs){

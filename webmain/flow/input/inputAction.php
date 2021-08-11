@@ -654,6 +654,9 @@ class inputAction extends Action
 		if($inpwhere<200)$inpwhere = $this->option->getval('inputwidth', 750);
 		$this->smartydata['inputwidth']	= $inpwhere;
 		$this->assign('fieldstypearr', $fieldstypearr);
+		$otherfile = 'webmain/flow/input/tpl_input_luother_'.$this->ismobile.'.html';
+		if(!file_exists($otherfile))$otherfile = '';
+		$this->assign('otherfile', $otherfile);
 	}
 	
 	//多行子表内替换
@@ -709,7 +712,14 @@ class inputAction extends Action
 		$rows 	= array();
 		$act	= $this->get('act');
 		$modenum= $this->get('sysmodenum');
-		
+		$actstr = $this->get('actstr');
+		if(isempt($act)){
+			if($actstr){
+				$actstr1 = $this->jm->base64decode($actstr);
+				$rows 	 = c('input')->sqlstore($actstr1);
+			}
+			return $rows;
+		}
 		//用:读取model上的数据
 		if(!isempt($act) && contain($act,':')){
 			$acta = explode(':', $act);
@@ -730,6 +740,23 @@ class inputAction extends Action
 				$rows = $this->flow->$act();
 			}
 		}
+		//从数据选项读取
+		if(!$rows && $actstr){
+			$acta = explode(',', $this->jm->base64decode($actstr));
+			if(count($acta)<=3){
+				$sarr = m('option')->getmnum($acta[0]);
+				if($sarr){
+					$vas = arrvalue($acta,2, 'value');
+					foreach($sarr as $k=>$rs){
+						$rows[] = array(
+							'name'  => $rs['name'],
+							'value' => $rs[$vas],
+						);
+					}
+				}
+			}
+		}
+		
 		
 		return $rows;
 	}
@@ -744,7 +771,7 @@ class inputAction extends Action
 	public function storebeforeshow($table)
 	{
 		$this->atypearr	= false;
-		$this->modeid 	= (int)$this->get('modeid');
+		$this->modeid 	= (int)arrvalue($this->flow->moders, 'id', $this->get('modeid','0'));
 		$pnum			= $this->get('pnum');
 		if($this->post('atype')=='grant'){
 			$this->atypearr = array();
@@ -786,6 +813,7 @@ class inputAction extends Action
 			$barr['isadd'] 		= $vobj->isadd($this->modeid, $this->adminid); //判断是否可添加
 			$barr['isdaoru'] 	= $vobj->isdaoru($this->modeid, $this->adminid); //判断是否可导入
 			$barr['isdaochu'] 	= $vobj->isdaochu($this->modeid, $this->adminid); //判断是否可导入
+			$barr['listinfo']	= m('mode')->createlistpage($this->flow->moders,0,1);
 		}
 		$barr['souarr']		= $this->flow->flowsearchfields();
 		$rows 				= $this->flow->viewjinfields($rows);//禁看字段处理
@@ -806,6 +834,7 @@ class inputAction extends Action
 				}
 			}
 		}
+		$barr['modeid'] 	= $this->modeid;
 		$barr['loadci'] 	= $this->loadci;
 		$barr['rows'] 		= $rows;
 		$scarr 				= $this->storeafter($table, $rows);
@@ -1077,6 +1106,24 @@ class inputAction extends Action
 			'path' => $path,
 			'fid'  => $fid,
 		));
+	}
+	
+	public function saveoptionAction()
+	{
+		$num  = $this->post('num');
+		$name = $this->post('name');
+		if($name && $num){
+			$pid = $this->option->getpids($num);
+			if($pid>0){
+				$this->option->insert(array(
+					'pid' => $pid,
+					'name' => $name,
+					'optdt' => $this->now,
+					'optid' => $this->adminid,
+				));
+			}
+		}
+		return 'ok';
 	}
 }
 

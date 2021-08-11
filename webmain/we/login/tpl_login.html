@@ -170,18 +170,18 @@ function dingdengl(bo){
 					dingdlogn(result.code);
 				},
 				onFail : function(err) {
-					shidengl();
+					shidengl(1);
 				}
 			});
 		});
 	},'none',false, function(str){
-		shidengl();
+		shidengl(str);
 	});
 }
 
-function shidengl(){
+function shidengl(lx){
 	js.wx.unload();
-	js.wx.alert('无法使用钉钉快捷登录');
+	js.wx.alert('无法使用钉钉快捷登录'+lx+'');
 }
 function dingdlogn(code){
 	js.ajax('login','dingcheck',{code:code}, function(ret){
@@ -189,7 +189,7 @@ function dingdlogn(code){
 		$('#adminpass').val(ret.ptoken);
 		loginsubmit(0);
 	},'none',false, function(str){
-		shidengl();
+		shidengl(str);
 	});	
 }
 

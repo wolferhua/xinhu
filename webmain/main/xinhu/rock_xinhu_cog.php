@@ -89,6 +89,12 @@ $(document).ready(function(){
 		},
 		dengji:function(){
 			addtabs({url:'main,xinhu,dengji',name:'登记系统地址','num':'dengji'});
+		},
+		tongbudw:function(){
+			js.loading();
+			js.ajax(js.getajaxurl('tongbudw','{mode}','{dir}'),false, function(ret){
+				js.msgok(ret);
+			},'get');
 		}
 	};
 	
@@ -154,6 +160,10 @@ $(document).ready(function(){
 			<button click="testss" class="btn btn-primary" type="button">测试推送地址</button>&nbsp; 
 			<button click="testays" class="btn btn-default" type="button">测试异步</button>&nbsp; 
 			<button click="testqueue" class="btn btn-default" type="button">测试队列</button>&nbsp; 
+			
+			<?php
+			if(!COMPANYNUM && getconfig('platdwnum'))echo '&nbsp;&nbsp;<button click="tongbudw" class="btn btn-primary" type="button">同步到其他单位</button>';
+			?>
 			
 			<span id="msgview_{rand}"><font color=red>测试地址前，请先保存！</font></span>
 		</td>

@@ -147,7 +147,7 @@ final class rockClass
 			$s = $this->lvlarrep($str, $v1);
 			$str = $s;
 		}
-		$cslv = array('m','a','d','ip','web','host','ajaxbool','token','adminid');
+		$cslv = array('m','a','p','d','ip','web','host','ajaxbool','token','adminid');
 		if(in_array($na, $cslv))$s = $this->xssrepstr($s);
 		return $this->reteistrs($s);
 	}

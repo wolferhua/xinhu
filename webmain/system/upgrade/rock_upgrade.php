@@ -13,7 +13,8 @@ $(document).ready(function(){
 		},{
 			text:'价格',dataIndex:'price',renderer:function(v){
 				var s='<font color=#ff6600>免费</font>';
-				if(v>0)s=v+'元';
+				if(v==1)s='<font color=gray>授权版可用</font>';
+				if(v>1)s=v+'元';
 				return s;
 			}
 		},{

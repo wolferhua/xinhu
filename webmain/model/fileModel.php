@@ -292,12 +292,12 @@ class fileClassModel extends Model
 		} 
     }
 	
-	public function show($id)
+	public function show($id,$qx=false)
 	{
 		if($id==0)exit('Sorry!');
 		$rs	= $this->getone($id);
 		if(!$rs)exit('504 Not find files');
-		if(!$this->isdownfile($rs))exit('404 No permission download');
+		if(!$qx && !$this->isdownfile($rs))exit('404 No permission download');
 		$this->update("`downci`=`downci`+1", $id);
 		$this->addlogs($id, 1);
 		$filepath	= $rs['filepath'];
@@ -376,6 +376,7 @@ class fileClassModel extends Model
 	//判断是否有下载文件的权限
 	private function isdownfile($rs)
 	{
+		//return true; //如果不想权限判断就去掉注释直接返回true
 		$uid = $this->adminid;
 		if(arrvalue($rs,'optid')==$uid)return true;
 		$table 	= arrvalue($rs,'mtype');

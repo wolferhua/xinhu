@@ -239,4 +239,17 @@ class flow_customerClassModel extends flowModel
 			$this->update("`uid`=0,`isgh`=1", "`id` in($sid)");
 		}
 	}
+	
+	//对外的详情页
+	public function flowopenxiang($da, $xiangdata)
+	{
+		$zdarr = array('name','type','laiyuan','unitname','tel','mobile','sheng','shi','address','routeline','shibieid','openbank','cardid','explain','linkname');
+		$slsts = array();
+		foreach($xiangdata as $k=>$rs){
+			if(in_array($rs['fields'], $zdarr)){
+				$slsts[] = $rs;
+			}
+		}
+		return array('xiangdata'=>$slsts,'modename'=>'客户详情');
+	}
 }

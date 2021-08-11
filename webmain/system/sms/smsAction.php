@@ -49,12 +49,9 @@ class smsClassAction extends Action
 			'modename' 	=> '模块测试',
 			'sericnum' 	=> 'AB-'.date('Ymd').'-001',
 			'applyname' => $this->adminname,
+			'code' 		=> rand(100000,999999),
 		);
-		if($dirtype=='alisms'){
-			$bh 	= $this->option->getval('sms_cbnum');
-		}else{
-			$bh		= 'defurls';
-		}
+		$bh 	= $this->option->getval('sms_cbnum', 'defurls');
 		$barr 	= $this->smsobj->send($mobile, '' ,$bh, $parasm, ''.URL.'?d=we', false);
 		return $barr;
 	}

@@ -157,7 +157,8 @@ class flow_meetClassModel extends flowModel
 		}
 		$this->pushs($this->rs['joinid'], $cont, '会议通知');
 		
-		$this->sendsms($this->rs, 'meetapply', array(
+		$tplnum	= m('option')->getval('meetsmstpl', 'meetapply');
+		$this->sendsms($this->rs, $tplnum, array(
 			'optname' 	=> $this->adminname,
 			'title' 	=> $this->rs['title'],
 			'hyname' 	=> $this->rs['hyname'],
@@ -173,7 +174,8 @@ class flow_meetClassModel extends flowModel
 			$this->push($this->rs['joinid'], '会议', ''.$this->adminname.'取消会议“{title}”，时间{startdt}至{enddt}，请悉知。');
 			$this->update('`state`=3', $this->id);
 			
-			$this->sendsms($this->rs, 'meetcancel', array(
+			$tplnum	= m('option')->getval('meetsmstplqx', 'meetcancel');
+			$this->sendsms($this->rs, $tplnum, array(
 				'optname' 	=> $this->adminname,
 				'title' 	=> $this->rs['title'],
 				'hyname' 	=> $this->rs['hyname'],

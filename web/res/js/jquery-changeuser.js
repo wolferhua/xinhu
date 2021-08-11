@@ -578,10 +578,16 @@
 			if(svel)url+='&selvalue='+svel+'';
 			if(url=='')return;
 			$('#selectlist_'+rand+'').html('<div align="center" style="margin-top:30px"><img src="images/mloading.gif"></div>');
-			$.getJSON(url, function(a){
-				me.data = a;
-				me.onloaddata(a);
-				me.showdata(a, true);
+			$.ajax({
+				type:'get',dataType:'json',url:url,
+				success:function(ret){
+					me.data = ret;
+					me.onloaddata(ret);
+					me.showdata(ret, true);
+				},
+				error:function(e){
+					$('#selectlist_'+rand+'').html('加载错误：<br><textarea style="width:95%;height:60%;color:red">'+e.responseText+'</textarea>');
+				}
 			});
 		};
 		this._searchkeys=function(e){
@@ -595,9 +601,10 @@
 			a=this.data;
 			if(a.rows)a=a.rows;
 			len=a.length;if(len==0)return;
+			if(key)key = key.toLowerCase();
 			if(key!='')for(i=0;i<len;i++){
 				d1 = a[i];
-				if(d1.name.indexOf(key)>-1 || d1.value==key || (d1.subname && d1.subname.indexOf(key)>-1)){
+				if(d1.name.indexOf(key)>-1 || d1.name.toLowerCase().indexOf(key)>-1 || d1.value==key || (d1.subname && d1.subname.indexOf(key)>-1)){
 					d.push(d1);
 					oi++;
 					if(oi>20)break;//最多显示搜索

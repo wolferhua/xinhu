@@ -160,7 +160,7 @@ var c = {
 		var s = '<div onclick="c.xuan(\'d\','+oi+',this)" class="listsss">['+d.id+'.部门]'+d.name+'</div>';
 		var a=this.userarr,len=a.length,i,oi=0;
 		for(i=0;i<len;i++){
-			if(a[i].deptpath.indexOf('['+did+']')>-1){
+			if(a[i].deptpath && a[i].deptpath.indexOf('['+did+']')>-1){
 				oi++;
 				if(oi>this.maxshow)break;
 				
