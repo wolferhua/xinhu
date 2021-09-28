@@ -163,7 +163,7 @@ class viewClassModel extends Model
 				}
 			}
 			
-			if(!isempt($sw))$wehs[] = '('.$sw.')';
+			if(!isempt(trim($sw)))$wehs[] = '('.$sw.')';
 		}
 		
 		if($type==6)return $rows;//禁看类型字段 
